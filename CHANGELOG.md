@@ -3,6 +3,15 @@
 Evidence uživatelsky viditelných změn. Číslo verze musí souhlasit
 s `apps/core/version.py`.
 
+## 0.7.3 — 01.10.2026
+
+### Opravy
+
+- Kompaktnější plán dne (Činnost): filtry a kalendář bez prázdného
+  mezisloupce, užší pole, směny vedle kalendáře.
+- Kompaktnější detail pracoviště: údaje v mřížce, panely vedle sebe,
+  hustší tabulka přiřazení.
+
 ## 0.7.2 — 01.10.2026
 
 ### Funkce

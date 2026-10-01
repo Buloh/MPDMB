@@ -3,54 +3,62 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-  <h1>{{ workplace.name }}</h1>
-  <div class="toolbar">
-    <a class="button" href="{% url 'workplace_edit' workplace.pk %}">Upravit</a>
-    <a class="button" href="{% url 'workplace_assign' workplace.pk %}">Přiřadit zaměstnance</a>
-    {% if workplace.is_active %}
-      <form method="post" action="{% url 'workplace_archive' workplace.pk %}">
-        {% csrf_token %}
-        <button type="submit" class="secondary">Archivovat</button>
-      </form>
-    {% endif %}
-    <a class="button secondary" href="{% url 'workplace_list' %}">Zpět na seznam</a>
-  </div>
-  <section class="panel">
-    <h2>Údaje</h2>
-    <p><strong>Typ:</strong> {{ workplace.get_workplace_type_display }}</p>
-    <p><strong>Adresa:</strong> {{ workplace.address|default:"—" }}</p>
-    <p>
-      <strong>Stav:</strong>
+  <div class="page-compact">
+    <h1>{{ workplace.name }}</h1>
+    <div class="toolbar">
+      <a class="button" href="{% url 'workplace_edit' workplace.pk %}">Upravit</a>
+      <a class="button" href="{% url 'workplace_assign' workplace.pk %}">Přiřadit zaměstnance</a>
       {% if workplace.is_active %}
-        <span class="badge success">aktivní</span>
-      {% else %}
-        <span class="badge warning">archivované</span>
+        <form method="post" action="{% url 'workplace_archive' workplace.pk %}">
+          {% csrf_token %}
+          <button type="submit" class="secondary">Archivovat</button>
+        </form>
       {% endif %}
-    </p>
-  </section>
-  <section class="panel">
-    <h2>Přiřazení zaměstnanců</h2>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Zaměstnanec</th>
-            <th>Od</th>
-            <th>Do</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for item in workplace.employee_assignments.all %}
-            <tr>
-              <td><a href="{% url 'employee_detail' item.employee_id %}">{{ item.employee }}</a></td>
-              <td>{{ item.valid_from|date:"d.m.Y" }}</td>
-              <td>{% if item.valid_to %}{{ item.valid_to|date:"d.m.Y" }}{% else %}—{% endif %}</td>
-            </tr>
-          {% empty %}
-            <tr><td colspan="3">Zatím bez přiřazení.</td></tr>
-          {% endfor %}
-        </tbody>
-      </table>
+      <a class="button secondary" href="{% url 'workplace_list' %}">Zpět na seznam</a>
     </div>
-  </section>
+    <div class="panel-grid">
+      <section class="panel">
+        <h2>Údaje</h2>
+        <dl class="detail-meta">
+          <dt>Typ</dt>
+          <dd>{{ workplace.get_workplace_type_display }}</dd>
+          <dt>Adresa</dt>
+          <dd>{{ workplace.address|default:"—" }}</dd>
+          <dt>Stav</dt>
+          <dd>
+            {% if workplace.is_active %}
+              <span class="badge success">aktivní</span>
+            {% else %}
+              <span class="badge warning">archivované</span>
+            {% endif %}
+          </dd>
+        </dl>
+      </section>
+      <section class="panel">
+        <h2>Přiřazení zaměstnanců</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Zaměstnanec</th>
+                <th>Od</th>
+                <th>Do</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in workplace.employee_assignments.all %}
+                <tr>
+                  <td><a href="{% url 'employee_detail' item.employee_id %}">{{ item.employee }}</a></td>
+                  <td>{{ item.valid_from|date:"d.m.Y" }}</td>
+                  <td>{% if item.valid_to %}{{ item.valid_to|date:"d.m.Y" }}{% else %}—{% endif %}</td>
+                </tr>
+              {% empty %}
+                <tr><td colspan="3">Zatím bez přiřazení.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
 {% endblock %}

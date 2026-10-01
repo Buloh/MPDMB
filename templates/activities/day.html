@@ -14,58 +14,60 @@
 
   <section class="panel activity-day-filters">
     <div class="activity-day-filter-layout">
-      <form method="get" class="stack-form filters-inline activity-day-filter-form">
-        {{ filter_form.as_p }}
-        <div class="form-actions">
-          <button type="submit">Zobrazit</button>
-        </div>
-      </form>
+      <div class="activity-day-filter-main">
+        <form method="get" class="stack-form filters-inline activity-day-filter-form">
+          {{ filter_form.as_p }}
+          <div class="form-actions">
+            <button type="submit">Zobrazit</button>
+          </div>
+        </form>
+        {% if show_day_roster %}
+          <div class="activity-day-roster">
+            <h2>Směny dne · {{ day|date:"d.m.Y" }}</h2>
+            <p class="muted">Publikované směny z dlouhodobého plánu (všechna pracoviště). Kliknutím otevřete detail.</p>
+            {% if day_roster %}
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Zaměstnanec</th>
+                      <th>Pracoviště</th>
+                      <th>Typ</th>
+                      <th>Čas</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for item in day_roster %}
+                      <tr>
+                        <td>
+                          <a href="?day={{ day|date:'Y-m-d' }}&workplace={{ item.workplace.pk }}&employee={{ item.employee.pk }}">
+                            {{ item.employee.last_name }} {{ item.employee.first_name }}
+                          </a>
+                        </td>
+                        <td>
+                          <a href="?day={{ day|date:'Y-m-d' }}&workplace={{ item.workplace.pk }}">
+                            {{ item.workplace.name }}
+                          </a>
+                        </td>
+                        <td>{{ item.display_code }}</td>
+                        <td>{{ item.starts_at|date:"H:i" }}–{{ item.ends_at|date:"H:i" }}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            {% else %}
+              <p class="notice" role="status">
+                Nikdo nemá publikovanou směnu práce v tento den.
+              </p>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
       {% if month_cal %}
         {% include "activities/_month_calendar.html" %}
       {% endif %}
     </div>
-    {% if show_day_roster %}
-      <div class="activity-day-roster">
-        <h2>Směny dne · {{ day|date:"d.m.Y" }}</h2>
-        <p class="muted">Publikované směny z dlouhodobého plánu (všechna pracoviště). Kliknutím otevřete detail.</p>
-        {% if day_roster %}
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Zaměstnanec</th>
-                  <th>Pracoviště</th>
-                  <th>Typ</th>
-                  <th>Čas</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for item in day_roster %}
-                  <tr>
-                    <td>
-                      <a href="?day={{ day|date:'Y-m-d' }}&workplace={{ item.workplace.pk }}&employee={{ item.employee.pk }}">
-                        {{ item.employee.last_name }} {{ item.employee.first_name }}
-                      </a>
-                    </td>
-                    <td>
-                      <a href="?day={{ day|date:'Y-m-d' }}&workplace={{ item.workplace.pk }}">
-                        {{ item.workplace.name }}
-                      </a>
-                    </td>
-                    <td>{{ item.display_code }}</td>
-                    <td>{{ item.starts_at|date:"H:i" }}–{{ item.ends_at|date:"H:i" }}</td>
-                  </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        {% else %}
-          <p class="notice" role="status">
-            Nikdo nemá publikovanou směnu práce v tento den.
-          </p>
-        {% endif %}
-      </div>
-    {% endif %}
     {% if employees_empty %}
       <p class="notice" role="status">
         Pro den {{ day|date:"d.m.Y" }}{% if workplace %} na pracovišti {{ workplace }}{% endif %}

@@ -89,11 +89,20 @@
   white-space: normal;
 }
 .activity-day-roster {
-  margin-top: var(--space-3);
+  margin-top: 0;
 }
 .activity-day-roster h2 {
   margin: 0 0 var(--space-2);
   font-size: 1.05rem;
+}
+.activity-day-roster .muted {
+  margin: 0 0 var(--space-2);
+  font-size: 13px;
+}
+.activity-day-roster table th,
+.activity-day-roster table td {
+  padding: var(--space-1) var(--space-2);
+  font-size: 13px;
 }
 .activity-board-cell.off {
   background: var(--background);
@@ -293,6 +302,10 @@ textarea.activity-day-task-note {
 .activity-day-page .filters-inline p,
 .activity-day-page .activity-day-filter-form p {
   margin: 0;
+}
+.activity-day-page .activity-day-filter-form.filters-inline {
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 12rem));
+  gap: var(--space-2) var(--space-3);
 }
 .activity-day-page .activity-day-filter-form label {
   font-size: 13px;
