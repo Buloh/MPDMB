@@ -3,6 +3,31 @@
 Evidence uživatelsky viditelných změn. Číslo verze musí souhlasit
 s `apps/core/version.py`.
 
+## 0.8.1 — 01.10.2026
+
+### Opravy
+
+- Django admin: vyšší kontrast (tmavě modré hlavičky tabulek a sekcí,
+  výraznější navigace, čitelnější text a filtry).
+
+## 0.8.0 — 01.10.2026
+
+### Funkce
+
+- Rozcestník Administrace (`/administrace/`) ve stylu SYNERA: účty,
+  skupiny, audit a číselníky jako dlaždice s odkazy do Django adminu.
+- Vizuální sjednocení Django `/admin/` s paletou MPDMB (header, pozadí,
+  hustší úvodní stránka).
+
+## 0.7.4 — 01.10.2026
+
+### Opravy
+
+- Kompaktnější detail zaměstnance: údaje a pracovní vztah v mřížce,
+  panely vedle sebe, hustší tabulky.
+- Kompaktnější detail techniky: údaje v mřížce, doklady vedle údajů,
+  hustší tabulky.
+
 ## 0.7.3 — 01.10.2026
 
 ### Opravy
