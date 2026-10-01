@@ -36,15 +36,19 @@
     <main class="help-main">
       <h1>Administrace</h1>
       <p class="muted">
-        Nápověda pro uživatele s přístupem do rozhraní
-        <code>/admin/</code> (dlaždice Administrace na Přehledu).
+        Nápověda pro uživatele s přístupem k rozcestníku
+        <code>/administrace/</code> (dlaždice Administrace na Přehledu)
+        a k detailním stránkám Django adminu na <code>/admin/</code>.
       </p>
 
       <section class="panel">
         <h2 id="kdo-smi">Kdo smí do administrace</h2>
         <p>
-          Rozhraní na <code>/admin/</code> se jmenuje <strong>SYNERA</strong>
-          (nadpis Administrace). Přístup mají:
+          Vstupní bod je <strong>rozcestník Administrace</strong> ve stylu
+          aplikace SYNERA (<code>/administrace/</code>). Odtud otevřete
+          účty, skupiny, číselníky a audit. Samotné formuláře a seznamy
+          běží v Django adminu (<code>/admin/</code>) ve stejném vizuálním
+          stylu SYNERA. Přístup mají:
         </p>
         <ul>
           <li>
@@ -58,10 +62,12 @@
         </ul>
         <p>
           Zařazením do skupiny administrátor se
-          <code>is_staff</code> zapne automaticky. Dlaždice Administrace
-          na Přehledu se zobrazí jen těmto uživatelům. Administrace má
-          vlastní přihlášení na <code>/admin/</code> (oddělené od
-          <code>/prihlaseni/</code> aplikace).
+          <code>is_staff</code> zapne automaticky. Dlaždice a položka
+          Administrace v navigaci se zobrazí jen těmto uživatelům.
+          Django admin má i vlastní přihlášení na <code>/admin/</code>
+          (oddělené od <code>/prihlaseni/</code> aplikace); pokud jste
+          už přihlášeni v aplikaci se správnými právy, rozcestník vás
+          provede dál.
         </p>
       </section>
 
@@ -80,8 +86,9 @@
           <li>plán činností a lokality (kromě mapových měst a typů).</li>
         </ul>
         <p>
-          Na úvodní stránce adminu je krátká připomínka a odkaz na tuto
-          nápovědu.
+          Na rozcestníku i na úvodní stránce Django adminu je připomínka
+          a odkaz na tuto nápovědu. Odkaz „Kompletní Django admin“ otevře
+          klasický přehled všech modulů.
         </p>
       </section>
 
@@ -137,8 +144,9 @@
       <section class="panel">
         <h2 id="ciselniky">Číselníky a nastavení</h2>
         <p>
-          Níže uvedené položky spravujte v administraci. Detailní provoz
-          modulů je v příslušných stránkách nápovědy.
+          Níže uvedené položky spravujte přes rozcestník Administrace
+          (nebo přímo v Django adminu). Detailní provoz modulů je
+          v příslušných stránkách nápovědy.
         </p>
         <ul>
           <li>

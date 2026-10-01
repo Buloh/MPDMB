@@ -53,7 +53,7 @@
         <a href="{% url 'documents_hub' %}" {% if request.resolver_match.app_name == 'documents' or request.resolver_match.url_name == 'documents_hub' or request.resolver_match.url_name == 'document_template_list' or request.resolver_match.url_name == 'document_template_create' or request.resolver_match.url_name == 'document_template_detail' or request.resolver_match.url_name == 'document_employee_list' or request.resolver_match.url_name == 'document_vehicle_list' or request.resolver_match.url_name == 'document_my_list' or request.resolver_match.url_name == 'document_employee_generate' or request.resolver_match.url_name == 'document_vehicle_generate' %}aria-current="page"{% endif %}>Dokumenty</a>
       {% endif %}
       {% if nav.show_admin %}
-        <a href="{% url 'admin:index' %}">Administrace</a>
+        <a href="{% url 'admin_hub' %}" {% if request.resolver_match.url_name == 'admin_hub' %}aria-current="page"{% endif %}>Administrace</a>
       {% endif %}
       {% if nav.show_help %}
         <a href="{% url 'help' %}" {% if request.resolver_match.url_name == 'help' or request.resolver_match.url_name == 'help_file' %}aria-current="page"{% endif %}>Nápověda</a>

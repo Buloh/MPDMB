@@ -137,7 +137,7 @@ def tiles_for_user(user: AbstractBaseUser) -> list[DashboardTile]:
             title="Administrace",
             description="Účty, skupiny a systémová správa.",
             icon="admin",
-            url_path="/admin/",
+            url_name="admin_hub",
         ),
         DashboardTile(
             key="help",

@@ -3,171 +3,194 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-  <h1>{{ employee.full_name }}</h1>
-  <div class="toolbar">
-    <a class="button" href="{% url 'employee_edit' employee.pk %}">Upravit</a>
-    {% if employee.is_active %}
-      <form method="post" action="{% url 'employee_archive' employee.pk %}">
-        {% csrf_token %}
-        <button type="submit" class="secondary">Archivovat</button>
-      </form>
-    {% endif %}
-    <a class="button secondary" href="{% url 'employee_list' %}">Zpět na seznam</a>
-  </div>
-
-  {% if has_expired_qualifications %}
-    <p class="notice danger-soft" role="status">
-      Některé kvalifikace nebo zkoušky mají prošlou platnost. Zkontrolujte sekci níže.
-    </p>
-  {% endif %}
-
-  <section class="panel">
-    <h2>Údaje</h2>
-    <p><strong>Interní číslo:</strong> {{ employee.internal_number }}</p>
-    <p><strong>Funkce:</strong> {{ employee.job_title|default:"—" }}</p>
-    <p><strong>Telefon:</strong> {{ employee.phone|default:"—" }}</p>
-    <p><strong>E-mail:</strong> {{ employee.email|default:"—" }}</p>
-    <p><strong>Pracovní kontakt:</strong> {{ employee.work_contact|default:"—" }}</p>
-    <p><strong>Poznámka:</strong> {{ employee.notes|default:"—" }}</p>
-    <p><strong>Účet:</strong> {{ employee.user|default:"bez účtu" }}</p>
-    <p>
-      <strong>Stav:</strong>
+  <div class="page-compact">
+    <h1>{{ employee.full_name }}</h1>
+    <div class="toolbar">
+      <a class="button" href="{% url 'employee_edit' employee.pk %}">Upravit</a>
       {% if employee.is_active %}
-        <span class="badge success">aktivní</span>
-      {% else %}
-        <span class="badge warning">archivovaný</span>
+        <form method="post" action="{% url 'employee_archive' employee.pk %}">
+          {% csrf_token %}
+          <button type="submit" class="secondary">Archivovat</button>
+        </form>
       {% endif %}
-    </p>
-  </section>
-
-  <section class="panel">
-    <h2>Kvalifikace a zkoušky</h2>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Typ</th>
-            <th>Číslo</th>
-            <th>Skupiny</th>
-            <th>Platnost do</th>
-            <th>Stav</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for item in qualifications %}
-            <tr>
-              <td>{{ item.qualification_type.name }}</td>
-              <td>{{ item.number|default:"—" }}</td>
-              <td>{{ item.categories|default:"—" }}</td>
-              <td>
-                {% if item.valid_until %}
-                  {{ item.valid_until|date:"d.m.Y" }}
-                {% else %}
-                  bez expirace
-                {% endif %}
-              </td>
-              <td>
-                {% if item.is_expired %}
-                  <span class="badge danger">prošlá</span>
-                {% else %}
-                  <span class="badge success">platná</span>
-                {% endif %}
-              </td>
-            </tr>
-          {% empty %}
-            <tr><td colspan="5">Zatím nejsou evidovány žádné kvalifikace.</td></tr>
-          {% endfor %}
-        </tbody>
-      </table>
+      <a class="button secondary" href="{% url 'employee_list' %}">Zpět na seznam</a>
     </div>
-  </section>
 
-  <section class="panel">
-    <h2>Dokumenty</h2>
-    {% if can_manage_stored_docs %}
-      <div class="toolbar">
-        <a class="button" href="{% url 'document_employee_generate' employee.pk %}">Nový dokument</a>
-      </div>
-    {% endif %}
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Název</th>
-            <th>Šablona</th>
-            <th>Vytvořeno</th>
-            <th>Autor</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {% include "documents/_stored_rows.html" %}
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <section class="panel">
-    <h2>Pracovní vztah</h2>
-    {% if employment %}
-      <p><strong>Druh:</strong> {{ employment.get_relation_type_display }}</p>
-      <p><strong>Den nástupu:</strong> {{ employment.started_on|date:"d.m.Y" }}</p>
-      <p>
-        <strong>Den ukončení:</strong>
-        {% if employment.ended_on %}{{ employment.ended_on|date:"d.m.Y" }}{% else %}probíhá{% endif %}
+    {% if has_expired_qualifications %}
+      <p class="notice danger-soft" role="status">
+        Některé kvalifikace nebo zkoušky mají prošlou platnost. Zkontrolujte sekci níže.
       </p>
-      <p><strong>Mzdové číslo:</strong> {{ employment.payroll_number|default:"—" }}</p>
-      <p><strong>Režim:</strong> {{ employment.get_pay_regime_display }}</p>
-      <p><strong>Funkce ve vztahu:</strong> {{ employment.job_title|default:"—" }}</p>
-      {% if work_time_profile %}
-        <p>
-          <strong>Úvazek:</strong>
-          {{ work_time_profile.agreed_label }} h/týden
-          ({{ work_time_profile.get_regime_display }} /
-          {{ work_time_profile.get_distribution_display }}),
-          od {{ work_time_profile.valid_from|date:"d.m.Y" }}
-          {% if work_time_profile.valid_to %}
-            do {{ work_time_profile.valid_to|date:"d.m.Y" }}
-          {% else %}
-            – bez konce
-          {% endif %}
-        </p>
-      {% else %}
-        <p class="muted">Úvazek zatím není nastaven — doplňte ho úpravou karty.</p>
-      {% endif %}
-      {% if employment.is_unsupported_for_payroll_export %}
-        <p class="notice" role="status">
-          Pro DPP/DPČ zatím nelze použít finální mzdový export jako u pracovního poměru.
-        </p>
-      {% endif %}
-    {% else %}
-      <p class="muted">Zatím není evidován pracovní vztah. Doplňte ho úpravou karty.</p>
     {% endif %}
-  </section>
 
-  <section class="panel">
-    <h2>Pracoviště</h2>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Pracoviště</th>
-            <th>Od</th>
-            <th>Do</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for item in employee.workplace_assignments.all %}
-            <tr>
-              <td><a href="{% url 'workplace_detail' item.workplace_id %}">{{ item.workplace.name }}</a></td>
-              <td>{{ item.valid_from|date:"d.m.Y" }}</td>
-              <td>{% if item.valid_to %}{{ item.valid_to|date:"d.m.Y" }}{% else %}—{% endif %}</td>
-            </tr>
-          {% empty %}
-            <tr><td colspan="3">Zaměstnanec zatím nemá přiřazené pracoviště.</td></tr>
-          {% endfor %}
-        </tbody>
-      </table>
+    <div class="panel-grid">
+      <section class="panel">
+        <h2>Údaje</h2>
+        <dl class="detail-meta">
+          <dt>Interní číslo</dt>
+          <dd>{{ employee.internal_number }}</dd>
+          <dt>Funkce</dt>
+          <dd>{{ employee.job_title|default:"—" }}</dd>
+          <dt>Telefon</dt>
+          <dd>{{ employee.phone|default:"—" }}</dd>
+          <dt>E-mail</dt>
+          <dd>{{ employee.email|default:"—" }}</dd>
+          <dt>Pracovní kontakt</dt>
+          <dd>{{ employee.work_contact|default:"—" }}</dd>
+          <dt>Poznámka</dt>
+          <dd>{{ employee.notes|default:"—" }}</dd>
+          <dt>Účet</dt>
+          <dd>{{ employee.user|default:"bez účtu" }}</dd>
+          <dt>Stav</dt>
+          <dd>
+            {% if employee.is_active %}
+              <span class="badge success">aktivní</span>
+            {% else %}
+              <span class="badge warning">archivovaný</span>
+            {% endif %}
+          </dd>
+        </dl>
+      </section>
+
+      <section class="panel">
+        <h2>Kvalifikace a zkoušky</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Typ</th>
+                <th>Číslo</th>
+                <th>Skupiny</th>
+                <th>Platnost do</th>
+                <th>Stav</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in qualifications %}
+                <tr>
+                  <td>{{ item.qualification_type.name }}</td>
+                  <td>{{ item.number|default:"—" }}</td>
+                  <td>{{ item.categories|default:"—" }}</td>
+                  <td>
+                    {% if item.valid_until %}
+                      {{ item.valid_until|date:"d.m.Y" }}
+                    {% else %}
+                      bez expirace
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if item.is_expired %}
+                      <span class="badge danger">prošlá</span>
+                    {% else %}
+                      <span class="badge success">platná</span>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% empty %}
+                <tr><td colspan="5">Zatím nejsou evidovány žádné kvalifikace.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </section>
     </div>
-  </section>
+
+    <section class="panel">
+      <h2>Dokumenty</h2>
+      {% if can_manage_stored_docs %}
+        <div class="toolbar">
+          <a class="button" href="{% url 'document_employee_generate' employee.pk %}">Nový dokument</a>
+        </div>
+      {% endif %}
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Název</th>
+              <th>Šablona</th>
+              <th>Vytvořeno</th>
+              <th>Autor</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% include "documents/_stored_rows.html" %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <div class="panel-grid">
+      <section class="panel">
+        <h2>Pracovní vztah</h2>
+        {% if employment %}
+          <dl class="detail-meta">
+            <dt>Druh</dt>
+            <dd>{{ employment.get_relation_type_display }}</dd>
+            <dt>Den nástupu</dt>
+            <dd>{{ employment.started_on|date:"d.m.Y" }}</dd>
+            <dt>Den ukončení</dt>
+            <dd>
+              {% if employment.ended_on %}{{ employment.ended_on|date:"d.m.Y" }}{% else %}probíhá{% endif %}
+            </dd>
+            <dt>Mzdové číslo</dt>
+            <dd>{{ employment.payroll_number|default:"—" }}</dd>
+            <dt>Režim</dt>
+            <dd>{{ employment.get_pay_regime_display }}</dd>
+            <dt>Funkce ve vztahu</dt>
+            <dd>{{ employment.job_title|default:"—" }}</dd>
+            {% if work_time_profile %}
+              <dt>Úvazek</dt>
+              <dd>
+                {{ work_time_profile.agreed_label }} h/týden
+                ({{ work_time_profile.get_regime_display }} /
+                {{ work_time_profile.get_distribution_display }}),
+                od {{ work_time_profile.valid_from|date:"d.m.Y" }}
+                {% if work_time_profile.valid_to %}
+                  do {{ work_time_profile.valid_to|date:"d.m.Y" }}
+                {% else %}
+                  – bez konce
+                {% endif %}
+              </dd>
+            {% endif %}
+          </dl>
+          {% if not work_time_profile %}
+            <p class="muted">Úvazek zatím není nastaven — doplňte ho úpravou karty.</p>
+          {% endif %}
+          {% if employment.is_unsupported_for_payroll_export %}
+            <p class="notice" role="status">
+              Pro DPP/DPČ zatím nelze použít finální mzdový export jako u pracovního poměru.
+            </p>
+          {% endif %}
+        {% else %}
+          <p class="muted">Zatím není evidován pracovní vztah. Doplňte ho úpravou karty.</p>
+        {% endif %}
+      </section>
+
+      <section class="panel">
+        <h2>Pracoviště</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Pracoviště</th>
+                <th>Od</th>
+                <th>Do</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in employee.workplace_assignments.all %}
+                <tr>
+                  <td><a href="{% url 'workplace_detail' item.workplace_id %}">{{ item.workplace.name }}</a></td>
+                  <td>{{ item.valid_from|date:"d.m.Y" }}</td>
+                  <td>{% if item.valid_to %}{{ item.valid_to|date:"d.m.Y" }}{% else %}—{% endif %}</td>
+                </tr>
+              {% empty %}
+                <tr><td colspan="3">Zaměstnanec zatím nemá přiřazené pracoviště.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
 {% endblock %}

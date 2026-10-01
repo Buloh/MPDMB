@@ -1,13 +1,15 @@
 {% extends "admin/index.html" %}
 
 {% block content %}
-<div class="module" style="margin-bottom:16px;padding:12px 16px;background:#e8f2f8;border:1px solid #d8dee3;border-radius:8px">
-  <p style="margin:0 0 8px;color:#333;line-height:1.45">
-    Provozní data (směny, docházka, fond, šablony, kvalifikace zaměstnanců)
+<div class="admin-mpdmb-notice">
+  <p>
+    Provozní data (směny, docházka, fond, kvalifikace zaměstnanců)
     spravujte v aplikaci SYNERA, ne zde. Administrace slouží hlavně k účtům,
     skupinám, číselníkům a auditu.
   </p>
-  <p style="margin:0;line-height:1.45">
+  <p>
+    <a href="{% url 'admin_hub' %}">Rozcestník Administrace</a>
+    ·
     <a href="/napoveda/pages/administrace.html">Nápověda Administrace</a>
   </p>
 </div>

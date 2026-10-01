@@ -6,7 +6,7 @@ from django.http import FileResponse, Http404, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_GET
 
-from apps.core.dashboard import can_manage_directory, ops_hub_tiles, tiles_for_user
+from apps.core.dashboard import can_manage_directory, can_see_admin_tile, ops_hub_tiles, tiles_for_user
 from apps.core.version import APP_NAME, __version__
 from apps.employees.services import qualification_alerts_for_user
 from apps.technika.services import vehicle_document_alerts_for_user
@@ -64,6 +64,25 @@ def ops_hub(request):
         {
             "title": "Provoz",
             "tiles": ops_hub_tiles(request.user),
+        },
+    )
+
+
+@require_GET
+def admin_hub(request):
+    """Rozcestník Administrace: účty, číselníky a odkazy do Django adminu."""
+    from django.core.exceptions import PermissionDenied
+
+    from apps.core.admin_hub import admin_hub_sections
+
+    if not can_see_admin_tile(request.user):
+        raise PermissionDenied
+    return render(
+        request,
+        "core/admin_hub.html",
+        {
+            "title": "Administrace",
+            "sections": admin_hub_sections(),
         },
     )
 

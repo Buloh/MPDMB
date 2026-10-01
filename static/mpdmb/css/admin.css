@@ -1,0 +1,405 @@
+/* SYNERA / MPDMB — výraznější Django admin (paleta theme.css) */
+:root {
+  --primary: #166999;
+  --primary-hover: #12567d;
+  --primary-soft: #e8f2f8;
+  --link: #21759b;
+  --background: #eeeeee;
+  --surface: #ffffff;
+  --text: #333333;
+  --text-secondary: #54595f;
+  --border: #d8dee3;
+  --success: #237a35;
+  --success-soft: #eaf5ec;
+  --warning: #865600;
+  --warning-soft: #fff4d6;
+  --danger: #b42318;
+  --danger-soft: #fdecea;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius: 8px;
+}
+
+/* Přepsat Django theme tokens (light i dark) — vyšší kontrast */
+html,
+html[data-theme="light"],
+html[data-theme="dark"] {
+  color-scheme: light;
+  --primary: #166999;
+  --secondary: #12567d;
+  --accent: #166999;
+  --primary-fg: #ffffff;
+  --body-fg: #333333;
+  --body-bg: #eeeeee;
+  --body-quiet-color: #54595f;
+  --body-loud-color: #222222;
+  --header-color: #ffffff;
+  --header-branding-color: #ffffff;
+  --header-bg: #166999;
+  --header-link-color: #ffffff;
+  --breadcrumbs-fg: #333333;
+  --breadcrumbs-link-fg: #166999;
+  --breadcrumbs-bg: #d6e8f2;
+  --link-fg: #166999;
+  --link-hover-color: #12567d;
+  --hairline-color: #c5ced6;
+  --border-color: #c5ced6;
+  --darkened-bg: #e4e9ed;
+  --selected-bg: #d6e8f2;
+  --selected-row: #d6e8f2;
+  --button-bg: #166999;
+  --button-hover-bg: #12567d;
+  --default-button-bg: #166999;
+  --default-button-hover-bg: #12567d;
+  --close-button-bg: #54595f;
+  --close-button-hover-bg: #333333;
+  --object-tools-fg: #ffffff;
+  --object-tools-bg: #166999;
+  --object-tools-hover-bg: #12567d;
+  --font-family-primary: system-ui, "Segoe UI", Arial, sans-serif;
+}
+
+body {
+  font-family: system-ui, "Segoe UI", Arial, sans-serif;
+  background: var(--background) !important;
+  color: var(--text) !important;
+  font-size: 15px;
+}
+
+/* Horní lišta — plná primary, bílý text */
+#header {
+  background: #166999 !important;
+  color: #fff !important;
+  padding: 12px 16px;
+  border-bottom: 3px solid #12567d;
+}
+#branding h1,
+#branding h1 a:link,
+#branding h1 a:visited {
+  color: #fff !important;
+  font-weight: 700;
+  font-size: 1.35rem;
+  letter-spacing: 0.02em;
+}
+#user-tools {
+  color: #fff !important;
+  font-weight: 600;
+  font-size: 13px;
+}
+#user-tools a {
+  color: #fff !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.55);
+  font-weight: 600;
+}
+#user-tools a:focus,
+#user-tools a:hover {
+  color: #fff !important;
+  border-bottom-color: #fff;
+}
+#header a:link,
+#header a:visited {
+  color: #fff !important;
+}
+
+/* Drobečková navigace */
+div.breadcrumbs {
+  background: #d6e8f2 !important;
+  color: #333 !important;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  border-bottom: 1px solid #b7cdd9;
+}
+div.breadcrumbs a {
+  color: #166999 !important;
+  font-weight: 700;
+}
+
+/* Nadpis stránky */
+#content h1 {
+  color: #166999 !important;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 16px;
+}
+
+#content {
+  padding: var(--space-4);
+}
+
+/* Levý nav sidebar — výraznější sekce */
+#nav-sidebar {
+  background: #fff !important;
+  border-right: 1px solid #c5ced6;
+}
+#nav-sidebar .current-app .section,
+#nav-sidebar table caption,
+#nav-filter + .module caption,
+.main > #nav-sidebar .module caption,
+#nav-sidebar caption {
+  background: #166999 !important;
+  color: #fff !important;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 8px 12px !important;
+}
+#nav-sidebar th,
+#nav-sidebar td {
+  font-size: 14px;
+  color: #333 !important;
+  padding: 6px 10px !important;
+}
+#nav-sidebar a:link,
+#nav-sidebar a:visited {
+  color: #166999 !important;
+  font-weight: 600;
+}
+#nav-sidebar a:hover {
+  color: #12567d !important;
+  text-decoration: underline;
+}
+#nav-sidebar .current-model {
+  background: #e8f2f8 !important;
+}
+#nav-sidebar .addlink {
+  color: #237a35 !important;
+  font-weight: 700;
+}
+
+.toggle-nav-sidebar {
+  background: #166999 !important;
+  color: #fff !important;
+  border-color: #12567d !important;
+}
+
+/* Moduly / karty */
+.module {
+  background: #fff !important;
+  border: 1px solid #c5ced6 !important;
+  border-radius: var(--radius);
+  margin-bottom: var(--space-3);
+  box-shadow: 0 1px 2px rgba(22, 105, 153, 0.08);
+}
+.module h2,
+.module caption,
+.inline-group h2 {
+  background: #166999 !important;
+  color: #fff !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 10px 12px !important;
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+.module tr th,
+.module tr td {
+  padding: 8px 12px;
+  font-size: 14px;
+  color: #333;
+  border-bottom-color: #d8dee3;
+}
+
+/* Changelist tabulka */
+#changelist {
+  background: transparent;
+}
+#changelist .actions {
+  background: #e8f2f8;
+  border: 1px solid #c5ced6;
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  color: #333;
+  font-weight: 600;
+}
+#changelist table thead th {
+  background: #166999 !important;
+  color: #fff !important;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 10px 12px !important;
+  border: none !important;
+  white-space: nowrap;
+}
+#changelist table thead th a:link,
+#changelist table thead th a:visited,
+#changelist table thead th .text a {
+  color: #fff !important;
+}
+#changelist table tbody td,
+#changelist table tbody th {
+  font-size: 14px;
+  color: #333 !important;
+  padding: 10px 12px;
+  border-bottom: 1px solid #d8dee3;
+}
+#changelist table tbody tr:nth-child(even) {
+  background: #f5f8fa;
+}
+#changelist table tbody tr:hover {
+  background: #e8f2f8;
+}
+#changelist table tbody th a,
+#changelist table tbody td a {
+  color: #166999 !important;
+  font-weight: 700;
+}
+
+#toolbar {
+  background: #fff;
+  border: 1px solid #c5ced6;
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  margin-bottom: 12px;
+}
+#toolbar #searchbar,
+#changelist-search input[type="text"] {
+  border: 1px solid #c5ced6;
+  border-radius: var(--radius);
+  min-height: 36px;
+  padding: 4px 10px;
+  color: #333;
+  font-size: 14px;
+}
+
+/* Filtr vpravo */
+#changelist-filter {
+  background: #fff !important;
+  border: 1px solid #c5ced6 !important;
+  border-radius: var(--radius);
+}
+#changelist-filter h2 {
+  background: #166999 !important;
+  color: #fff !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 10px 12px !important;
+}
+#changelist-filter h3 {
+  color: #166999 !important;
+  font-size: 13px;
+  font-weight: 700;
+  margin: 12px 12px 4px;
+}
+#changelist-filter li,
+#changelist-filter details summary {
+  font-size: 13px;
+  color: #333;
+  font-weight: 500;
+}
+#changelist-filter a {
+  color: #166999 !important;
+  font-weight: 600;
+}
+#changelist-filter li.selected a {
+  color: #12567d !important;
+  font-weight: 700;
+}
+
+a:link,
+a:visited {
+  color: #166999;
+}
+a:hover {
+  color: #12567d;
+}
+
+.button,
+input[type="submit"],
+input[type="button"],
+.submit-row input,
+a.button,
+.object-tools a {
+  background: #166999 !important;
+  border: 1px solid #12567d !important;
+  border-radius: var(--radius) !important;
+  color: #fff !important;
+  font-weight: 700 !important;
+  padding: 8px 14px !important;
+  min-height: 36px;
+}
+.button:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover,
+.submit-row input:hover,
+a.button:hover,
+.object-tools a:hover {
+  background: #12567d !important;
+}
+.button.default,
+input[type="submit"].default,
+.submit-row input.default {
+  background: #166999 !important;
+}
+
+.object-tools {
+  margin-bottom: 12px;
+}
+.object-tools a.addlink {
+  background: #166999 !important;
+}
+
+.dashboard #content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(14rem, 20rem);
+  gap: var(--space-4);
+  align-items: start;
+}
+.dashboard #content-main,
+.dashboard #content-related {
+  float: none;
+  width: auto;
+  margin: 0;
+}
+@media (max-width: 900px) {
+  .dashboard #content {
+    grid-template-columns: 1fr;
+  }
+}
+
+.admin-mpdmb-notice {
+  margin-bottom: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: #e8f2f8;
+  border: 1px solid #166999;
+  border-left-width: 4px;
+  border-radius: var(--radius);
+  color: #333;
+  line-height: 1.45;
+  font-weight: 500;
+}
+.admin-mpdmb-notice p {
+  margin: 0 0 var(--space-2);
+}
+.admin-mpdmb-notice p:last-child {
+  margin: 0;
+}
+.admin-mpdmb-notice a {
+  font-weight: 700;
+}
+
+#site-name a {
+  font-family: system-ui, "Segoe UI", Arial, sans-serif;
+}
+
+/* Formuláře — čitelnější labely */
+.form-row label,
+fieldset .form-row > div > label,
+label.required {
+  color: #333 !important;
+  font-weight: 700;
+  font-size: 14px;
+}
+.help,
+p.help,
+.helptext {
+  color: #54595f !important;
+  font-size: 13px;
+}

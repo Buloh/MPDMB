@@ -1,7 +1,8 @@
-# SYNERA – propojení zaměstnanců, směn, docházky, úkolů a provozu
+# SYNERA – řízení provozu MPDMB
 
-Verze **0.2.0**. Webová aplikace SYNERA (synergie v jednom systému)
-pro provoz parkovacích domů v Mladé Boleslavi.
+Verze **0.8.1** (zdroj: `apps/core/version.py`; historie v `CHANGELOG.md`).
+Webová aplikace SYNERA pro řízení zaměstnanců a provozu parkovacích
+domů v Mladé Boleslavi. Běží v prohlížeči (Django + SQLite).
 
 ## Požadavky
 
@@ -44,13 +45,20 @@ Ruční alternativa:
 .\.venv\Scripts\python.exe manage.py runserver 0.0.0.0:8000
 ```
 
-- Na tomto PC: http://127.0.0.1:8000/
+- Aplikace: http://127.0.0.1:8000/
 - Nápověda: http://127.0.0.1:8000/napoveda/
+- Administrace (rozcestník): http://127.0.0.1:8000/administrace/
+- Django admin (detaily): http://127.0.0.1:8000/admin/
 - Z jiné stanice v síti/VPN: http://<IPv4-počítače>:8000/
 - Zdravotní kontrola: http://127.0.0.1:8000/health/
 
 IPv4 zjistěte příkazem `ipconfig`. Port 8000 povolte ve firewallu
 jen pro důvěryhodnou síť/VPN.
+
+Rozcestník `/administrace/` a dlaždice Administrace jsou pro
+superuživatele nebo staff ve skupině **administrátor**. Provozní data
+(směny, docházka, zaměstnanci) spravujte v aplikaci; admin slouží
+hlavně k účtům, skupinám, číselníkům a auditu.
 
 ## Nápověda
 
@@ -71,11 +79,13 @@ HTML nápověda je ve složce `help/`. Po změně stránek přegenerujte index:
 ## Struktura
 
 - `config/settings/` – base, dev, production
-- `apps/accounts` – vlastní model uživatele a role
-- `apps/core` – jádro, audit, zdravotní kontrola, nápověda
+- `apps/accounts` – uživatelé a role
+- `apps/core` – přehled, provozní hub, administrace hub, audit, nápověda
+- `apps/employees`, `workplaces`, `shifts`, `attendance`, `leave`
+- `apps/activities`, `technika`, `documents`
 - `help/` – HTML nápověda s fulltextovým vyhledáváním
-- `templates/`, `static/mpdmb/` – společné UI
-- `design/` – statický návrh (není runtime aplikace)
+- `templates/`, `static/mpdmb/` – společné UI (včetně `css/admin.css`)
+- `CHANGELOG.md` – historie uživatelsky viditelných verzí
 - `scripts/check_file_lengths.py` – limit 1000 řádků
 - `scripts/build_help_index.py` – index nápovědy
 
