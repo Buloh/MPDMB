@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="/static/mpdmb/img/favicon.svg" type="image/svg+xml">
+  <title>Dokumenty – nápověda SYNERA</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body data-help-base="/napoveda/">
+  <header class="help-header">
+    <a class="brand" href="/">SYNERA</a>
+    <div class="search-wrap">
+      <label for="help-search">Hledat v nápovědě</label>
+      <input id="help-search" type="search" placeholder="např. šablona, MERGEFIELD, CSV" autocomplete="off">
+      <ul id="search-results" aria-live="polite"></ul>
+      <p id="search-empty">Nic nenalezeno. Zkuste jiné klíčové slovo.</p>
+    </div>
+  </header>
+  <div class="help-shell">
+    <nav class="help-nav" aria-label="Obsah nápovědy">
+      <a href="../index.html">Úvod</a>
+      <a href="spusteni.html">Spuštění</a>
+      <a href="prihlaseni.html">Přihlášení</a>
+      <a href="prehled.html">Přehled</a>
+      <a href="administrace.html">Administrace</a>
+      <a href="zamestnanci.html">Zaměstnanci</a>
+      <a href="pracoviste.html">Pracoviště</a>
+      <a href="smeny.html">Dlouhodobý plán</a>
+      <a href="dochazka.html">Docházka</a>
+      <a href="dovolena.html">Dovolená</a>
+      <a href="cinnost.html">Činnost</a>
+      <a href="technika.html">Technika</a>
+      <a href="dokumenty.html" aria-current="page">Dokumenty</a>
+    </nav>
+    <main class="help-main">
+      <h1>Dokumenty (Word šablony)</h1>
+      <p class="muted">
+        Univerzální Word šablony se sloučenými poli, generování a uložení
+        souborů u zaměstnanců a vozidel.
+      </p>
+
+      <section class="panel">
+        <h2 id="prehled">Co panel obsahuje</h2>
+        <p>
+          Sekce <strong>Dokumenty</strong> pracuje se soubory
+          <code>.docx</code>. Oddělte ji od evidence platnosti dokladů
+          (STK, pojistka) v Technice a kvalifikací u zaměstnance.
+        </p>
+        <ul>
+          <li><strong>Šablony</strong> — jen administrátor.</li>
+          <li><strong>Zaměstnanci / Technika</strong> — administrátor a vedoucí.</li>
+          <li><strong>Moje dokumenty</strong> — zaměstnanec jen vlastní soubory.</li>
+          <li>Čtenář panel neotevře.</li>
+        </ul>
+      </section>
+
+      <section class="panel">
+        <h2 id="univerzalni">Univerzální šablona</h2>
+        <p>
+          SYNERA založí dvě vestavěné šablony:
+          <strong>Univerzální – zaměstnanec</strong> a
+          <strong>Univerzální – vozidlo</strong>.
+          Už obsahují všechna sloučená pole (MERGEFIELD) z katalogu.
+        </p>
+        <ol>
+          <li>Na detailu zaměstnance nebo vozidla zvolte univerzální šablonu.</li>
+          <li>Klikněte na vygenerování Wordu.</li>
+          <li>Stáhněte vyplněný <code>.docx</code> a případně vytiskněte ve Wordu.</li>
+        </ol>
+        <p>
+          Vlastní dopis: stáhněte šablonu, ve Wordu přesuňte nebo smažte pole,
+          nahrajte jako novou verzi. Formát je vždy <code>.docx</code>.
+          Soubory šablon jsou v aplikaci (<code>media/documents/templates/</code>),
+          vyplněné dokumenty v <code>media/documents/stored/</code>.
+        </p>
+        <p>
+          U každého pole je viditelný český název (např. «Příjmení») a
+          <strong>komentář Wordu</strong> s nápovědou — po najetí na značku
+          komentáře se zobrazí popis pole. Technický kód pole zůstává
+          <code>MERGEFIELD zamestnanec.prijmeni</code>.
+        </p>
+        <p>
+          Tlačítko <strong>Obnovit univerzální šablony</strong> na seznamu šablon
+          vytvoří novou verzi se všemi aktuálními poli (včetně nových typů
+          kvalifikací nebo dokladů).
+        </p>
+      </section>
+
+      <section class="panel">
+        <h2 id="csv-korespondence">CSV a Word Korespondence</h2>
+        <p>
+          Na detailu šablony (nebo sloupec CSV v seznamu) stáhnete
+          <strong>CSV polí</strong> (UTF-8, oddělovač středník) — jde jen o
+          seznam názvů polí, ne o data zaměstnanců.
+        </p>
+        <ol>
+          <li>Ve Wordu otevřete šablonu <code>.docx</code>.</li>
+          <li>Karta <strong>Korespondence</strong> → Vybrat příjemce → Použít existující seznam → vyberte CSV.</li>
+          <li><strong>Vložit sloučené pole</strong> — uvidíte názvy jako <code>zamestnanec.prijmeni</code>.</li>
+          <li>Uložte <code>.docx</code> a nahrajte do SYNERA jako verzi šablony.</li>
+        </ol>
+        <p>
+          Pokud Word při otevření šablony hlásí SQL / CSV (např. „Otevřením
+          tohoto dokumentu spustíte SQL…“), jde o uloženou vazbu Korespondence
+          na CSV. Zvolte <strong>Ne</strong> (nepokračovat v SQL) — Word
+          přesto může pole zobrazit. SYNERA vazbu u <strong>šablon</strong>
+          při nahrání <strong>nemáže</strong>, aby šlo dál používat
+          „Vložit sloučené pole“. U <strong>vygenerovaného</strong> dokumentu
+          vazbu odstraní, aby zaměstnanci nedostávali dialog při otevření.
+        </p>
+        <p>
+          Generování v aplikaci vyplní sloučená pole i textové tokeny
+          <code>{{nazev}}</code>. Server Word nespouští. Alternativa bez CSV:
+          na detailu šablony použijte <strong>Vložit do Wordu</strong>.
+        </p>
+      </section>
+
+      <section class="panel">
+        <h2 id="mazani">Deaktivace šablon a mazání dokumentů</h2>
+        <ul>
+          <li>
+            Šablonu deaktivujete na jejím detailu — zmizí z nabídky generování.
+            Neaktivní šablony zobrazíte zaškrtnutím v seznamu; lze je znovu aktivovat.
+            Univerzální šablony obnovíte tlačítkem Obnovit.
+          </li>
+          <li>
+            Uložený dokument: <strong>Archivovat</strong> (skryje, soubor zůstane)
+            nebo <strong>Smazat</strong> (trvale smaže záznam i soubor).
+          </li>
+        </ul>
+      </section>
+
+      <section class="panel">
+        <h2 id="spolecne">Společná pole</h2>
+        <ul>
+          <li><code>dnes</code> — datum generování dd.mm.rrrr</li>
+          <li><code>cas</code> — čas HH:mm</li>
+          <li><code>datum_cas</code> — dd.mm.rrrr HH:mm</li>
+          <li><code>vystavil</code> — jméno přihlášeného uživatele</li>
+          <li><code>vystavil_uzivatel</code> — přihlašovací jméno</li>
+          <li><code>aplikace</code> — SYNERA</li>
+          <li><code>verze_aplikace</code> — číslo verze</li>
+        </ul>
+      </section>
+
+      <section class="panel">
+        <h2 id="zamestnanec">Pole zaměstnance</h2>
+        <ul>
+          <li><code>zamestnanec.jmeno</code>, <code>prijmeni</code>, <code>cele_jmeno</code></li>
+          <li><code>zamestnanec.interni_cislo</code>, <code>funkce</code>, <code>telefon</code>, <code>email</code></li>
+          <li><code>zamestnanec.pracovni_kontakt</code>, <code>poznamka</code>, <code>stav</code></li>
+          <li><code>zamestnanec.den_nastupu</code>, <code>den_ukonceni</code>, <code>mzdove_cislo</code></li>
+          <li><code>zamestnanec.druh_vztahu</code>, <code>rezim_odmenovani</code>, <code>funkce_ve_vztahu</code></li>
+          <li><code>zamestnanec.uvazek</code>, <code>stanovena_tydenni</code>, <code>rezim_rozvrhu</code>, <code>rozvrzeni</code></li>
+          <li><code>zamestnanec.platnost_uvazku_od</code>, <code>platnost_uvazku_do</code></li>
+          <li><code>pracoviste.nazev</code>, <code>typ</code>, <code>adresa</code>, <code>seznam</code></li>
+          <li>
+            Kvalifikace: <code>kvalifikace.&lt;kod&gt;.cislo</code>,
+            <code>.skupiny</code>, <code>.platnost_od</code>,
+            <code>.platnost_do</code>, <code>.vydal</code>
+            (např. <code>kvalifikace.ridicsky_prukaz.platnost_do</code>)
+          </li>
+        </ul>
+      </section>
+
+      <section class="panel">
+        <h2 id="vozidlo">Pole vozidla</h2>
+        <ul>
+          <li><code>vozidlo.spz</code>, <code>oznaceni</code>, <code>poznamka</code>, <code>stav</code></li>
+          <li><code>vozidlo.odpovedna_osoba</code> a telefon / e-mail / interní číslo</li>
+          <li>
+            Doklady: <code>doklad.&lt;kod&gt;.cislo</code>,
+            <code>.platnost_od</code>, <code>.platnost_do</code>,
+            <code>.vydal</code>, <code>.poznamka</code>
+            (např. <code>doklad.stk.platnost_do</code>)
+          </li>
+          <li>Zkratky: <code>vozidlo.stk_platnost_do</code>, <code>vozidlo.pojistka_platnost_do</code></li>
+        </ul>
+      </section>
+
+      <section class="panel">
+        <h2 id="prava">Práva</h2>
+        <ul>
+          <li>Administrátor spravuje šablony a všechny uložené dokumenty.</li>
+          <li>Vedoucí šablony nemění; generuje a čte dokumenty zaměstnanců i techniky.</li>
+          <li>Zaměstnanec čte jen dokumenty u své karty.</li>
+          <li>Čtenář nemá přístup.</li>
+        </ul>
+      </section>
+
+      <p class="help-footer">SYNERA · nápověda · datum formátu dd.mm.rrrr</p>
+    </main>
+  </div>
+  <script src="../search.js" data-index="../search-index.json"></script>
+</body>
+</html>

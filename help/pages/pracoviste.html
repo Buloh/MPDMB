@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="/static/mpdmb/img/favicon.svg" type="image/svg+xml">
+  <title>Pracoviště · Nápověda SYNERA</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body data-help-base="/napoveda/">
+  <header class="help-header">
+    <a class="brand" href="/">SYNERA</a>
+    <div class="search-wrap">
+      <label for="help-search">Hledat v nápovědě</label>
+      <input id="help-search" type="search" placeholder="hledat…" autocomplete="off">
+      <ul id="search-results" aria-live="polite"></ul>
+      <p id="search-empty">Nic nenalezeno. Zkuste jiné klíčové slovo.</p>
+    </div>
+  </header>
+  <div class="help-shell">
+    <nav class="help-nav" aria-label="Obsah nápovědy">
+      <a href="../index.html">Úvod</a>
+      <a href="spusteni.html">Spuštění</a>
+      <a href="prihlaseni.html">Přihlášení</a>
+      <a href="prehled.html">Přehled</a>
+      <a href="administrace.html">Administrace</a>
+      <a href="zamestnanci.html">Zaměstnanci</a>
+      <a href="pracoviste.html" aria-current="page">Pracoviště</a>
+      <a href="smeny.html">Dlouhodobý plán</a>
+      <a href="dochazka.html">Docházka</a>
+      <a href="cinnost.html">Činnost</a>
+      <a href="technika.html">Technika</a>
+      <a href="dokumenty.html">Dokumenty</a>
+    </nav>
+    <main class="help-main">
+      <h1>Pracoviště</h1>
+      <section class="panel">
+        <h2 id="seznam">Seznam</h2>
+        <p>
+          Adresa <code>/pracoviste/</code> zobrazuje pracoviště (např. parkovací domy).
+          Filtrujte podle názvu nebo adresy; archivovaná lze zobrazit zvlášť.
+        </p>
+      </section>
+      <section class="panel">
+        <h2 id="prirazeni">Přiřazení zaměstnanců</h2>
+        <p>
+          Pracoviště s platností od/do nastavíte nejlépe na kartě zaměstnance
+          (<code>/zamestnanci/…/upravit/</code>) — platnosti se nesmí překrývat.
+          Alternativně lze přiřadit i z detailu pracoviště
+          (stejná evidence <code>EmployeeWorkplace</code>).
+        </p>
+      </section>
+      <section class="panel">
+        <h2 id="archivace">Archivace</h2>
+        <p>
+          Pracoviště archivujte místo mazání, aby zůstaly historické vazby
+          a budoucí směny/úkoly.
+        </p>
+      </section>
+      <p class="help-footer"><a href="../index.html">Zpět na úvod nápovědy</a></p>
+    </main>
+  </div>
+  <script src="../search.js" data-index="../search-index.json"></script>
+</body>
+</html>

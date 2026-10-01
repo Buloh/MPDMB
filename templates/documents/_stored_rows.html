@@ -1,0 +1,33 @@
+{% for doc in stored_documents %}
+  <tr>
+    <td>{{ doc.title }}</td>
+    <td>
+      {% if doc.template_version %}
+        {{ doc.template_version.template.name }}
+      {% else %}
+        nahráno ručně
+      {% endif %}
+    </td>
+    <td>{{ doc.created_at|date:"d.m.Y H:i" }}</td>
+    <td>{{ doc.created_by|default:"—" }}</td>
+    <td>
+      <a href="{% url 'document_stored_download' doc.pk %}">Stáhnout</a>
+      {% if can_manage_stored_docs %}
+        ·
+        <form method="post" action="{% url 'document_stored_archive' doc.pk %}" style="display:inline">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.path }}">
+          <button type="submit" class="secondary" style="min-height:auto;padding:2px 8px">Archivovat</button>
+        </form>
+        ·
+        <form method="post" action="{% url 'document_stored_delete' doc.pk %}" style="display:inline" onsubmit="return confirm('Trvale smazat dokument včetně souboru?');">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.path }}">
+          <button type="submit" class="secondary" style="min-height:auto;padding:2px 8px">Smazat</button>
+        </form>
+      {% endif %}
+    </td>
+  </tr>
+{% empty %}
+  <tr><td colspan="5">Zatím nejsou uložené žádné dokumenty.</td></tr>
+{% endfor %}

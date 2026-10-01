@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>{{ title }}</h1>
+  <div class="toolbar">
+    {% if can_edit and shift.is_editable %}
+      <a class="button" href="{% url 'shift_edit' shift.pk %}">Upravit</a>
+      {% if shift.status != "published" %}
+        <form method="post" action="{% url 'shift_publish' shift.pk %}">
+          {% csrf_token %}
+          <input type="hidden" name="version" value="{{ shift.version }}">
+          <button type="submit">Publikovat</button>
+        </form>
+      {% endif %}
+      <form method="post" action="{% url 'shift_cancel' shift.pk %}">
+        {% csrf_token %}
+        <input type="hidden" name="version" value="{{ shift.version }}">
+        <button type="submit" class="secondary">Zrušit směnu</button>
+      </form>
+    {% endif %}
+    <a class="button secondary" href="{% url 'shift_month' %}?year={{ shift.starts_at|date:'Y' }}&month={{ shift.starts_at|date:'n' }}">Zpět na měsíc</a>
+  </div>
+
+  <section class="panel">
+    <h2>Údaje směny</h2>
+    <p><strong>Zaměstnanec:</strong> {{ shift.employee.full_name }} ({{ shift.employee.internal_number }})</p>
+    <p><strong>Pracoviště:</strong> {{ shift.workplace.name }}</p>
+    <p><strong>Typ:</strong> {% if shift.shift_type %}{{ shift.shift_type.code }} – {{ shift.shift_type.name }}{% else %}—{% endif %}</p>
+    <p><strong>Začátek:</strong> {{ shift.starts_at|date:"d.m.Y H:i" }}</p>
+    <p><strong>Konec:</strong> {{ shift.ends_at|date:"d.m.Y H:i" }}</p>
+    <p><strong>Poznámka:</strong> {{ shift.note|default:"—" }}</p>
+    <p>
+      <strong>Stav:</strong>
+      {% if shift.status == "published" %}
+        <span class="badge success">publikováno</span>
+      {% elif shift.status == "draft" %}
+        <span class="badge warning">návrh</span>
+      {% elif shift.status == "cancelled" %}
+        <span class="badge danger">zrušeno</span>
+      {% else %}
+        {{ shift.get_status_display }}
+      {% endif %}
+    </p>
+    <p class="muted">Verze záznamu: {{ shift.version }}</p>
+  </section>
+{% endblock %}

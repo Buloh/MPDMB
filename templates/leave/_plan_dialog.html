@@ -1,0 +1,8 @@
+<dialog id="leave-plan-dialog" class="mpdmb-dialog"
+        data-form-url="{% url 'leave_plan_form_partial' %}"
+        data-create-url="{% url 'leave_plan_create' %}">
+  <div class="panel cell-dialog-content leave-plan-dialog-host">
+    <p class="muted">Načítání…</p>
+  </div>
+</dialog>
+{% csrf_token %}

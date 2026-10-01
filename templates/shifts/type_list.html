@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>Typy směn</h1>
+  <p class="muted">
+    Definice směn bez zaměstnance (symbol, časy). Přiřazení k osobě probíhá v měsíčním plánu.
+  </p>
+  <div class="list-toolbar">
+    <div class="list-actions">
+      <a class="button" href="{% url 'shift_type_create' %}">Nová směna</a>
+      <a class="button secondary" href="{% url 'shift_month' %}">Zpět na plán</a>
+    </div>
+  </div>
+  <section class="panel">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Symbol</th>
+            <th>Název</th>
+            <th>Čas</th>
+            <th>Pauza</th>
+            <th>Čisté hodiny</th>
+            <th>Stav</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for t in shift_types %}
+            <tr>
+              <td><strong>{{ t.code }}</strong></td>
+              <td>{{ t.name }}</td>
+              <td>{{ t.start_time|time:"H:i" }}–{{ t.end_time|time:"H:i" }}{% if t.crosses_midnight %} (+1 den){% endif %}</td>
+              <td>{{ t.break_minutes }} min</td>
+              <td>{{ t.net_hours_label }}</td>
+              <td>
+                {% if t.is_active %}
+                  <span class="badge success">aktivní</span>
+                {% else %}
+                  <span class="badge warning">neaktivní</span>
+                {% endif %}
+              </td>
+              <td><a href="{% url 'shift_type_edit' t.pk %}">Upravit</a></td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="7">Zatím nejsou definované žádné typy směn.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>{{ title }}</h1>
+  <section class="panel">
+    <form method="post" novalidate>
+      {% csrf_token %}
+      <input type="hidden" name="year" value="{{ year }}">
+      <input type="hidden" name="month" value="{{ month }}">
+      {% if form.non_field_errors %}
+        <div class="notice danger-soft" role="alert">{{ form.non_field_errors }}</div>
+      {% endif %}
+      {% for field in form %}
+        <p>
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}<span class="field-error">{{ field.errors.0 }}</span>{% endif %}
+        </p>
+      {% endfor %}
+      <div class="toolbar">
+        <button type="submit">Uložit do plánu</button>
+        <a class="button secondary" href="{% url 'shift_month' %}?year={{ year }}&month={{ month }}">Zpět</a>
+      </div>
+    </form>
+  </section>
+{% endblock %}

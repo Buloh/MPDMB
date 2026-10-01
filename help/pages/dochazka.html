@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="/static/mpdmb/img/favicon.svg" type="image/svg+xml">
+  <title>Docházka · Nápověda SYNERA</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body data-help-base="/napoveda/">
+  <header class="help-header">
+    <a class="brand" href="/">SYNERA</a>
+    <div class="search-wrap">
+      <label for="help-search">Hledat v nápovědě</label>
+      <input id="help-search" type="search" placeholder="hledat…" autocomplete="off">
+      <ul id="search-results" aria-live="polite"></ul>
+      <p id="search-empty">Nic nenalezeno. Zkuste jiné klíčové slovo.</p>
+    </div>
+  </header>
+  <div class="help-shell">
+    <nav class="help-nav" aria-label="Obsah nápovědy">
+      <a href="../index.html">Úvod</a>
+      <a href="spusteni.html">Spuštění</a>
+      <a href="prihlaseni.html">Přihlášení</a>
+      <a href="prehled.html">Přehled</a>
+      <a href="administrace.html">Administrace</a>
+      <a href="zamestnanci.html">Zaměstnanci</a>
+      <a href="pracoviste.html">Pracoviště</a>
+      <a href="smeny.html">Dlouhodobý plán</a>
+      <a href="dochazka.html" aria-current="page">Docházka</a>
+      <a href="dovolena.html">Dovolená</a>
+      <a href="cinnost.html">Činnost</a>
+      <a href="technika.html">Technika</a>
+      <a href="dokumenty.html">Dokumenty</a>
+    </nav>
+    <main class="help-main">
+      <h1>Docházka</h1>
+      <section class="panel">
+        <h2 id="plan-versus-dochazka">Dlouhodobý plán a docházka</h2>
+        <p>
+          <strong>Dlouhodobý plán</strong> (<code>/smeny/</code>) říká, kdo má kdy
+          pracovat. <strong>Docházka</strong> (<code>/dochazka/</code>) eviduje
+          skutečnost: potvrzenou práci nebo absenci. Jsou to dvě oddělené
+          evidence. Import z docházkového čipu v této verzi není.
+        </p>
+        <p>
+          Z dlouhodobého plánu otevřete odkaz „Docházka tohoto měsíce“.
+        </p>
+        <p>
+          Potvrzení docházky vyžaduje aktivní <strong>pracovní vztah</strong>
+          (den nástupu na kartě zaměstnance) k datu směny. Stejné pravidlo
+          platí i pro dlouhodobý plán — bez vztahu směnu nelze vytvořit.
+          Přiřazení pracoviště samo nestačí — bez vztahu matice docházky
+          ukáže nevyřešený den (<strong>?</strong>) u starších směn,
+          ale potvrzení nabídne srozumitelnou chybu a odkaz na úpravu zaměstnance.
+        </p>
+      </section>
+      <section class="panel">
+        <h2 id="mesicni-prehled">Měsíční přehled</h2>
+        <p>
+          Adresa <code>/dochazka/?year=&amp;month=</code> zobrazuje matici
+          zaměstnanec × dny. U každého dne s <strong>publikovanou směnou
+          práce</strong> je stav:
+        </p>
+        <ul>
+          <li><strong>Práce</strong> – potvrzený pracovní interval (klik = detail dne)</li>
+          <li><strong>Absence</strong> – dovolená, lékař nebo nemoc (klik = detail dne)</li>
+          <li><strong>Nevyřešeno</strong> (<strong>?</strong> v matici) – bez potvrzení i bez absence;
+            klik otevře <strong>kontextové menu</strong> (jako „+“ u směn):
+            potvrdit jako plán, upravit časy (modal), dovolená / lékař / nemoc,
+            detail dne (modal). Akce neopouští měsíční matici.</li>
+          <li><strong>—</strong> / <strong>+</strong> – žádná publikovaná směna;
+            u vedoucího klik na <strong>+</strong> otevře <strong>modal</strong>
+            s rychlou volbou typu směny (1 klik = zápis práce) nebo vlastními časy</li>
+        </ul>
+        <p>
+          Shrnutí měsíce uvádí plánované hodiny (z publikovaných směn),
+          potvrzenou práci, zameškané hodiny z absencí, počet nevyřešených dnů
+          a sloupec <strong>Stravné</strong> (součet stravenek za měsíc).
+          Za den náleží 0–2 stravenky podle čisté potvrzené práce a prahů
+          v administraci pod <em>Docházka → Stravné</em>: 1. stravenka od výchozích 3&nbsp;h,
+          2. stravenka od výchozích 12&nbsp;h (druhý práh lze vypnout).
+          Zaměstnanci jsou seskupení podle pracoviště stejně jako v dlouhodobém plánu;
+          pod jménem je platnost z evidence zaměstnance
+          (např. Managment (od 01.10.2026)).
+          Pokud u směny chybí pracovní vztah, zobrazí se upozornění
+          „Chybí pracovní vztah k datu směny“ s odkazem na kartu zaměstnance.
+        </p>
+        <p>
+          Zaškrtnutím <strong>Dlouhodobý plán</strong> nad maticí se pod každým
+          zaměstnancem zobrazí řádek s kódy směn z dlouhodobého plánu (náhled jen
+          ke čtení, stejná data jako v menu Dlouhodobý plán). U jména je checkbox
+          <strong>Plán</strong> — skryje nebo znovu ukáže řádek u daného člověka.
+          Úpravy plánu zůstávají v modulu Dlouhodobý plán.
+        </p>
+        <p>
+          Vedoucí a administrátor mohou stáhnout <strong>Export Excel</strong>
+          (<code>/dochazka/export/?year=&amp;month=</code>) se listy Souhrn,
+          Denni a Metodika. Jde o podklad z matice docházky, nikoli o finální
+          mzdovou uzávěrku.
+        </p>
+      </section>
+      <section class="panel">
+        <h2 id="akce-dne">Akce u dne</h2>
+        <p>
+          U nevyřešeného dne (v matici krátký znak <strong>?</strong>) použijte
+          menu v matici. Všechny volby běží na místě (AJAX nebo modal),
+          bez přechodu na jinou stránku. Volitelně v modalu Detail dne
+          je odkaz na celou stránku dne.
+          U publikované směny můžete:
+        </p>
+        <ul>
+          <li><strong>Potvrdit jako plán</strong> – časy a pauza podle typu směny</li>
+          <li><strong>Upravit časy</strong> – otevře modal (začátek/konec HH:mm, pauza);
+            po uložení se práce potvrdí</li>
+          <li><strong>Dovolená / Lékař / Nemoc</strong> – absence; zameškané minuty
+            se berou z čisté délky publikované směny (ne plošných 8 h)</li>
+          <li><strong>Zrušit zápis</strong> – vrátí den do stavu nevyřešeno</li>
+        </ul>
+        <p>
+          Nelze mít zároveň potvrzenou práci i absenci u téže směny.
+          Nemoc je evidence zameškaných plánovaných hodin; výpočet náhrady
+          podle § 192 zde není. Potvrzení vyžaduje aktivní pracovní vztah
+          v daný den.
+        </p>
+      </section>
+      <section class="panel">
+        <h2 id="ad-hoc">Práce mimo plán (So/Ne)</h2>
+        <p>
+          Vedoucí může zapsat <strong>práci mimo publikovanou směnu</strong>
+          (ad-hoc): v matici u prázdného dne (včetně soboty a neděle)
+          klikne na <strong>+</strong>. Otevře se modal — buď jedním klikem
+          zvolí typ směny (časy a pauza z typu), nebo vyplní vlastní časy.
+          Den se bere z buňky matice, stránka se neopouští.
+          Z detailu dne zůstává i odkaz „Přidat práci (mimo plán)“.
+          Zápis vyžaduje aktivní pracovní vztah a nepatří do součtu
+          „Plánováno“ — jen do potvrzené práce.
+        </p>
+      </section>
+      <section class="panel">
+        <h2 id="opravneni">Oprávnění</h2>
+        <p>
+          Vedoucí a administrátor vidí docházku všech aktivních zaměstnanců.
+          Zaměstnanec vidí a potvrzuje jen sebe. Cizí docházka není dostupná.
+        </p>
+      </section>
+      <p class="help-footer">SYNERA · nápověda · datum formátu dd.mm.rrrr</p>
+    </main>
+  </div>
+  <script src="../search.js" data-index="../search-index.json"></script>
+</body>
+</html>

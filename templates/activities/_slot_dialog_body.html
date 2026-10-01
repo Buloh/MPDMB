@@ -1,0 +1,115 @@
+<div class="panel cell-dialog-content cell-modal-body activity-slot-modal">
+  <h2>Blok činnosti</h2>
+  <p class="muted">
+    {{ employee.last_name }} {{ employee.first_name }} · {{ day|date:"d.m.Y" }}
+    · {{ slot_label }} · max. {{ slot_max }}
+    · Od–Do se předvyplní podle úseku / předchozí položky
+  </p>
+  <p class="notice danger-soft activity-slot-error" hidden role="alert"></p>
+  <form class="stack-form form-compact activity-slot-form" method="post" action="{% url 'activity_slot_save' %}">
+    {% csrf_token %}
+    <input type="hidden" name="employee" value="{{ employee.pk }}">
+    <input type="hidden" name="day" value="{{ day|date:'Y-m-d' }}">
+    {{ meta_form.starts_at }}
+    {{ meta_form.ends_at }}
+    {{ formset.management_form }}
+    <div class="activity-slot-rows"
+         data-slot-max="{{ slot_max }}"
+         data-form-prefix="slot"
+         data-slot-start="{{ slot_start_hm }}"
+         data-slot-end="{{ slot_end_hm }}">
+      {% for form in formset %}
+        <div class="activity-slot-row" data-slot-row>
+          {{ form.item_id }}
+          <div class="form-row activity-slot-row-fields">
+            <div class="form-field">
+              <label>{{ form.activity_type.label }}</label>
+              {{ form.activity_type }}
+            </div>
+            <div class="form-field">
+              <label>{{ form.location.label }}</label>
+              {{ form.location }}
+            </div>
+            <div class="form-field">
+              <label>{{ form.time_from.label }}</label>
+              {{ form.time_from }}
+            </div>
+            <div class="form-field">
+              <label>{{ form.time_to.label }}</label>
+              {{ form.time_to }}
+            </div>
+            <div class="form-field">
+              <label>{{ form.vehicle.label }}</label>
+              {{ form.vehicle }}
+            </div>
+            <div class="form-field activity-slot-note-field">
+              <label>{{ form.note.label }}</label>
+              {{ form.note }}
+            </div>
+            <div class="form-field activity-slot-row-actions">
+              {% if form.item_id.value %}
+                <button type="button"
+                        class="secondary"
+                        data-activity-delete-item
+                        data-item-id="{{ form.item_id.value }}"
+                        style="min-height:auto;padding:4px 8px">Smazat</button>
+              {% else %}
+                <button type="button"
+                        class="secondary"
+                        data-activity-remove-row
+                        style="min-height:auto;padding:4px 8px">Odebrat</button>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    <template id="activity-slot-empty-row">
+      <div class="activity-slot-row" data-slot-row>
+        {{ formset.empty_form.item_id }}
+        <div class="form-row activity-slot-row-fields">
+          <div class="form-field">
+            <label>{{ formset.empty_form.activity_type.label }}</label>
+            {{ formset.empty_form.activity_type }}
+          </div>
+          <div class="form-field">
+            <label>{{ formset.empty_form.location.label }}</label>
+            {{ formset.empty_form.location }}
+          </div>
+          <div class="form-field">
+            <label>{{ formset.empty_form.time_from.label }}</label>
+            {{ formset.empty_form.time_from }}
+          </div>
+          <div class="form-field">
+            <label>{{ formset.empty_form.time_to.label }}</label>
+            {{ formset.empty_form.time_to }}
+          </div>
+          <div class="form-field">
+            <label>{{ formset.empty_form.vehicle.label }}</label>
+            {{ formset.empty_form.vehicle }}
+          </div>
+          <div class="form-field activity-slot-note-field">
+            <label>{{ formset.empty_form.note.label }}</label>
+            {{ formset.empty_form.note }}
+          </div>
+          <div class="form-field activity-slot-row-actions">
+            <button type="button"
+                    class="secondary"
+                    data-activity-remove-row
+                    style="min-height:auto;padding:4px 8px">Odebrat</button>
+          </div>
+        </div>
+      </div>
+    </template>
+    <p style="margin:0 0 var(--space-2)">
+      <button type="button" class="secondary" data-activity-add-row style="min-height:auto;padding:4px 10px">
+        Přidat činnost
+      </button>
+    </p>
+    <div class="form-actions toolbar">
+      <button type="submit">Uložit vše</button>
+      <button type="button" class="secondary" data-activity-clear-slot>Vymazat hodinu</button>
+      <button type="button" class="secondary" data-activity-close-slot>Zrušit</button>
+    </div>
+  </form>
+</div>

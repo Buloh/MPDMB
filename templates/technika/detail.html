@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>{{ vehicle.plate }}{% if vehicle.name %} · {{ vehicle.name }}{% endif %}</h1>
+  {% if vehicle.has_expired_documents %}
+    <div class="notice danger-soft" role="status">
+      Některé doklady mají prošlou platnost. Zkontrolujte sekci níže.
+    </div>
+  {% endif %}
+  <div class="toolbar">
+    <a class="button" href="{% url 'vehicle_edit' vehicle.pk %}">Upravit</a>
+    {% if vehicle.is_active %}
+      <form method="post" action="{% url 'vehicle_archive' vehicle.pk %}">
+        {% csrf_token %}
+        <button type="submit" class="secondary">Archivovat</button>
+      </form>
+    {% endif %}
+    <a class="button secondary" href="{% url 'vehicle_list' %}">Zpět na seznam</a>
+  </div>
+  <section class="panel">
+    <h2>Údaje</h2>
+    <p><strong>SPZ:</strong> {{ vehicle.plate }}</p>
+    <p><strong>Označení:</strong> {{ vehicle.name|default:"—" }}</p>
+    <p>
+      <strong>Odpovědná osoba:</strong>
+      <a href="{% url 'employee_detail' vehicle.responsible.pk %}">
+        {{ vehicle.responsible.last_name }} {{ vehicle.responsible.first_name }}
+      </a>
+    </p>
+    <p><strong>Poznámka:</strong> {{ vehicle.notes|default:"—" }}</p>
+    <p>
+      <strong>Stav:</strong>
+      {% if vehicle.is_active %}
+        <span class="badge success">aktivní</span>
+      {% else %}
+        <span class="badge warning">archivované</span>
+      {% endif %}
+    </p>
+  </section>
+  <section class="panel">
+    <h2>Doklady</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Typ</th>
+            <th>Číslo</th>
+            <th>Platnost od</th>
+            <th>Platnost do</th>
+            <th>Stav</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for doc in vehicle.documents.all %}
+            <tr>
+              <td>{{ doc.document_type.name }}</td>
+              <td>{{ doc.number|default:"—" }}</td>
+              <td>{% if doc.valid_from %}{{ doc.valid_from|date:"d.m.Y" }}{% else %}—{% endif %}</td>
+              <td>{% if doc.valid_until %}{{ doc.valid_until|date:"d.m.Y" }}{% else %}—{% endif %}</td>
+              <td>
+                {% if not doc.is_active %}
+                  <span class="badge warning">neaktivní</span>
+                {% elif doc.is_expired %}
+                  <span class="badge danger">prošlá</span>
+                {% elif doc.is_expiring_soon %}
+                  <span class="badge warning">brzy vyprší</span>
+                {% else %}
+                  <span class="badge success">platná</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="5">Zatím nejsou evidovány žádné doklady.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Dokumenty</h2>
+    <p class="muted">
+      Word soubory (šablony s placeholdery). Evidence platnosti STK a pojistek
+      zůstává v sekci Doklady výše.
+    </p>
+    {% if can_manage_stored_docs %}
+      <div class="toolbar">
+        <a class="button" href="{% url 'document_vehicle_generate' vehicle.pk %}">Nový dokument</a>
+      </div>
+    {% endif %}
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Název</th>
+            <th>Šablona</th>
+            <th>Vytvořeno</th>
+            <th>Autor</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% include "documents/_stored_rows.html" %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>{{ title }}</h1>
+  <p class="muted">Vyberte šablonu, pracoviště, rozsah a zaměstnance. Existující směny stejného typu se nepřepisují.</p>
+  <section class="panel">
+    <form class="form-narrow" method="post" novalidate>
+      {% csrf_token %}
+      <input type="hidden" name="year" value="{{ year }}">
+      <input type="hidden" name="month" value="{{ month }}">
+      {% if form.non_field_errors %}
+        <div class="notice danger-soft" role="alert">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <p class="form-field">
+        <label for="{{ form.template.id_for_label }}">{{ form.template.label }}</label>
+        {{ form.template }}
+        {% if form.template.errors %}<span class="field-error">{{ form.template.errors.0 }}</span>{% endif %}
+        {% if form.template.help_text %}<span class="muted">{{ form.template.help_text }}</span>{% endif %}
+      </p>
+
+      <p class="form-field">
+        <label for="{{ form.workplace.id_for_label }}">{{ form.workplace.label }}</label>
+        {{ form.workplace }}
+        {% if form.workplace.errors %}<span class="field-error">{{ form.workplace.errors.0 }}</span>{% endif %}
+      </p>
+
+      <p class="form-field">
+        <label for="{{ form.cycle_anchor_date.id_for_label }}">{{ form.cycle_anchor_date.label }}</label>
+        {{ form.cycle_anchor_date }}
+        {% if form.cycle_anchor_date.errors %}<span class="field-error">{{ form.cycle_anchor_date.errors.0 }}</span>{% endif %}
+        {% if form.cycle_anchor_date.help_text %}<span class="muted">{{ form.cycle_anchor_date.help_text }}</span>{% endif %}
+      </p>
+
+      <p class="muted">Trvalé přiřazení šablon zaměstnancům nastavíte v Šablony → Přiřazení.</p>
+      <p class="muted">
+        Svátky řídí příznak typu směny „Povoleno ve svátek“ (Typy směn / administrace).
+        Typy bez tohoto příznaku se ve svátek nevygenerují.
+      </p>
+
+      <fieldset class="form-field">
+        <legend>{{ form.range_mode.label }}</legend>
+        {{ form.range_mode }}
+        {% if form.range_mode.errors %}<span class="field-error">{{ form.range_mode.errors.0 }}</span>{% endif %}
+      </fieldset>
+
+      <div class="form-row">
+        <p class="form-field">
+          <label for="{{ form.year.id_for_label }}">{{ form.year.label }}</label>
+          {{ form.year }}
+        </p>
+        <p class="form-field">
+          <label for="{{ form.month.id_for_label }}">{{ form.month.label }}</label>
+          {{ form.month }}
+        </p>
+      </div>
+
+      <div class="form-row">
+        <p class="form-field">
+          <label for="{{ form.date_from.id_for_label }}">{{ form.date_from.label }}</label>
+          {{ form.date_from }}
+          {% if form.date_from.errors %}<span class="field-error">{{ form.date_from.errors.0 }}</span>{% endif %}
+        </p>
+        <p class="form-field">
+          <label for="{{ form.date_to.id_for_label }}">{{ form.date_to.label }}</label>
+          {{ form.date_to }}
+          {% if form.date_to.errors %}<span class="field-error">{{ form.date_to.errors.0 }}</span>{% endif %}
+        </p>
+      </div>
+
+      <fieldset class="form-field">
+        <legend>{{ form.employees.label }}</legend>
+        <p>
+          <button type="button" class="button secondary" id="select-all-employees">Vybrat vše</button>
+          <button type="button" class="button secondary" id="clear-all-employees">Zrušit výběr</button>
+        </p>
+        <div class="employee-checkboxes">
+          {{ form.employees }}
+        </div>
+        {% if form.employees.errors %}<span class="field-error">{{ form.employees.errors.0 }}</span>{% endif %}
+      </fieldset>
+
+      <div class="toolbar">
+        <button type="submit">Vygenerovat</button>
+        <a class="button secondary" href="{% url 'shift_month' %}?year={{ year }}&month={{ month }}">Zrušit</a>
+      </div>
+    </form>
+  </section>
+  <script>
+    (function () {
+      var boxes = document.querySelectorAll('.employee-checkboxes input[type="checkbox"]');
+      var allBtn = document.getElementById('select-all-employees');
+      var clearBtn = document.getElementById('clear-all-employees');
+      if (allBtn) allBtn.addEventListener('click', function () {
+        boxes.forEach(function (b) { b.checked = true; });
+      });
+      if (clearBtn) clearBtn.addEventListener('click', function () {
+        boxes.forEach(function (b) { b.checked = false; });
+      });
+    })();
+  </script>
+{% endblock %}

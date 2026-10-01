@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>{{ title }}</h1>
+  <p class="muted">
+    Úvazek určuje denní fond v měsíčním plánu (sjednaná týdenní doba ÷ dny režimu).
+    Předvolba úvazku jen vyplní stanovenou i sjednanou hodnotu; minuty lze upravit ručně.
+  </p>
+  <section class="panel">
+    <form class="form-narrow" method="post" novalidate>
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="notice danger-soft" role="alert">{{ form.non_field_errors }}</div>
+      {% endif %}
+      {% if form.derived_daily_label %}
+        <p class="notice" role="status">
+          Odvozená denní doba: <strong>{{ form.derived_daily_label }}</strong>
+        </p>
+      {% endif %}
+      {% for field in form %}
+        {% if field.name == "is_active" or field.name == "auto_target" %}
+          <p class="form-field form-check">
+            <label for="{{ field.id_for_label }}">{{ field }} {{ field.label }}</label>
+            {% if field.errors %}<span class="field-error">{{ field.errors.0 }}</span>{% endif %}
+          </p>
+        {% else %}
+          <p class="form-field">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}<span class="field-error">{{ field.errors.0 }}</span>{% endif %}
+            {% if field.help_text %}<span class="muted">{{ field.help_text }}</span>{% endif %}
+          </p>
+        {% endif %}
+      {% endfor %}
+      <div class="toolbar">
+        <button type="submit">Uložit</button>
+        <a class="button secondary" href="{% url 'work_time_profile_list' %}">Zrušit</a>
+      </div>
+    </form>
+  </section>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ title|default:APP_NAME }}{% endblock %} · {{ APP_NAME }}</title>
+  <link rel="icon" href="{% static 'mpdmb/img/favicon.svg' %}" type="image/svg+xml">
+  <link rel="stylesheet" href="{% static 'mpdmb/css/theme.css' %}?v={{ APP_VERSION }}">
+  <link rel="stylesheet" href="{% static 'mpdmb/css/shifts-attendance.css' %}?v={{ APP_VERSION }}">
+  <link rel="stylesheet" href="{% static 'mpdmb/css/activities.css' %}?v={{ APP_VERSION }}">
+  <link rel="stylesheet" href="{% static 'mpdmb/css/calendars.css' %}?v={{ APP_VERSION }}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <header>
+    <div>
+      <div class="brand">{{ APP_NAME }} <span class="brand-version">{{ APP_VERSION }}</span></div>
+      <div class="muted app-subtitle">{{ APP_TAGLINE }}</div>
+    </div>
+    <div class="muted">
+      {% if user.is_authenticated %}
+        {{ user.get_full_name|default:user.username }}
+        ·
+        <form method="post" action="{% url 'logout' %}" style="display:inline">
+          {% csrf_token %}
+          <button type="submit" class="secondary" style="min-height:auto;padding:4px 8px">Odhlásit</button>
+        </form>
+      {% else %}
+        <a href="{% url 'login' %}">Přihlášení</a>
+      {% endif %}
+    </div>
+  </header>
+  <div class="shell">
+    <nav aria-label="Hlavní navigace">
+      <a href="{% url 'home' %}" {% if request.resolver_match.url_name == 'home' %}aria-current="page"{% endif %}>Přehled</a>
+      {% if nav.show_employees %}
+        <a href="{% url 'employee_list' %}" {% if request.resolver_match.url_name == 'employee_list' or request.resolver_match.url_name == 'employee_detail' or request.resolver_match.url_name == 'employee_create' or request.resolver_match.url_name == 'employee_edit' %}aria-current="page"{% endif %}>Zaměstnanci</a>
+      {% endif %}
+      {% if nav.show_workplaces %}
+        <a href="{% url 'workplace_list' %}" {% if request.resolver_match.url_name == 'workplace_list' or request.resolver_match.url_name == 'workplace_detail' or request.resolver_match.url_name == 'workplace_create' or request.resolver_match.url_name == 'workplace_edit' or request.resolver_match.url_name == 'workplace_assign' %}aria-current="page"{% endif %}>Pracoviště</a>
+      {% endif %}
+      {% if nav.show_ops %}
+        <a href="{% url 'ops_hub' %}" {% if request.resolver_match.url_name == 'ops_hub' or request.resolver_match.app_name == 'shifts' or request.resolver_match.url_name == 'shift_month' or request.resolver_match.url_name == 'shift_week' or request.resolver_match.url_name == 'shift_detail' or request.resolver_match.url_name == 'shift_create' or request.resolver_match.url_name == 'shift_edit' or request.resolver_match.url_name == 'shift_cell_assign' or request.resolver_match.url_name == 'shift_type_list' or request.resolver_match.url_name == 'shift_type_create' or request.resolver_match.url_name == 'shift_type_edit' or request.resolver_match.url_name == 'schedule_template_list' or request.resolver_match.url_name == 'schedule_template_create' or request.resolver_match.url_name == 'schedule_template_edit' or request.resolver_match.url_name == 'schedule_assignment_list' or request.resolver_match.url_name == 'schedule_assignment_create' or request.resolver_match.url_name == 'schedule_assignment_edit' or request.resolver_match.url_name == 'shift_generate_month' or request.resolver_match.url_name == 'work_time_profile_list' or request.resolver_match.url_name == 'work_time_profile_create' or request.resolver_match.url_name == 'balancing_period_create' or request.resolver_match.url_name == 'attendance_month' or request.resolver_match.url_name == 'attendance_day' or request.resolver_match.url_name == 'attendance_confirm_form' or request.resolver_match.url_name == 'attendance_export_xlsx' or request.resolver_match.url_name == 'leave_year' or request.resolver_match.url_name == 'leave_employee' or request.resolver_match.url_name == 'leave_plan_create' or request.resolver_match.url_name == 'leave_plan_approve' or request.resolver_match.url_name == 'leave_plan_cancel' %}aria-current="page"{% endif %}>Provoz</a>
+      {% endif %}
+      {% if nav.show_activities %}
+        <a href="{% url 'activity_day' %}" {% if request.resolver_match.url_name == 'activity_day' or request.resolver_match.url_name == 'activity_item_edit' or request.resolver_match.url_name == 'activity_export' or request.resolver_match.url_name == 'activity_location_list' or request.resolver_match.url_name == 'activity_location_create' or request.resolver_match.url_name == 'activity_location_edit' or request.resolver_match.url_name == 'activity_preferences' %}aria-current="page"{% endif %}>Činnost</a>
+      {% endif %}
+      {% if nav.show_technika %}
+        <a href="{% url 'vehicle_list' %}" {% if request.resolver_match.url_name == 'vehicle_list' or request.resolver_match.url_name == 'vehicle_detail' or request.resolver_match.url_name == 'vehicle_create' or request.resolver_match.url_name == 'vehicle_edit' %}aria-current="page"{% endif %}>Technika</a>
+      {% endif %}
+      {% if nav.show_documents %}
+        <a href="{% url 'documents_hub' %}" {% if request.resolver_match.app_name == 'documents' or request.resolver_match.url_name == 'documents_hub' or request.resolver_match.url_name == 'document_template_list' or request.resolver_match.url_name == 'document_template_create' or request.resolver_match.url_name == 'document_template_detail' or request.resolver_match.url_name == 'document_employee_list' or request.resolver_match.url_name == 'document_vehicle_list' or request.resolver_match.url_name == 'document_my_list' or request.resolver_match.url_name == 'document_employee_generate' or request.resolver_match.url_name == 'document_vehicle_generate' %}aria-current="page"{% endif %}>Dokumenty</a>
+      {% endif %}
+      {% if nav.show_admin %}
+        <a href="{% url 'admin:index' %}">Administrace</a>
+      {% endif %}
+      {% if nav.show_help %}
+        <a href="{% url 'help' %}" {% if request.resolver_match.url_name == 'help' or request.resolver_match.url_name == 'help_file' %}aria-current="page"{% endif %}>Nápověda</a>
+      {% endif %}
+    </nav>
+    <main>
+      {% if messages %}
+        {% for message in messages %}
+          <div class="notice" role="status">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+  <footer class="app-footer muted">
+    {{ APP_NAME }} · verze {{ APP_VERSION }}
+  </footer>
+  {% block extra_body %}{% endblock %}
+</body>
+</html>

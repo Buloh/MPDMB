@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>Fond a vyrovnávací období</h1>
+  <p class="muted">
+    Úvazek nastavíte u zaměstnance (Pracovní vztah). Zde spravujete vyrovnávací období
+    a předvolby úvazku. Přehled níže je jen ke kontrole.
+  </p>
+  <div class="list-toolbar">
+    <div class="list-actions">
+      <a class="button" href="{% url 'balancing_period_create' %}">Nové období</a>
+      <a class="button" href="{% url 'balancing_period_bulk_create' %}">Stejné období pro více…</a>
+      <a class="button secondary" href="{% url 'work_time_preset_list' %}">Předvolby úvazku</a>
+      <a class="button secondary" href="{% url 'employee_list' %}">Zaměstnanci (úvazek)</a>
+      <a class="button secondary" href="{% url 'shift_month' %}">Zpět na plán</a>
+    </div>
+  </div>
+
+  <section class="panel">
+    <h2>Přehled úvazků</h2>
+    <p class="muted">Úpravu proveďte na kartě zaměstnance.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Zaměstnanec</th>
+            <th>Platnost</th>
+            <th>Sjednáno / týden</th>
+            <th>Režim</th>
+            <th>Stav</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in profiles %}
+            <tr>
+              <td>{{ p.employment.employee.last_name }} {{ p.employment.employee.first_name }}</td>
+              <td>
+                {{ p.valid_from|date:"d.m.Y" }}
+                –
+                {% if p.valid_to %}{{ p.valid_to|date:"d.m.Y" }}{% else %}bez konce{% endif %}
+              </td>
+              <td>{{ p.agreed_label }}</td>
+              <td>{{ p.get_regime_display }} / {{ p.get_distribution_display }}</td>
+              <td>
+                {% if p.is_active %}
+                  <span class="badge success">aktivní</span>
+                {% else %}
+                  <span class="badge warning">neaktivní</span>
+                {% endif %}
+              </td>
+              <td>
+                <a href="{% url 'employee_edit' p.employment.employee_id %}">Upravit</a>
+              </td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="6">Žádné úvazky. Nastavte je u zaměstnance.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Vyrovnávací období</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Zaměstnanec</th>
+            <th>Období</th>
+            <th>Druh</th>
+            <th>Cíl fondu</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for per in periods %}
+            <tr>
+              <td>{{ per.profile.employment.employee.last_name }} {{ per.profile.employment.employee.first_name }}</td>
+              <td>{{ per.starts_on|date:"d.m.Y" }} – {{ per.ends_on|date:"d.m.Y" }}</td>
+              <td>{{ per.get_kind_display }}</td>
+              <td>{{ per.target_label }}</td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="4">Žádná období.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+{% endblock %}

@@ -1,0 +1,287 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>Docházka</h1>
+  <form class="csrf-holder" aria-hidden="true" tabindex="-1">{% csrf_token %}</form>
+  <div class="list-toolbar">
+    <form class="list-filters" method="get">
+      <div class="list-field">
+        <label for="year">Rok</label>
+        <input id="year" type="number" name="year" value="{{ year }}" min="2020" max="2100">
+      </div>
+      <div class="list-field">
+        <label for="month">Měsíc</label>
+        <input id="month" type="number" name="month" value="{{ month }}" min="1" max="12">
+      </div>
+      <div class="list-field list-field-check">
+        <label for="show-long-plan">
+          <input id="show-long-plan"
+                 type="checkbox"
+                 name="plan"
+                 value="1"
+                 {% if show_long_plan %}checked{% endif %}
+                 onchange="this.form.submit()">
+          Dlouhodobý plán
+        </label>
+      </div>
+      <button type="submit">Zobrazit</button>
+      <a class="button secondary" href="{% url 'attendance_month' %}?year={{ prev_year }}&month={{ prev_month }}{% if show_long_plan %}&plan=1{% endif %}">Předchozí</a>
+      <a class="button secondary" href="{% url 'attendance_month' %}?year={{ next_year }}&month={{ next_month }}{% if show_long_plan %}&plan=1{% endif %}">Následující</a>
+    </form>
+    <div class="list-actions">
+      <a class="button secondary" href="{% url 'shift_month' %}?year={{ year }}&month={{ month }}">Dlouhodobý plán</a>
+      {% if can_manage %}
+        <a class="button secondary" href="{% url 'attendance_export_xlsx' %}?year={{ year }}&amp;month={{ month }}">Export Excel</a>
+        <form method="post" action="{% url 'attendance_propose' %}" style="display:inline">
+          {% csrf_token %}
+          <input type="hidden" name="year" value="{{ year }}">
+          <input type="hidden" name="month" value="{{ month }}">
+          <button type="submit" class="secondary">Obnovit návrhy z plánu</button>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+
+  <p class="muted">
+    {{ month_label|date:"F Y" }} · skutečná docházka ≠ dlouhodobý plán ·
+    publikovaná směna bez potvrzení ani absence = nevyřešeno
+    {% if show_long_plan %}
+      · náhled dlouhodobého plánu je jen ke čtení (stejná data jako plán směn)
+    {% endif %}
+  </p>
+
+  <section class="panel">
+    <h2>Shrnutí měsíce</h2>
+    <ul class="att-summary">
+      <li>Plánováno (publikované): <strong>{{ summary.planned_label }} h</strong></li>
+      <li>Potvrzená práce: <strong>{{ summary.worked_label }} h</strong></li>
+      <li>Absence (zameškané z plánu): <strong>{{ summary.missed_label }} h</strong></li>
+      <li>Nevyřešené dny: <strong>{{ summary.unresolved_count }}</strong></li>
+    </ul>
+  </section>
+
+  <section class="panel">
+    <div class="table-wrap shift-matrix-wrap">
+      <table class="shift-matrix att-matrix">
+        <thead>
+          <tr>
+            <th class="sticky-col">Zaměstnanec</th>
+            {% for h in day_headers %}
+              <th class="{% if h.is_holiday %}holiday{% elif h.is_weekend %}weekend{% endif %}"
+                  title="{% if h.holiday_name %}{{ h.holiday_name }} · {% endif %}{{ h.weekday_label }} {{ h.day|date:'d.m.Y' }}">
+                {{ h.day.day }}
+                <span class="muted day-dow">{{ h.weekday_label }}</span>
+              </th>
+            {% endfor %}
+            <th>Plán</th>
+            <th>Práce</th>
+            <th>Absence</th>
+            <th>Nevyř.</th>
+            <th title="{% if meal_threshold_minutes %}1. stravenka ≥ {{ meal_threshold_minutes }} min{% if meal_second_threshold_minutes %}; 2. stravenka ≥ {{ meal_second_threshold_minutes }} min{% endif %} čisté potvrzené práce za den{% else %}Stravné vypnuto v administraci{% endif %}">Stravné</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% regroup rows by workplace_name as workplace_groups %}
+          {% for group in workplace_groups %}
+            <tr class="workplace-sep">
+              <td colspan="{{ day_headers|length|add:6 }}"><strong>{{ group.grouper }}</strong></td>
+            </tr>
+            {% for row in group.list %}
+              <tr class="att-emp-row" data-employee="{{ row.employee.pk }}">
+                <td class="sticky-col">
+                  {% if show_long_plan %}
+                    <label class="att-plan-emp-toggle"
+                           title="Zobrazit / skrýt dlouhodobý plán">
+                      <input type="checkbox"
+                             class="att-plan-emp-check"
+                             data-employee="{{ row.employee.pk }}"
+                             checked
+                             aria-label="Zobrazit / skrýt dlouhodobý plán">
+                      <span class="att-plan-emp-label">Plán</span>
+                    </label>
+                  {% endif %}
+                  {{ row.employee.last_name }} {{ row.employee.first_name }}
+                  {% if row.workplace_segments_label %}
+                    <div class="muted workplace-seg">{{ row.workplace_segments_label }}</div>
+                  {% elif row.workplace_future_hint %}
+                    <div class="muted workplace-seg">{{ row.workplace_future_hint }}</div>
+                  {% endif %}
+                  {% if row.has_missing_employment %}
+                    <div class="notice warning-soft att-emp-warn">
+                      Chybí pracovní vztah k datu směny.
+                      <a href="{% url 'employee_edit' row.employee.pk %}">Doplnit na kartě</a>
+                    </div>
+                  {% endif %}
+                </td>
+                {% for cell in row.cells %}
+                  <td class="att-cell att-{{ cell.status }} {% if cell.is_holiday %}holiday{% elif cell.is_weekend %}weekend{% endif %}">
+                    {% if cell.status == "empty" %}
+                      {% if can_manage %}
+                        <a class="att-cell-link att-empty-menu"
+                           href="#"
+                           role="button"
+                           data-employee="{{ row.employee.pk }}"
+                           data-employee-label="{{ row.employee.last_name }} {{ row.employee.first_name }}"
+                           data-day="{{ cell.day|date:'Y-m-d' }}"
+                           data-day-label="{{ cell.day|date:'d.m.Y' }}"
+                           data-year="{{ year }}"
+                           data-month="{{ month }}"
+                           title="Přidat práci mimo plán · {{ cell.day|date:'d.m.Y' }}"
+                           aria-label="Přidat práci">
+                          <span class="badge info">+</span>
+                        </a>
+                      {% else %}
+                        <span class="muted" aria-label="Bez publikované směny">—</span>
+                      {% endif %}
+                    {% elif cell.status == "unresolved" and cell.menu_shift_id and can_edit %}
+                      <a class="att-cell-link att-unresolved-menu"
+                         href="#"
+                         role="button"
+                         data-shift="{{ cell.menu_shift_id }}"
+                         data-employee="{{ row.employee.pk }}"
+                         data-day="{{ cell.day|date:'Y-m-d' }}"
+                         data-year="{{ year }}"
+                         data-month="{{ month }}"
+                         data-day-url="{% url 'attendance_day' %}?employee={{ row.employee.pk }}&day={{ cell.day|date:'Y-m-d' }}&year={{ year }}&month={{ month }}"
+                         data-missing-employment="{% if cell.missing_employment %}1{% else %}0{% endif %}"
+                         data-employee-edit-url="{% url 'employee_edit' row.employee.pk %}"
+                         title="{% for s in cell.shifts %}{{ s.display_code }} {{ s.starts_at|date:'H:i' }}–{{ s.ends_at|date:'H:i' }}{% if not forloop.last %}; {% endif %}{% endfor %} · Nevyřešeno{% if cell.missing_employment %} · Chybí pracovní vztah{% endif %}"
+                         aria-label="{% if cell.missing_employment %}Nevyřešeno, chybí pracovní vztah{% else %}Nevyřešeno{% endif %}">
+                        <span class="badge info">?</span>
+                      </a>
+                    {% else %}
+                      <a class="att-cell-link"
+                         href="{% url 'attendance_day' %}?employee={{ row.employee.pk }}&day={{ cell.day|date:'Y-m-d' }}&year={{ year }}&month={{ month }}"
+                         title="{% for s in cell.shifts %}{{ s.display_code }} {{ s.starts_at|date:'H:i' }}–{{ s.ends_at|date:'H:i' }}{% if not forloop.last %}; {% endif %}{% endfor %} · {{ cell.status_label }}">
+                        {% if cell.status == "work" %}
+                          <span class="badge success">Práce</span>
+                        {% elif cell.status == "absence" %}
+                          <span class="badge warning">{{ cell.status_label|truncatechars:10 }}</span>
+                        {% elif cell.status == "conflict" %}
+                          <span class="badge danger">Konflikt</span>
+                        {% elif cell.status == "unresolved" %}
+                          <span class="badge info" title="Nevyřešeno" aria-label="Nevyřešeno">?</span>
+                        {% else %}
+                          <span class="badge info">{{ cell.status_label }}</span>
+                        {% endif %}
+                      </a>
+                    {% endif %}
+                  </td>
+                {% endfor %}
+                <td>{{ row.planned_label }} h</td>
+                <td>{{ row.worked_label }} h</td>
+                <td>{{ row.missed_label }} h</td>
+                <td>{% if row.unresolved_count %}<strong>{{ row.unresolved_count }}</strong>{% else %}0{% endif %}</td>
+                <td>{% if meal_threshold_minutes is None %}—{% else %}{{ row.meal_vouchers }}{% endif %}</td>
+              </tr>
+              {% if show_long_plan %}
+                <tr class="att-plan-row" data-employee="{{ row.employee.pk }}">
+                  <td class="sticky-col muted">Dlouhodobý plán</td>
+                  {% for cell in row.cells %}
+                    <td class="att-plan-cell {% if cell.is_holiday %}holiday{% elif cell.is_weekend %}weekend{% endif %}"
+                        title="{{ cell.plan_title }}">
+                      {% if cell.plan_codes %}
+                        <span class="att-plan-codes">{{ cell.plan_codes }}</span>
+                      {% else %}
+                        <span class="muted">·</span>
+                      {% endif %}
+                    </td>
+                  {% endfor %}
+                  <td colspan="5" class="muted"></td>
+                </tr>
+              {% endif %}
+            {% endfor %}
+          {% empty %}
+            <tr>
+              <td colspan="{{ day_headers|length|add:6 }}">Žádní zaměstnanci k zobrazení.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  {% if can_manage or can_edit %}
+    <div id="att-cell-menu"
+         class="shift-cell-menu"
+         hidden
+         role="menu"
+         data-confirm-url-tpl="{% url 'attendance_confirm' 0 %}"
+         data-edit-url-tpl="{% url 'attendance_confirm_form' 0 %}"
+         data-absence-url-tpl="{% url 'attendance_absence' 0 %}"
+         data-absences='[{% for t in absence_types %}{"code":"{{ t.code|escapejs }}","name":"{{ t.name|escapejs }}"}{% if not forloop.last %},{% endif %}{% endfor %}]'>
+      <p class="shift-cell-menu-title">Docházka dne</p>
+      <ul class="shift-cell-menu-list"></ul>
+      <p class="shift-cell-menu-error notice danger-soft" hidden></p>
+    </div>
+    {% include "attendance/_confirm_dialog.html" %}
+    {% include "attendance/_day_dialog.html" %}
+  {% endif %}
+
+  {% if can_manage %}
+    <dialog id="att-adhoc-dialog" class="mpdmb-dialog" data-post-url="{{ adhoc_post_url }}">
+      <div class="panel cell-dialog-content">
+        <h2>Práce mimo plán</h2>
+        <p class="muted" id="att-adhoc-subtitle"></p>
+        <p class="notice danger-soft" id="att-adhoc-error" hidden></p>
+
+        <h3 class="att-adhoc-section-title">Rychle podle typu</h3>
+        {% if adhoc_shift_types %}
+          <div class="att-adhoc-type-list" role="group" aria-label="Typy směn">
+            {% for t in adhoc_shift_types %}
+              <button type="button"
+                      class="button secondary att-adhoc-type"
+                      data-shift-type="{{ t.pk }}">
+                {{ t.code }} · {{ t.start_time|time:"H:i" }}–{{ t.end_time|time:"H:i" }}
+              </button>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="muted">Žádné aktivní typy směn pro práci.</p>
+        {% endif %}
+
+        <h3 class="att-adhoc-section-title">Vlastní časy</h3>
+        <form id="att-adhoc-custom-form" class="stack-form cell-modal-form">
+          <p>
+            <label for="att-adhoc-workplace">Pracoviště</label>
+            <select id="att-adhoc-workplace" name="workplace" required>
+              {% for w in adhoc_workplaces %}
+                <option value="{{ w.pk }}">{{ w.name }}</option>
+              {% empty %}
+                <option value="">— žádné —</option>
+              {% endfor %}
+            </select>
+          </p>
+          <p>
+            <label for="att-adhoc-start">Začátek</label>
+            <input id="att-adhoc-start" type="time" name="start_time" value="08:00" required>
+          </p>
+          <p>
+            <label for="att-adhoc-end">Konec</label>
+            <input id="att-adhoc-end" type="time" name="end_time" value="16:00" required>
+          </p>
+          <p>
+            <label for="att-adhoc-break">Neplacená pauza (min)</label>
+            <input id="att-adhoc-break" type="number" name="break_minutes" value="30" min="0" max="1440">
+          </p>
+          <div class="form-actions">
+            <button type="submit">Uložit práci</button>
+            <button type="button" class="secondary" data-close-att-adhoc>Zavřít</button>
+          </div>
+        </form>
+      </div>
+    </dialog>
+  {% endif %}
+{% endblock %}
+
+{% block extra_body %}
+  {% if can_manage or can_edit %}
+    <script src="{% static 'mpdmb/js/attendance_cell_menu.js' %}?v={{ APP_VERSION }}" defer></script>
+  {% endif %}
+  {% if show_long_plan %}
+    <script src="{% static 'mpdmb/js/attendance_plan_toggle.js' %}?v={{ APP_VERSION }}" defer></script>
+  {% endif %}
+{% endblock %}

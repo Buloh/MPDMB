@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>Dlouhodobý plán</h1>
+  <p class="muted">Týdenní pohled byl nahrazen měsíční maticí.</p>
+  <p>
+    <a class="button" href="{% url 'shift_month' %}">Otevřít měsíční plán</a>
+    <a class="button secondary" href="{% url 'shift_type_list' %}">Typy směn</a>
+  </p>
+{% endblock %}

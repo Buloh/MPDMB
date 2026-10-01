@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>Technika</h1>
+  <p class="muted">Evidence vozidel, dokladů (STK, pojistka) a odpovědných osob.</p>
+  <div class="list-toolbar">
+    <form class="list-filters" method="get">
+      <div class="list-field">
+        <label for="q">Hledat</label>
+        <input id="q" type="search" name="q" value="{{ q }}" placeholder="SPZ, označení nebo odpovědná osoba">
+      </div>
+      <div class="list-check">
+        <label for="archived">
+          <input id="archived" type="checkbox" name="archived" value="1" {% if show_archived %}checked{% endif %}>
+          Zobrazit i archivovaná
+        </label>
+      </div>
+      <button type="submit">Filtrovat</button>
+    </form>
+    <div class="list-actions">
+      <a class="button" href="{% url 'vehicle_create' %}">Nové vozidlo</a>
+    </div>
+  </div>
+  <section class="panel">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>SPZ</th>
+            <th>Označení</th>
+            <th>Odpovědná osoba</th>
+            <th>Doklady</th>
+            <th>Stav</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for vehicle in vehicles %}
+            <tr>
+              <td><a href="{% url 'vehicle_detail' vehicle.pk %}">{{ vehicle.plate }}</a></td>
+              <td>{{ vehicle.name|default:"—" }}</td>
+              <td>
+                {{ vehicle.responsible.last_name }} {{ vehicle.responsible.first_name }}
+              </td>
+              <td>
+                {% if vehicle.expired_documents_count %}
+                  <span class="badge danger">{{ vehicle.expired_documents_count }} prošlé</span>
+                {% else %}
+                  <span class="muted">v pořádku</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if vehicle.is_active %}
+                  <span class="badge success">aktivní</span>
+                {% else %}
+                  <span class="badge warning">archivované</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="5">Zatím nejsou evidována žádná vozidla.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+{% endblock %}

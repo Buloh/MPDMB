@@ -1,0 +1,411 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <div class="activity-day-page">
+  <div class="list-toolbar">
+    <h1>Činnost – plán dne</h1>
+    <div class="list-actions">
+      <a class="button secondary" href="{% url 'activity_location_list' %}">Lokality</a>
+    </div>
+  </div>
+
+  <section class="panel activity-day-filters">
+    <div class="activity-day-filter-layout">
+      <form method="get" class="stack-form filters-inline activity-day-filter-form">
+        {{ filter_form.as_p }}
+        <div class="form-actions">
+          <button type="submit">Zobrazit</button>
+        </div>
+      </form>
+      {% if month_cal %}
+        {% include "activities/_month_calendar.html" %}
+      {% endif %}
+    </div>
+    {% if show_day_roster %}
+      <div class="activity-day-roster">
+        <h2>Směny dne · {{ day|date:"d.m.Y" }}</h2>
+        <p class="muted">Publikované směny z dlouhodobého plánu (všechna pracoviště). Kliknutím otevřete detail.</p>
+        {% if day_roster %}
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Zaměstnanec</th>
+                  <th>Pracoviště</th>
+                  <th>Typ</th>
+                  <th>Čas</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in day_roster %}
+                  <tr>
+                    <td>
+                      <a href="?day={{ day|date:'Y-m-d' }}&workplace={{ item.workplace.pk }}&employee={{ item.employee.pk }}">
+                        {{ item.employee.last_name }} {{ item.employee.first_name }}
+                      </a>
+                    </td>
+                    <td>
+                      <a href="?day={{ day|date:'Y-m-d' }}&workplace={{ item.workplace.pk }}">
+                        {{ item.workplace.name }}
+                      </a>
+                    </td>
+                    <td>{{ item.display_code }}</td>
+                    <td>{{ item.starts_at|date:"H:i" }}–{{ item.ends_at|date:"H:i" }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <p class="notice" role="status">
+            Nikdo nemá publikovanou směnu práce v tento den.
+          </p>
+        {% endif %}
+      </div>
+    {% endif %}
+    {% if employees_empty %}
+      <p class="notice" role="status">
+        Pro den {{ day|date:"d.m.Y" }}{% if workplace %} na pracovišti {{ workplace }}{% endif %}
+        nemá nikdo publikovanou směnu práce.
+        {% if other_workplaces_with_shifts %}
+          Směny jsou na:
+          {% for row in other_workplaces_with_shifts %}
+            <a href="?day={{ day|date:'Y-m-d' }}&workplace={{ row.workplace.pk }}">{{ row.workplace.name }} ({{ row.count }})</a>{% if not forloop.last %}, {% endif %}
+          {% endfor %}.
+        {% else %}
+          Samotný nástup nestačí — nejdříve publikujte směnu v plánu směn.
+        {% endif %}
+      </p>
+    {% endif %}
+  </section>
+
+  {% if workplace and columns and rows and not employee %}
+    <section class="panel">
+      <div class="list-toolbar">
+        <h2>Rozvrh · {{ workplace }} · {{ day|date:"d.m.Y" }}</h2>
+        {% if can_export_workplace or can_export_employee %}
+          <div class="list-actions">
+            <button type="button"
+                    class="secondary"
+                    data-activity-open-export
+                    data-export-default-scope="workplace">Export</button>
+          </div>
+        {% endif %}
+      </div>
+      <p class="muted">Kliknutím na buňku přiřadíte lokalitu. Barva = lokalita. Denní úkoly jsou mimo mřížku níže.</p>
+      <div class="table-wrap activity-board-wrap">
+        <table class="activity-board">
+          <thead>
+            <tr>
+              <th>Zaměstnanec</th>
+              {% for col in columns %}
+                <th>{{ col.label }}</th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in rows %}
+              <tr>
+                <th scope="row">
+                  <a href="?day={{ day|date:'Y-m-d' }}&workplace={{ workplace.pk }}&employee={{ row.employee.pk }}">
+                    {{ row.employee.last_name }} {{ row.employee.first_name }}
+                  </a>
+                  {% if row.shifts %}
+                    <div class="muted activity-board-shift-meta">
+                      {% for s in row.shifts %}
+                        {% if s.shift_type_id %}{{ s.shift_type.code }}{% else %}—{% endif %}
+                        {{ s.starts_at|date:"H:i" }}–{{ s.ends_at|date:"H:i" }}{% if not forloop.last %}; {% endif %}
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                </th>
+                {% for cell in row.cells %}
+                  <td class="activity-board-cell {% if not cell.in_shift %}off{% endif %}">
+                    {% if cell.in_shift %}
+                      {% with items=cell.items first=cell.items.0 %}
+                        <button type="button"
+                                class="activity-slot-btn"
+                                style="{% if first and first.location_id %}background:{{ first.location.color }};border-color:{{ first.location.color }};color:#fff{% endif %}"
+                                data-activity-open-slot
+                                data-employee-id="{{ row.employee.pk }}"
+                                data-day="{{ day|date:'Y-m-d' }}"
+                                data-starts-at="{{ cell.slot_start|date:'Y-m-d' }}T{{ cell.slot_start|date:'H:i' }}"
+                                data-ends-at="{{ cell.slot_end|date:'Y-m-d' }}T{{ cell.slot_end|date:'H:i' }}"
+                                title="{% for it in items %}{{ it.starts_at|date:'H:i' }}–{{ it.ends_at|date:'H:i' }} {{ it.activity_type.name }}{% if it.location_id %} · {{ it.location.code }}{% endif %}{% if it.note %} — {{ it.note }}{% endif %}{% if not forloop.last %} | {% endif %}{% empty %}Přiřadit činnost{% endfor %}">
+                          {% include "activities/_slot_cell_content.html" with items=items %}
+                        </button>
+                      {% endwith %}
+                    {% endif %}
+                  </td>
+                {% endfor %}
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="list-toolbar">
+        <h2>Denní úkoly · {{ workplace }}</h2>
+      </div>
+      <p class="muted">Úkoly na celý den (např. kontrola 4×) — nezobrazují se v hodinové mřížce.</p>
+      {% if board_day_tasks %}
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Zaměstnanec</th>
+                <th>Typ</th>
+                <th>Lokalita</th>
+                <th>Vozidlo</th>
+                <th>Poznámka</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for block in board_day_tasks %}
+                {% for task in block.tasks %}
+                  <tr>
+                    {% if forloop.first %}
+                      <td rowspan="{{ block.tasks|length }}">
+                        {{ block.employee.last_name }} {{ block.employee.first_name }}
+                      </td>
+                    {% endif %}
+                    <td>{{ task.activity_type }}</td>
+                    <td>{% if task.location_id %}{{ task.location.code }}{% else %}—{% endif %}</td>
+                    <td>{% if task.vehicle_id %}{{ task.vehicle.plate }}{% else %}—{% endif %}</td>
+                    <td class="activity-day-task-note-cell">{{ task.note|default:"—" }}</td>
+                    <td>
+                      <form method="post" action="{% url 'activity_item_delete' task.pk %}" style="display:inline" onsubmit="return confirm('Smazat denní úkol?');">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="?day={{ day|date:'Y-m-d' }}&workplace={{ workplace.pk }}">
+                        <button type="submit" class="secondary" style="min-height:auto;padding:4px 8px">Smazat</button>
+                      </form>
+                    </td>
+                  </tr>
+                {% endfor %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="muted">Žádné denní úkoly.</p>
+      {% endif %}
+      <p class="toolbar" style="margin-top:12px">
+        {% for row in rows %}
+          <button type="button"
+                  class="secondary"
+                  data-activity-open-day-task
+                  data-employee-id="{{ row.employee.pk }}"
+                  data-day="{{ day|date:'Y-m-d' }}"
+                  data-workplace="{{ workplace.pk }}"
+                  style="min-height:auto;padding:4px 10px">
+            + {{ row.employee.last_name }}
+          </button>
+        {% endfor %}
+      </p>
+    </section>
+  {% endif %}
+
+  {% if employee %}
+    <section class="panel">
+      <div class="list-toolbar">
+        <h2>{{ employee }} · {{ day|date:"d.m.Y" }}</h2>
+        <div class="list-actions">
+          {% if workplace %}
+            <a class="button secondary" href="?day={{ day|date:'Y-m-d' }}&workplace={{ workplace.pk }}">Zpět na rozvrh</a>
+          {% endif %}
+          {% if can_export_workplace or can_export_employee %}
+            <button type="button"
+                    class="secondary"
+                    data-activity-open-export
+                    data-export-default-scope="employee"
+                    data-export-default-employee="{{ employee.pk }}">Export</button>
+          {% endif %}
+          <a class="button secondary" href="{% url 'activity_preferences' employee.pk %}?day={{ day|date:'Y-m-d' }}{% if workplace %}&workplace={{ workplace.pk }}{% endif %}">Šablona lokalit</a>
+          <form method="post" action="{% url 'activity_generate' %}" style="display:inline">
+            {% csrf_token %}
+            <input type="hidden" name="employee" value="{{ employee.pk }}">
+            <input type="hidden" name="day" value="{{ day|date:'Y-m-d' }}">
+            {% if workplace %}<input type="hidden" name="workplace" value="{{ workplace.pk }}">{% endif %}
+            <button type="submit" class="secondary" onclick="return confirm('Vygenerovat plán z preferencí? Existující činnosti se nepřepíší, pokud nezvolíte přepsání.');">Generovat</button>
+          </form>
+          <form method="post" action="{% url 'activity_generate' %}" style="display:inline">
+            {% csrf_token %}
+            <input type="hidden" name="employee" value="{{ employee.pk }}">
+            <input type="hidden" name="day" value="{{ day|date:'Y-m-d' }}">
+            <input type="hidden" name="replace" value="1">
+            {% if workplace %}<input type="hidden" name="workplace" value="{{ workplace.pk }}">{% endif %}
+            <button type="submit" class="secondary" onclick="return confirm('Přepsat existující plán generátorem?');">Přegenerovat</button>
+          </form>
+          <form method="post" action="{% url 'activity_clear_day' %}" style="display:inline" onsubmit="return confirm('Vymazat všechny činnosti tohoto dne?');">
+            {% csrf_token %}
+            <input type="hidden" name="employee" value="{{ employee.pk }}">
+            <input type="hidden" name="day" value="{{ day|date:'Y-m-d' }}">
+            {% if workplace %}<input type="hidden" name="workplace" value="{{ workplace.pk }}">{% endif %}
+            <button type="submit" class="secondary">Vymazat den</button>
+          </form>
+        </div>
+      </div>
+      {% if shifts %}
+        <p class="muted">
+          Směny:
+          {% for s in shifts %}
+            {{ s.display_code }} {{ s.starts_at|date:"H:i" }}–{{ s.ends_at|date:"H:i" }}{% if not forloop.last %}; {% endif %}
+          {% endfor %}
+        </p>
+        <div class="activity-emp-axis">
+          {% for cell in emp_cells %}
+            {% with items=cell.items first=cell.items.0 %}
+              <button type="button"
+                      class="activity-slot-btn activity-slot-btn--axis"
+                      style="{% if first and first.location_id %}background:{{ first.location.color }};border-color:{{ first.location.color }};color:#fff{% endif %}"
+                      data-activity-open-slot
+                      data-employee-id="{{ employee.pk }}"
+                      data-day="{{ day|date:'Y-m-d' }}"
+                      data-starts-at="{{ cell.slot_start|date:'Y-m-d' }}T{{ cell.slot_start|date:'H:i' }}"
+                      data-ends-at="{{ cell.slot_end|date:'Y-m-d' }}T{{ cell.slot_end|date:'H:i' }}"
+                      title="{% for it in items %}{{ it.starts_at|date:'H:i' }}–{{ it.ends_at|date:'H:i' }} {{ it.activity_type.name }}{% if it.location_id %} · {{ it.location.code }}{% endif %}{% if it.note %} — {{ it.note }}{% endif %}{% if not forloop.last %} | {% endif %}{% empty %}{{ cell.label }}{% endfor %}">
+                <span class="activity-slot-time">{{ cell.label }}</span>
+                {% include "activities/_slot_cell_content.html" with items=items %}
+              </button>
+            {% endwith %}
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="notice">Bez publikované směny práce.</p>
+      {% endif %}
+    </section>
+
+    <section class="panel">
+      <div class="list-toolbar">
+        <h2>Denní úkoly</h2>
+        <div class="list-actions">
+          <button type="button"
+                  class="secondary"
+                  data-activity-open-day-task
+                  data-employee-id="{{ employee.pk }}"
+                  data-day="{{ day|date:'Y-m-d' }}"
+                  {% if workplace %}data-workplace="{{ workplace.pk }}"{% endif %}>
+            Přidat denní úkol
+          </button>
+        </div>
+      </div>
+      {% if emp_day_tasks %}
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Typ</th>
+                <th>Lokalita</th>
+                <th>Vozidlo</th>
+                <th>Poznámka</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for task in emp_day_tasks %}
+                <tr>
+                  <td>{{ task.activity_type }}</td>
+                  <td>{% if task.location_id %}{{ task.location.code }}{% else %}—{% endif %}</td>
+                  <td>{% if task.vehicle_id %}{{ task.vehicle.plate }}{% else %}—{% endif %}</td>
+                  <td class="activity-day-task-note-cell">{{ task.note|default:"—" }}</td>
+                  <td>
+                    <form method="post" action="{% url 'activity_item_delete' task.pk %}" style="display:inline" onsubmit="return confirm('Smazat denní úkol?');">
+                      {% csrf_token %}
+                      <input type="hidden" name="next" value="?day={{ day|date:'Y-m-d' }}{% if workplace %}&workplace={{ workplace.pk }}{% endif %}&employee={{ employee.pk }}">
+                      <button type="submit" class="secondary" style="min-height:auto;padding:4px 8px">Smazat</button>
+                    </form>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="muted">Žádné denní úkoly.</p>
+      {% endif %}
+    </section>
+  {% endif %}
+
+  {% if can_export_workplace or can_export_employee %}
+  <dialog id="activity-export-dialog"
+          class="mpdmb-dialog"
+          data-pdf-url="{% url 'activity_export' %}"
+          data-xlsx-url="{% url 'activity_export_xlsx' %}"
+          data-day="{{ day|date:'Y-m-d' }}"
+          data-workplace="{% if workplace %}{{ workplace.pk }}{% endif %}">
+    <div class="panel cell-dialog-content cell-modal-body activity-export-modal form-compact">
+      <h2>Export plánu</h2>
+      <p class="muted">{{ day|date:"d.m.Y" }}{% if workplace %} · {{ workplace }}{% endif %}</p>
+      <p class="muted activity-export-help">Stáhne denní plán činností pro technika (PDF k tisku nebo Excel).</p>
+      <p class="notice danger-soft activity-export-error" hidden role="alert"></p>
+      <fieldset class="activity-export-group">
+        <legend>Koho exportovat</legend>
+        <div class="activity-export-radios">
+          <label>
+            <input type="radio" name="export_scope" value="workplace"
+                   {% if not can_export_workplace %}disabled{% endif %}
+                   {% if can_export_workplace %}checked{% endif %}>
+            Celé pracoviště
+          </label>
+          <label>
+            <input type="radio" name="export_scope" value="employee"
+                   {% if not export_employees %}disabled{% endif %}
+                   {% if not can_export_workplace and export_employees %}checked{% endif %}>
+            Jednoho zaměstnance
+          </label>
+        </div>
+      </fieldset>
+      <div class="activity-export-emp" data-export-employee-field {% if can_export_workplace %}hidden{% endif %}>
+        <select id="activity-export-employee" data-export-employee aria-label="Zaměstnanec">
+          {% for emp in export_employees %}
+            <option value="{{ emp.pk }}" {% if employee and emp.pk == employee.pk %}selected{% endif %}>
+              {{ emp.last_name }} {{ emp.first_name }} ({{ emp.internal_number }})
+            </option>
+          {% empty %}
+            <option value="">— není k dispozici —</option>
+          {% endfor %}
+        </select>
+      </div>
+      <fieldset class="activity-export-group">
+        <legend>Formát</legend>
+        <div class="activity-export-radios">
+          <label>
+            <input type="radio" name="export_format" value="pdf" checked>
+            PDF (tisk)
+          </label>
+          <label>
+            <input type="radio" name="export_format" value="xlsx">
+            Excel (.xlsx)
+          </label>
+        </div>
+      </fieldset>
+      <div class="form-actions toolbar">
+        <button type="button" data-activity-export-submit>Stáhnout</button>
+        <button type="button" class="secondary" data-activity-close-export>Zrušit</button>
+      </div>
+    </div>
+  </dialog>
+  {% endif %}
+
+  <dialog id="activity-slot-dialog" class="mpdmb-dialog" data-form-url="{{ slot_form_url }}" data-save-url="{% url 'activity_slot_save' %}">
+    <div class="activity-slot-dialog-host"></div>
+  </dialog>
+  <dialog id="activity-day-task-dialog" class="mpdmb-dialog" data-form-url="{{ day_task_form_url }}" data-save-url="{% url 'activity_day_task_save' %}">
+    <div class="activity-day-task-dialog-host"></div>
+  </dialog>
+  </div>
+{% endblock %}
+
+{% block extra_body %}
+  <script src="{% static 'mpdmb/js/activity_slot_dialog.js' %}?v={{ APP_VERSION }}" defer></script>
+  <script src="{% static 'mpdmb/js/activity_day_task_dialog.js' %}?v={{ APP_VERSION }}" defer></script>
+  {% if can_export_workplace or can_export_employee %}
+    <script src="{% static 'mpdmb/js/activity_export_dialog.js' %}?v={{ APP_VERSION }}" defer></script>
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="/static/mpdmb/img/favicon.svg" type="image/svg+xml">
+  <title>Nápověda SYNERA</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-help-base="/napoveda/">
+  <header class="help-header">
+    <a class="brand" href="/">SYNERA</a>
+    <div class="search-wrap">
+      <label for="help-search">Hledat v nápovědě</label>
+      <input id="help-search" type="search" placeholder="např. přihlášení, SQLite, migrace" autocomplete="off">
+      <ul id="search-results" aria-live="polite"></ul>
+      <p id="search-empty">Nic nenalezeno. Zkuste jiné klíčové slovo.</p>
+    </div>
+  </header>
+  <div class="help-shell">
+    <nav class="help-nav" aria-label="Obsah nápovědy">
+      <a href="index.html" aria-current="page">Úvod</a>
+      <a href="pages/spusteni.html">Spuštění</a>
+      <a href="pages/prihlaseni.html">Přihlášení</a>
+      <a href="pages/prehled.html">Přehled</a>
+      <a href="pages/administrace.html">Administrace</a>
+      <a href="pages/zamestnanci.html">Zaměstnanci</a>
+      <a href="pages/pracoviste.html">Pracoviště</a>
+      <a href="pages/smeny.html">Dlouhodobý plán</a>
+      <a href="pages/dochazka.html">Docházka</a>
+      <a href="pages/dovolena.html">Dovolená</a>
+      <a href="pages/cinnost.html">Činnost</a>
+      <a href="pages/technika.html">Technika</a>
+      <a href="pages/dokumenty.html">Dokumenty</a>
+    </nav>
+    <main class="help-main">
+      <h1>Nápověda SYNERA</h1>
+      <p class="notice">
+        Moderní interní nápověda s fulltextovým vyhledáváním.
+        Při každé nové funkci aplikace se tato nápověda doplňuje.
+      </p>
+      <section class="panel">
+        <h2 id="co-je-synera">Co je SYNERA</h2>
+        <p>
+          <strong>SYNERA</strong> propojuje zaměstnance, směny, docházku,
+          úkoly a provoz v jednom systému (synergie).
+          Nasazení je určeno pro provoz parkovacích domů v Mladé Boleslavi.
+          Aplikace běží na Windows v prohlížeči, data ukládá do SQLite
+          souboru <code>db.sqlite3</code>. Vstup na hlavní adresu
+          vyžaduje přihlášení. Aktuální verze je uvedena v patičce aplikace
+          a v <code>/health/</code>.
+        </p>
+      </section>
+      <section class="panel">
+        <h2 id="rychle-odkazy">Rychlé odkazy</h2>
+        <ul>
+          <li><a href="pages/spusteni.html">Jak spustit aplikaci</a></li>
+          <li><a href="pages/prihlaseni.html">Přihlášení</a></li>
+          <li><a href="pages/prehled.html">Přehled</a></li>
+          <li><a href="pages/administrace.html">Administrace</a></li>
+          <li><a href="pages/zamestnanci.html">Zaměstnanci</a></li>
+          <li><a href="pages/pracoviste.html">Pracoviště</a></li>
+          <li><a href="pages/smeny.html">Dlouhodobý plán</a></li>
+          <li><a href="pages/dochazka.html">Docházka</a></li>
+          <li><a href="pages/dovolena.html">Dovolená</a></li>
+          <li><a href="pages/cinnost.html">Činnost</a></li>
+          <li><a href="pages/technika.html">Technika</a></li>
+          <li><a href="pages/dokumenty.html">Dokumenty</a></li>
+        </ul>
+      </section>
+      <p class="help-footer">SYNERA · nápověda · datum formátu dd.mm.rrrr</p>
+    </main>
+  </div>
+  <script src="search.js" data-index="search-index.json"></script>
+</body>
+</html>

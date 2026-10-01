@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>{{ title }}</h1>
+  <div class="toolbar">
+    <a class="button" href="{% url 'document_template_create' %}">Nová šablona</a>
+    <form method="post" action="{% url 'document_templates_refresh_universal' %}">
+      {% csrf_token %}
+      <button type="submit" class="secondary">Obnovit univerzální šablony</button>
+    </form>
+    <a class="button secondary" href="{% url 'documents_hub' %}">Zpět na Dokumenty</a>
+  </div>
+  <form method="get" class="toolbar">
+    <label>
+      <input type="checkbox" name="inactive" value="1" {% if show_inactive %}checked{% endif %} onchange="this.form.submit()">
+      Zobrazit neaktivní
+    </label>
+  </form>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Název</th>
+          <th>Okruh</th>
+          <th>Verze</th>
+          <th>Stav</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in templates %}
+          <tr>
+            <td><a href="{% url 'document_template_detail' item.pk %}">{{ item.name }}</a></td>
+            <td>{{ item.get_scope_display }}</td>
+            <td>
+              {% with ver=item.current_version %}
+                {% if ver %}v{{ ver.version_number }}{% else %}—{% endif %}
+              {% endwith %}
+            </td>
+            <td>
+              {% if item.is_active %}
+                <span class="badge success">aktivní</span>
+              {% else %}
+                <span class="badge warning">neaktivní</span>
+              {% endif %}
+            </td>
+            <td>
+              <a href="{% url 'document_template_csv' item.pk %}">CSV</a>
+            </td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="5">Zatím nejsou žádné šablony.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

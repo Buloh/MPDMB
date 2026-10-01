@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>Předvolby úvazku</h1>
+  <p class="muted">
+    Administrátorské šablony týdenní doby (např. 40 / 38,75 / 37,5 h dle §&nbsp;79).
+    Ve formuláři profilu jen vyplní stanovenou i sjednanou hodnotu; fond se počítá
+    ze sjednaných minut.
+  </p>
+  <div class="list-toolbar">
+    <div class="list-actions">
+      <a class="button" href="{% url 'work_time_preset_create' %}">Nová předvolba</a>
+      <a class="button secondary" href="{% url 'work_time_profile_list' %}">Zpět na fond</a>
+    </div>
+  </div>
+  <section class="panel">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Název</th>
+            <th>Týdenní doba</th>
+            <th>Minuty</th>
+            <th>Pořadí</th>
+            <th>Stav</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in presets %}
+            <tr>
+              <td>{{ p.name }}</td>
+              <td>{{ p.hours_label }} h</td>
+              <td>{{ p.weekly_minutes }}</td>
+              <td>{{ p.sort_order }}</td>
+              <td>
+                {% if p.is_active %}
+                  <span class="badge success">aktivní</span>
+                {% else %}
+                  <span class="badge warning">neaktivní</span>
+                {% endif %}
+              </td>
+              <td><a href="{% url 'work_time_preset_edit' p.pk %}">Upravit</a></td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="6">Zatím žádné předvolby.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+{% endblock %}

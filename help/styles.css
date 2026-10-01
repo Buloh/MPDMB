@@ -1,0 +1,162 @@
+/* Nápověda SYNERA – paleta shodná s theme.css */
+:root {
+  --primary: #166999;
+  --primary-hover: #12567d;
+  --primary-soft: #e8f2f8;
+  --link: #21759b;
+  --background: #eee;
+  --surface: #fff;
+  --text: #333;
+  --text-secondary: #54595f;
+  --border: #d8dee3;
+  --success: #237a35;
+  --success-soft: #eaf5ec;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --radius: 8px;
+}
+
+* { box-sizing: border-box }
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--text);
+  font: 16px/1.5 system-ui, "Segoe UI", Arial, sans-serif;
+}
+a { color: var(--link) }
+header.help-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: var(--space-4) var(--space-6);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  align-items: center;
+  justify-content: space-between;
+}
+.brand { color: var(--primary); font-size: 24px; font-weight: 700; text-decoration: none }
+.help-shell {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  min-height: calc(100vh - 72px);
+}
+.help-nav {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: var(--space-4);
+}
+.help-nav a {
+  display: block;
+  text-decoration: none;
+  color: var(--text);
+  padding: var(--space-3);
+  border-radius: var(--radius);
+  margin-bottom: var(--space-1);
+}
+.help-nav a[aria-current="page"],
+.help-nav a:hover {
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-weight: 600;
+}
+.help-main { padding: var(--space-6); min-width: 0 }
+h1, h2, h3 { color: var(--primary); margin: 0 0 var(--space-4) }
+h1 { font-size: 28px }
+h2 { font-size: 20px; margin-top: var(--space-6) }
+h3 { font-size: 17px; margin-top: var(--space-4) }
+.muted { color: var(--text-secondary) }
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-6);
+  margin-bottom: var(--space-6);
+}
+.notice {
+  border-left: 4px solid var(--primary);
+  background: var(--primary-soft);
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-6);
+}
+.search-wrap { position: relative; min-width: min(100%, 360px); flex: 1 }
+.search-wrap label { display: block; font-size: 14px; margin-bottom: var(--space-1) }
+#help-search {
+  width: 100%;
+  font: inherit;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-2) var(--space-3);
+  min-height: 44px;
+  background: var(--surface);
+  color: var(--text);
+}
+#help-search:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 3px;
+}
+#search-results {
+  list-style: none;
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  max-height: 320px;
+  overflow: auto;
+  display: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 20;
+}
+#search-results[data-open="true"] { display: block }
+#search-results li a {
+  display: block;
+  padding: var(--space-3) var(--space-4);
+  text-decoration: none;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+}
+#search-results li a:hover,
+#search-results li a:focus {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+#search-results .result-title { font-weight: 600 }
+#search-results .result-snippet {
+  display: block;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+#search-empty {
+  display: none;
+  margin: var(--space-2) 0 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+#search-empty[data-open="true"] { display: block }
+code, kbd {
+  font-family: Consolas, "Courier New", monospace;
+  background: var(--primary-soft);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.95em;
+}
+ul { padding-left: 1.25rem }
+.help-footer {
+  margin-top: var(--space-8);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+@media (max-width: 760px) {
+  .help-shell { grid-template-columns: 1fr }
+  .help-nav { border-right: none; border-bottom: 1px solid var(--border) }
+  .help-main { padding: var(--space-4) }
+  header.help-header { padding: var(--space-4) }
+}

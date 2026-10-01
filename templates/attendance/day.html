@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>Docházka · {{ day|date:"d.m.Y" }}</h1>
+  <p class="muted">
+    {{ employee.last_name }} {{ employee.first_name }}
+    {% if holiday_name %} · svátek: {{ holiday_name }}{% endif %}
+  </p>
+  <p class="list-actions" style="margin-bottom:16px">
+    <a class="button secondary" href="{% url 'attendance_month' %}?year={{ year }}&month={{ month }}">Zpět na měsíc</a>
+    {% if can_manage %}
+      <a class="button" href="{% url 'attendance_adhoc_form' %}?employee={{ employee.pk }}&day={{ day|date:'Y-m-d' }}&year={{ year }}&month={{ month }}">Přidat práci (mimo plán)</a>
+    {% endif %}
+  </p>
+
+  {% if not items and not ad_hoc_intervals %}
+    <section class="panel">
+      <p>Pro tento den není publikovaná směna práce ani ad-hoc zápis.</p>
+      {% if can_manage %}
+        <p class="muted">Můžete přidat práci mimo plán (včetně So/Ne).</p>
+      {% endif %}
+    </section>
+  {% endif %}
+
+  {% for item in items %}
+    <section class="panel">
+      <h2>
+        {{ item.shift.display_code }}
+        · {{ item.shift.starts_at|date:"H:i" }}–{{ item.shift.ends_at|date:"H:i" }}
+        · {{ item.shift.workplace }}
+      </h2>
+      <p class="muted">
+        Plán čistě {{ item.planned_label }} h
+        · stav:
+        {% if item.state == "work" %}<span class="badge success">Potvrzená práce</span>
+        {% elif item.state == "absence" %}<span class="badge warning">{{ item.absence.absence_type.name }}</span>
+        {% else %}<span class="badge info">Nevyřešeno</span>{% endif %}
+      </p>
+
+      {% if can_edit %}
+        <div class="att-actions">
+          {% if item.state != "work" %}
+            <form method="post" action="{% url 'attendance_confirm' item.shift.pk %}">
+              {% csrf_token %}
+              <input type="hidden" name="year" value="{{ year }}">
+              <input type="hidden" name="month" value="{{ month }}">
+              <input type="hidden" name="as_plan" value="1">
+              <button type="submit">Potvrdit jako plán</button>
+            </form>
+            <a class="button secondary" href="{% url 'attendance_confirm_form' item.shift.pk %}?year={{ year }}&month={{ month }}">Upravit časy</a>
+          {% endif %}
+
+          {% if item.state != "absence" %}
+            {% for t in absence_types %}
+              <form method="post" action="{% url 'attendance_absence' item.shift.pk %}" style="display:inline">
+                {% csrf_token %}
+                <input type="hidden" name="year" value="{{ year }}">
+                <input type="hidden" name="month" value="{{ month }}">
+                <input type="hidden" name="absence_code" value="{{ t.code }}">
+                <button type="submit" class="secondary">{{ t.name }}</button>
+              </form>
+            {% endfor %}
+          {% endif %}
+
+          {% if item.state != "unresolved" %}
+            <form method="post" action="{% url 'attendance_clear' item.shift.pk %}">
+              {% csrf_token %}
+              <input type="hidden" name="year" value="{{ year }}">
+              <input type="hidden" name="month" value="{{ month }}">
+              <button type="submit" class="secondary">Zrušit zápis</button>
+            </form>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {% if item.work_interval and item.state == "work" %}
+        <p>
+          Potvrzeno:
+          {{ item.work_interval.starts_at|date:"d.m.Y H:i" }}–
+          {{ item.work_interval.ends_at|date:"H:i" }}
+          {% if item.work_interval.break_minutes %}
+            · pauza {{ item.work_interval.break_minutes }} min
+          {% endif %}
+          · čistě {{ item.worked_label }} h
+        </p>
+      {% endif %}
+      {% if item.absence %}
+        <p>
+          Absence {{ item.absence.absence_type.name }}:
+          zameškané {{ item.missed_label }} h z plánu
+          {% if item.absence.note %}· {{ item.absence.note }}{% endif %}
+        </p>
+      {% endif %}
+    </section>
+  {% endfor %}
+
+  {% for wi in ad_hoc_intervals %}
+    <section class="panel">
+      <h2>
+        Práce mimo plán
+        · {{ wi.starts_at|date:"H:i" }}–{{ wi.ends_at|date:"H:i" }}
+        · {{ wi.workplace }}
+      </h2>
+      <p class="muted">
+        <span class="badge success">Potvrzená práce</span>
+        {% if wi.break_minutes %}· pauza {{ wi.break_minutes }} min{% endif %}
+        {% if wi.note %}· {{ wi.note }}{% endif %}
+      </p>
+      {% if can_manage %}
+        <form method="post" action="{% url 'attendance_adhoc_delete' wi.pk %}">
+          {% csrf_token %}
+          <input type="hidden" name="year" value="{{ year }}">
+          <input type="hidden" name="month" value="{{ month }}">
+          <button type="submit" class="secondary">Smazat ad-hoc zápis</button>
+        </form>
+      {% endif %}
+    </section>
+  {% endfor %}
+{% endblock %}

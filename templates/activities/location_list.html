@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% load static l10n %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <div class="list-toolbar">
+    <h1>Lokality činností</h1>
+    <div class="list-actions">
+      <a class="button" href="{% url 'activity_location_create' %}">Nová lokalita</a>
+      <a class="button secondary" href="{% url 'activity_day' %}">Plán dne</a>
+    </div>
+  </div>
+
+  <section class="panel">
+    <h2>Mapa lokalit</h2>
+    {% if map_cities %}
+      <form method="get" class="filters-inline" style="margin-bottom:12px">
+        <p>
+          <label for="map-city">Mapové město</label>
+          <select id="map-city" name="city" onchange="this.form.submit()">
+            {% for c in map_cities %}
+              <option value="{{ c.code }}" {% if map_city and c.code == map_city.code %}selected{% endif %}>{{ c.name }}</option>
+            {% endfor %}
+          </select>
+        </p>
+      </form>
+    {% endif %}
+    <div id="locations-map"
+         class="activity-map"
+         role="img"
+         aria-label="Mapa lokalit činností"
+         data-center-lat="{{ map_center_lat|unlocalize }}"
+         data-center-lon="{{ map_center_lon|unlocalize }}"
+         data-zoom="{{ map_zoom }}"></div>
+    <p id="location-map-detail-empty" class="muted">Klikněte na polygon lokality na mapě.</p>
+    <div id="location-map-detail" class="location-map-detail" hidden>
+      <h3 id="location-map-detail-title"></h3>
+      <dl class="location-map-detail-meta">
+        <div>
+          <dt>Kód</dt>
+          <dd id="location-map-detail-code"></dd>
+        </div>
+        <div>
+          <dt>Nadřazená</dt>
+          <dd id="location-map-detail-parent"></dd>
+        </div>
+        <div>
+          <dt>Pracoviště</dt>
+          <dd id="location-map-detail-workplace"></dd>
+        </div>
+      </dl>
+      <p id="location-map-detail-desc" class="location-map-detail-desc"></p>
+      <p>
+        <a id="location-map-detail-edit" class="button secondary" href="#">Upravit</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Seznam</h2>
+    {% if locations %}
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Kód</th>
+              <th>Název</th>
+              <th>Nadřazená</th>
+              <th>Pracoviště</th>
+              <th>Aktivní</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for loc in locations %}
+              <tr class="{% if loc.parent_id %}location-sub{% else %}location-main{% endif %}">
+                <td>
+                  <span class="location-color-swatch"
+                        style="background:{{ loc.color }}"
+                        title="{{ loc.color }}"
+                        aria-label="Barva {{ loc.color }}"></span>
+                </td>
+                <td>{% if loc.parent_id %}↳ {% endif %}{{ loc.code }}</td>
+                <td>{{ loc.name }}</td>
+                <td>{% if loc.parent_id %}{{ loc.parent.code }}{% else %}—{% endif %}</td>
+                <td>{{ loc.workplace|default:"—" }}</td>
+                <td>{% if loc.is_active %}Ano{% else %}Ne{% endif %}</td>
+                <td><a href="{% url 'activity_location_edit' loc.pk %}">Upravit</a></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="muted">Zatím žádné lokality. Vytvořte první polygon.</p>
+    {% endif %}
+  </section>
+{% endblock %}
+
+{% block extra_head %}
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+{% endblock %}
+
+{% block extra_body %}
+  {{ map_geojson|json_script:"locations-geojson" }}
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="{% static 'mpdmb/js/activity_map_tiles.js' %}?v={{ APP_VERSION }}"></script>
+  <script src="{% static 'mpdmb/js/activity_locations_map.js' %}?v={{ APP_VERSION }}" defer></script>
+{% endblock %}

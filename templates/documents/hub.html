@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Dokumenty{% endblock %}
+
+{% block content %}
+  <h1>Dokumenty</h1>
+  <p class="muted">
+    Word šablony s placeholdery a uložené dokumenty zaměstnanců a techniky.
+    <a href="{% url 'home' %}">Zpět na přehled</a>
+  </p>
+
+  {% if tiles %}
+    <div class="tile-grid">
+      {% for tile in tiles %}
+        <a class="tile" href="{{ tile.resolve_url }}">
+          <span class="tile-icon" aria-hidden="true">
+            {% if tile.icon == "employees" %}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+            {% elif tile.icon == "technika" %}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 17h14v-5l-2-4H7l-2 4z"/>
+                <path d="M5 12h14"/>
+                <circle cx="7.5" cy="17" r="1.5"/>
+                <circle cx="16.5" cy="17" r="1.5"/>
+              </svg>
+            {% else %}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <path d="M14 2v6h6"/>
+                <path d="M16 13H8"/>
+                <path d="M16 17H8"/>
+                <path d="M10 9H8"/>
+              </svg>
+            {% endif %}
+          </span>
+          <h2>{{ tile.title }}</h2>
+          <p>{{ tile.description }}</p>
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="notice">Nemáte přístup k žádné sekci dokumentů.</p>
+  {% endif %}
+{% endblock %}

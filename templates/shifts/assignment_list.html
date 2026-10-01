@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>Přiřazení šablon</h1>
+  <p class="muted">Šablona + pracoviště + platnost určují automatické vyplnění měsíčního plánu.</p>
+  <div class="list-toolbar">
+    <div class="list-actions">
+      <a class="button" href="{% url 'schedule_assignment_create' %}">Nové přiřazení</a>
+      <a class="button secondary" href="{% url 'schedule_template_list' %}">Šablony</a>
+      <a class="button secondary" href="{% url 'shift_month' %}">Zpět na plán</a>
+    </div>
+  </div>
+  <section class="panel">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Zaměstnanec</th>
+            <th>Šablona</th>
+            <th>Pracoviště</th>
+            <th>Platnost</th>
+            <th>Stav</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for a in assignments %}
+            <tr>
+              <td>{{ a.employee.last_name }} {{ a.employee.first_name }}</td>
+              <td>{{ a.template.name }} <code>{{ a.template.pattern_codes }}</code></td>
+              <td>{{ a.workplace.name }}</td>
+              <td>
+                {{ a.valid_from|date:"d.m.Y" }}
+                –
+                {% if a.valid_to %}{{ a.valid_to|date:"d.m.Y" }}{% else %}bez konce{% endif %}
+              </td>
+              <td>
+                {% if a.is_active %}
+                  <span class="badge success">aktivní</span>
+                {% else %}
+                  <span class="badge warning">neaktivní</span>
+                {% endif %}
+              </td>
+              <td><a href="{% url 'schedule_assignment_edit' a.pk %}">Upravit</a></td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="6">Žádná přiřazení.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+{% endblock %}

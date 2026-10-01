@@ -1,0 +1,176 @@
+[
+  {
+    "id": "index.html",
+    "title": "Nápověda SYNERA",
+    "url": "/napoveda/",
+    "headings": [
+      "Nápověda SYNERA",
+      "Co je SYNERA",
+      "Rychlé odkazy"
+    ],
+    "text": "SYNERA Hledat v nápovědě Nic nenalezeno. Zkuste jiné klíčové slovo. Moderní interní nápověda s fulltextovým vyhledáváním. Při každé nové funkci aplikace se tato nápověda doplňuje. SYNERA propojuje zaměstnance, směny, docházku, úkoly a provoz v jednom systému (synergie). Nasazení je určeno pro provoz parkovacích domů v Mladé Boleslavi. Aplikace běží na Windows v prohlížeči, data ukládá do SQLite souboru db.sqlite3 . Vstup na hlavní adresu vyžaduje přihlášení. Aktuální verze je uvedena v patičce aplikace a v /health/ . Jak spustit aplikaci Přihlášení Přehled Administrace Zaměstnanci Pracoviště Dlouhodobý plán Docházka Dovolená Činnost Technika Dokumenty SYNERA · nápověda · datum formátu dd.mm.rrrr"
+  },
+  {
+    "id": "pages/administrace.html",
+    "title": "Administrace",
+    "url": "/napoveda/pages/administrace.html",
+    "headings": [
+      "Administrace",
+      "Kdo smí do administrace",
+      "Co patří do adminu a co do aplikace",
+      "Účty, skupiny a role",
+      "Číselníky a nastavení",
+      "Audit",
+      "Bezpečnost"
+    ],
+    "text": "SYNERA Hledat v nápovědě Nic nenalezeno. Zkuste jiné klíčové slovo. Nápověda pro uživatele s přístupem do rozhraní /admin/ (dlaždice Administrace na Přehledu). Rozhraní na /admin/ se jmenuje SYNERA (nadpis Administrace). Přístup mají: superuživatel — vždy; uživatel s příznakem Přístup do administrace ( is_staff ) a zároveň ve skupině administrátor . Zařazením do skupiny administrátor se is_staff zapne automaticky. Dlaždice Administrace na Přehledu se zobrazí jen těmto uživatelům. Administrace má vlastní přihlášení na /admin/ (oddělené od /prihlaseni/ aplikace). Administrace slouží hlavně k účtům , skupinám , číselníkům a auditu . Provozní data spravujte v aplikaci SYNERA: směny a dlouhodobý plán; docházka a dovolená; kvalifikace na kartě zaměstnance; vozidla a doklady (STK, pojistka) v Technice; plán činností a lokality (kromě mapových měst a typů). Na úvodní stránce adminu je krátká připomínka a odkaz na tuto nápovědu. Připravené skupiny podle názvu: administrátor , vedoucí , zaměstnanec a čtenář . Každá má přednastavená Django oprávnění (matice se synchronizuje migrací nebo příkazem sync_role_permissions ). Administrátor — všechna Django oprávnění (účty, skupiny, provozní moduly, audit). Zařazením se zapne is_staff a dlaždice Administrace. Vedoucí — správa provozních modulů (zaměstnanci, pracoviště, směny, docházka, dovolená, činnosti, technika) a exporty; bez správy účtů a bez dlaždice Administrace. Zaměstnanec a čtenář — prohlížení provozních přehledů; rozsah řádků řeší aplikace. Příznak is_staff sám o sobě nestačí ke správě adresáře ani plánu směn — uživatel musí být ve skupině administrátor nebo vedoucí (nebo mít práva superuživatele). Ve sloupci „Dostupné“ v administraci skupin jsou práva, která skupina nemá ; u administrátora má být tento sloupec prázdný po synchronizaci ( sync_role_permissions ). U účtu v administraci je právě jedna role (select Role). Po změně role se ve Vybrané u uživatelských oprávnění hned načtou práva této role; v Dostupné zůstane zbytek. Do databáze se u uživatele ukládají jen výjimky navíc — matice role zůstává u skupiny. Odebráním práva, které dává jen role, oprávnění nezrušíte (upravte skupinu). Jméno a e-mail u účtu se berou ze zaměstnance (vazba Účet na kartě zaměstnance). V administraci uživatele se needitují — přiřaďte účet na kartě zaměstnance a údaje se zkopírují. Níže uvedené položky spravujte v administraci. Detailní provoz modulů je v příslušných stránkách nápovědy. Typy kvalifikací — včetně pole upozornit dní před expirací (výchozí např. 30 dní u řidičského průkazu, 60 u elektro). Varování na Přehledu a badge u zaměstnanců. Viz Zaměstnanci . Typy dokladů vozidel — totéž pro STK / pojistku (výchozí 30 dní). Viz Technika . Typy směn a předvolby úvazku (např. 40 / 38,75 / 37,5 h). Viz Dlouhodobý plán . Typy absencí a stravné (prahy hodin pro stravenky). Viz Docházka . Politika dovolené (globální pravidla). Individuální nastavení a plánování v aplikaci — viz Dovolená . U nároků dovolené jsou ideální a nejzazší lhůta nároku roku (§ 218) editovatelné jen pro roli administrátor (nebo superuser); při změně se zapne „lhůty nastaveny ručně“. Ostatní staff je vidí jen ke čtení. „Vyčerpat převod do“ jen při převodu (systémové). Typy činností a mapová města (střed mapy, zoom). Lokality a denní plán v aplikaci — viz Činnost . Seznam auditních událostí je v administraci jen ke čtení (nelze přidávat ani měnit záznamy). Operace a typ objektu se zobrazují česky; v databázi zůstávají technické anglické kódy. Filtry v seznamu nabízejí české popisky. Heslo nastavte při založení účtu nebo přes změnu hesla v administraci. Konkrétní hesla do nápovědy neuvádíme. Účet raději deaktivujte (odškrtněte Aktivní), než jej smažete — historie a audit zůstanou srozumitelné. VPN ani síťový přístup nenahrazují přihlášení a oprávnění v aplikaci. Zpět na úvod nápovědy"
+  },
+  {
+    "id": "pages/cinnost.html",
+    "title": "Činnost",
+    "url": "/napoveda/pages/cinnost.html",
+    "headings": [
+      "Činnost",
+      "Co je modul Činnost",
+      "Lokality na mapě",
+      "Denní rozvrh",
+      "Vozidlo u činnosti",
+      "Denní úkoly",
+      "Šablona lokalit a generátor",
+      "Export pro technika",
+      "Oprávnění"
+    ],
+    "text": "SYNERA Hledat v nápovědě Nic nenalezeno. Zkuste jiné klíčové slovo. Modul Činnost ( /cinnost/ ) slouží vedoucímu k plánování návštěv lokalit v rámci publikované směny práce (např. typ R 08:00–14:00). Technik dostane srozumitelný denní list přes export / tisk. Živé GPS ani výpočet přejezdů v této etapě nejsou. V /cinnost/lokality/ spravujete číselník lokalit. Existují hlavní lokace a volitelné podlokace (jedna úroveň, např. Sever › B2). Hlavní i podlokace mají vlastní polygon. Činnost lze naplánovat na hlavní lokaci i na podlokaci. Mapa používá Leaflet a podklad OpenStreetMap (DE) s dobrým pokrytím ČR při přiblížení. Ve správě (administrace) lze nastavit mapová města (střed lat/lon a zoom); na stránce lokalit zvolíte, které město mapa ukáže — střed města se nepřepisuje podle polygonů v jiných lokalitách. Kliknutím na polygon se pod mapou zobrazí popis lokality, kód, nadřazená lokace, pracoviště a odkaz Upravit. Nakreslete polygon: ikona mnohoúhelníku na mapě, vrcholy klikáním, uzavření dvojklikem; pak kód, název, barvu polygonu (pro přehlednost na mapě) a Uložit. Při nové lokalitě i úpravě zůstávají na mapě stávající polygony jako needitovatelný podklad (překryvy). Volitelně nadřazená lokace (podlokace) a pracoviště. Na /cinnost/ zvolte den . Pokud není vybrané pracoviště ani zaměstnanec, uvidíte přehled Směny dne : kdo má publikovanou směnu z dlouhodobého plánu, na jakém pracovišti a v jakém čase. Kliknutím na jméno otevřete detail; klik na pracoviště otevře desku. Vedle filtrů je měsíční kalendář : vybraný den je vždy stejný jako pole Den (bez parametru = dnes). Klik na den v kalendáři nastaví Den. Dny se směnou (někdo má publikovanou směnu na libovolném pracovišti) a dny s již naplánovanými činnostmi jsou barevně označené. U pracoviště ve filtru je počet osob se směnou v daný den, např. Managment (1). Po výběru pracoviště se zobrazí hodinová deska. U jména je vidět typ a čas směny. Kliknutím na buňku otevřete dialog: až 10 činností v hodině (typ povinný, lokalita a vozidlo volitelné, víceřádkové očekávání ). Od–Do se předvyplní podle hodinového úseku; další položka naváže Od na Do předchozí. Lze upravit uvnitř úseku (např. 08:10–08:30 v buňce 08–09); prázdná pole = celá hodina. Lze přidávat, ukládat a mazat jednotlivé položky nebo vymazat celou hodinu. V matici buňka ukazuje čas, typ, lokalitu a zkrácené očekávání . Barva buňky odpovídá barvě první lokality (pokud je). Export u rozvrhu nebo detailu otevře dialog: rozsah (celé pracoviště / konkrétní zaměstnanec) a formát (PDF pro tisk, nebo Excel). Sestava obsahuje směny, hodinové činnosti s plným očekáváním, denní úkoly a legendu lokalit. Výběrem zaměstnance (filtr nebo klik na jméno) přepnete na detail směny (osa po hodinách) se stejnými dialogy a akcemi Generovat / Přegenerovat / Vymazat den. Deska pracoviště a detail se nezobrazují současně — z detailu se vrátíte odkazem Zpět na rozvrh . V seznamu jsou jen lidé s aktivním pracovním vztahem a publikovanou směnou práce; samotný nástup nestačí. K položce činnosti lze volitelně přiřadit vozidlo (SPZ z evidence Technika) — na část intervalu nebo celý den. Zaměstnanec musí mít platný řidičský průkaz; stejné vozidlo nesmí být ve stejném čase u dvou činností. Pokud v Technice ještě není žádné aktivní vozidlo, select to napíše a odkáže na založení evidence. Podrobnosti viz Technika . Mimo hodinovou mřížku můžete přidat denní úkol (např. „B2 kontrola 4×“) — typ, volitelná lokalita a víceřádková poznámka (delší text). Úkol patří k celému dni (rozsah publikovaných směn práce), v hodinových buňkách se nezobrazuje. Sekce je pod deskou pracoviště i na detailu zaměstnance; generátor z preferencí denní úkoly nevytváří a při přegenerování hodinového plánu je nemění. U zaměstnance nastavíte šablonu lokalit (tlačítko Šablona lokalit na detailu dne): které lokality a jak často (váha/četnost) mají vyplnit směnu. Lze přidat až 20 lokalit. Pořadí určuje pořadí bloků. Volitelný výchozí typ činnosti se propsá do vygenerovaných položek. Generovat naplní den podle šablony a směny (jen pokud den ještě nemá činnosti). Přegenerovat plán přepíše. Bez šablony lokalit nebo bez směny generátor odmítne požadavek. Návrh počítá s budoucím rozšířením o další typy činností a požadavky (číselník typů + poznámka / typ u slotu); matice hodin se nemění. Tlačítko Export u rozvrhu nebo detailu zaměstnance otevře dialog: zvolíte, koho exportovat (pracoviště / jeden zaměstnanec) a formát (PDF nebo Excel). PDF uložíte přes Tisk / PDF v prohlížeči; Excel stáhne soubor .xlsx. Export vyžaduje oprávnění Může exportovat plán činností (skupiny vedoucí/administrátor, nebo individuálně v administraci uživatele). Plánovat činnosti a spravovat lokality může vedoucí a administrátor (stejné oprávnění jako u plánu směn). Běžný zaměstnanec sekci Činnost v navigaci nevidí. SYNERA · nápověda · datum formátu dd.mm.rrrr"
+  },
+  {
+    "id": "pages/dochazka.html",
+    "title": "Docházka",
+    "url": "/napoveda/pages/dochazka.html",
+    "headings": [
+      "Docházka",
+      "Dlouhodobý plán a docházka",
+      "Měsíční přehled",
+      "Akce u dne",
+      "Práce mimo plán (So/Ne)",
+      "Oprávnění"
+    ],
+    "text": "SYNERA Hledat v nápovědě Nic nenalezeno. Zkuste jiné klíčové slovo. Dlouhodobý plán ( /smeny/ ) říká, kdo má kdy pracovat. Docházka ( /dochazka/ ) eviduje skutečnost: potvrzenou práci nebo absenci. Jsou to dvě oddělené evidence. Import z docházkového čipu v této verzi není. Z dlouhodobého plánu otevřete odkaz „Docházka tohoto měsíce“. Potvrzení docházky vyžaduje aktivní pracovní vztah (den nástupu na kartě zaměstnance) k datu směny. Stejné pravidlo platí i pro dlouhodobý plán — bez vztahu směnu nelze vytvořit. Přiřazení pracoviště samo nestačí — bez vztahu matice docházky ukáže nevyřešený den ( ? ) u starších směn, ale potvrzení nabídne srozumitelnou chybu a odkaz na úpravu zaměstnance. Adresa /dochazka/?year=&month= zobrazuje matici zaměstnanec × dny. U každého dne s publikovanou směnou práce je stav: Práce – potvrzený pracovní interval (klik = detail dne) Absence – dovolená, lékař nebo nemoc (klik = detail dne) Nevyřešeno ( ? v matici) – bez potvrzení i bez absence; klik otevře kontextové menu (jako „+“ u směn): potvrdit jako plán, upravit časy (modal), dovolená / lékař / nemoc, detail dne (modal). Akce neopouští měsíční matici. — / + – žádná publikovaná směna; u vedoucího klik na + otevře modal s rychlou volbou typu směny (1 klik = zápis práce) nebo vlastními časy Shrnutí měsíce uvádí plánované hodiny (z publikovaných směn), potvrzenou práci, zameškané hodiny z absencí, počet nevyřešených dnů a sloupec Stravné (součet stravenek za měsíc). Za den náleží 0–2 stravenky podle čisté potvrzené práce a prahů v administraci pod Docházka → Stravné : 1. stravenka od výchozích 3 h, 2. stravenka od výchozích 12 h (druhý práh lze vypnout). Zaměstnanci jsou seskupení podle pracoviště stejně jako v dlouhodobém plánu; pod jménem je platnost z evidence zaměstnance (např. Managment (od 01.10.2026)). Pokud u směny chybí pracovní vztah, zobrazí se upozornění „Chybí pracovní vztah k datu směny“ s odkazem na kartu zaměstnance. Zaškrtnutím Dlouhodobý plán nad maticí se pod každým zaměstnancem zobrazí řádek s kódy směn z dlouhodobého plánu (náhled jen ke čtení, stejná data jako v menu Dlouhodobý plán). U jména je checkbox Plán — skryje nebo znovu ukáže řádek u daného člověka. Úpravy plánu zůstávají v modulu Dlouhodobý plán. Vedoucí a administrátor mohou stáhnout Export Excel ( /dochazka/export/?year=&month= ) se listy Souhrn, Denni a Metodika. Jde o podklad z matice docházky, nikoli o finální mzdovou uzávěrku. U nevyřešeného dne (v matici krátký znak ? ) použijte menu v matici. Všechny volby běží na místě (AJAX nebo modal), bez přechodu na jinou stránku. Volitelně v modalu Detail dne je odkaz na celou stránku dne. U publikované směny můžete: Potvrdit jako plán – časy a pauza podle typu směny Upravit časy – otevře modal (začátek/konec HH:mm, pauza); po uložení se práce potvrdí Dovolená / Lékař / Nemoc – absence; zameškané minuty se berou z čisté délky publikované směny (ne plošných 8 h) Zrušit zápis – vrátí den do stavu nevyřešeno Nelze mít zároveň potvrzenou práci i absenci u téže směny. Nemoc je evidence zameškaných plánovaných hodin; výpočet náhrady podle § 192 zde není. Potvrzení vyžaduje aktivní pracovní vztah v daný den. Vedoucí může zapsat práci mimo publikovanou směnu (ad-hoc): v matici u prázdného dne (včetně soboty a neděle) klikne na + . Otevře se modal — buď jedním klikem zvolí typ směny (časy a pauza z typu), nebo vyplní vlastní časy. Den se bere z buňky matice, stránka se neopouští. Z detailu dne zůstává i odkaz „Přidat práci (mimo plán)“. Zápis vyžaduje aktivní pracovní vztah a nepatří do součtu „Plánováno“ — jen do potvrzené práce. Vedoucí a administrátor vidí docházku všech aktivních zaměstnanců. Zaměstnanec vidí a potvrzuje jen sebe. Cizí docházka není dostupná. SYNERA · nápověda · datum formátu dd.mm.rrrr"
+  },
+  {
+    "id": "pages/dokumenty.html",
+    "title": "Dokumenty – nápověda SYNERA",
+    "url": "/napoveda/pages/dokumenty.html",
+    "headings": [
+      "Dokumenty (Word šablony)",
+      "Co panel obsahuje",
+      "Univerzální šablona",
+      "CSV a Word Korespondence",
+      "Deaktivace šablon a mazání dokumentů",
+      "Společná pole",
+      "Pole zaměstnance",
+      "Pole vozidla",
+      "Práva"
+    ],
+    "text": "SYNERA Hledat v nápovědě Nic nenalezeno. Zkuste jiné klíčové slovo. Univerzální Word šablony se sloučenými poli, generování a uložení souborů u zaměstnanců a vozidel. Sekce Dokumenty pracuje se soubory .docx . Oddělte ji od evidence platnosti dokladů (STK, pojistka) v Technice a kvalifikací u zaměstnance. Šablony — jen administrátor. Zaměstnanci / Technika — administrátor a vedoucí. Moje dokumenty — zaměstnanec jen vlastní soubory. Čtenář panel neotevře. SYNERA založí dvě vestavěné šablony: Univerzální – zaměstnanec a Univerzální – vozidlo . Už obsahují všechna sloučená pole (MERGEFIELD) z katalogu. Na detailu zaměstnance nebo vozidla zvolte univerzální šablonu. Klikněte na vygenerování Wordu. Stáhněte vyplněný .docx a případně vytiskněte ve Wordu. Vlastní dopis: stáhněte šablonu, ve Wordu přesuňte nebo smažte pole, nahrajte jako novou verzi. Formát je vždy .docx . Soubory šablon jsou v aplikaci ( media/documents/templates/ ), vyplněné dokumenty v media/documents/stored/ . U každého pole je viditelný český název (např. «Příjmení») a komentář Wordu s nápovědou — po najetí na značku komentáře se zobrazí popis pole. Technický kód pole zůstává MERGEFIELD zamestnanec.prijmeni . Tlačítko Obnovit univerzální šablony na seznamu šablon vytvoří novou verzi se všemi aktuálními poli (včetně nových typů kvalifikací nebo dokladů). Na detailu šablony (nebo sloupec CSV v seznamu) stáhnete CSV polí (UTF-8, oddělovač středník) — jde jen o seznam názvů polí, ne o data zaměstnanců. Ve Wordu otevřete šablonu .docx . Karta Korespondence → Vybrat příjemce → Použít existující seznam → vyberte CSV. Vložit sloučené pole — uvidíte názvy jako zamestnanec.prijmeni . Uložte .docx a nahrajte do SYNERA jako verzi šablony. Pokud Word při otevření šablony hlásí SQL / CSV (např. „Otevřením tohoto dokumentu spustíte SQL…“), jde o uloženou vazbu Korespondence na CSV. Zvolte Ne (nepokračovat v SQL) — Word přesto může pole zobrazit. SYNERA vazbu u šablon při nahrání nemáže , aby šlo dál používat „Vložit sloučené pole“. U vygenerovaného dokumentu vazbu odstraní, aby zaměstnanci nedostávali dialog při otevření. Generování v aplikaci vyplní sloučená pole i textové tokeny {{nazev}} . Server Word nespouští. Alternativa bez CSV: na detailu šablony použijte Vložit do Wordu . Šablonu deaktivujete na jejím detailu — zmizí z nabídky generování. Neaktivní šablony zobrazíte zaškrtnutím v seznamu; lze je znovu aktivovat. Univerzální šablony obnovíte tlačítkem Obnovit. Uložený dokument: Archivovat (skryje, soubor zůstane) nebo Smazat (trvale smaže záznam i soubor). dnes — datum generování dd.mm.rrrr cas — čas HH:mm datum_cas — dd.mm.rrrr HH:mm vystavil — jméno přihlášeného uživatele vystavil_uzivatel — přihlašovací jméno aplikace — SYNERA verze_aplikace — číslo verze zamestnanec.jmeno , prijmeni , cele_jmeno zamestnanec.interni_cislo , funkce , telefon , email zamestnanec.pracovni_kontakt , poznamka , stav zamestnanec.den_nastupu , den_ukonceni , mzdove_cislo zamestnanec.druh_vztahu , rezim_odmenovani , funkce_ve_vztahu zamestnanec.uvazek , stanovena_tydenni , rezim_rozvrhu , rozvrzeni zamestnanec.platnost_uvazku_od , platnost_uvazku_do pracoviste.nazev , typ , adresa , seznam Kvalifikace: kvalifikace.<kod>.cislo , .skupiny , .platnost_od , .platnost_do , .vydal (např. kvalifikace.ridicsky_prukaz.platnost_do ) vozidlo.spz , oznaceni , poznamka , stav vozidlo.odpovedna_osoba a telefon / e-mail / interní číslo Doklady: doklad.<kod>.cislo , .platnost_od , .platnost_do , .vydal , .poznamka (např. doklad.stk.platnost_do ) Zkratky: vozidlo.stk_platnost_do , vozidlo.pojistka_platnost_do Administrátor spravuje šablony a všechny uložené dokumenty. Vedoucí šablony nemění; generuje a čte dokumenty zaměstnanců i techniky. Zaměstnanec čte jen dokumenty u své karty. Čtenář nemá přístup. SYNERA · nápověda · datum formátu dd.mm.rrrr"
+  },
+  {
+    "id": "pages/dovolena.html",
+    "title": "Dovolená",
+    "url": "/napoveda/pages/dovolena.html",
+    "headings": [
+      "Dovolená",
+      "Roční plán",
+      "Pravidla a kontroly"
+    ],
+    "text": "SYNERA Hledat v nápovědě Nic nenalezeno. Zkuste jiné klíčové slovo. Modul Dovolená ( /dovolena/ ) je pod rozcestníkem Provoz . Nárok se počítá podle § 212–213 zákoníku práce z celých odpracovaných násobků týdenní pracovní doby (min. 4 násobky a poměr trvá alespoň 28 dní). Zobrazuje se naběhlé (potvrzená docházka + započtená dovolená) i odhad (naběhlé + publikované směny práce do konce roku). Plánování kontroluje zůstatek odhadu. Zaokrouhlení výsledku je nahoru na celé hodiny. Program není osvědčením právní správnosti. Vedoucí na roční přehledu klikne na jméno zaměstnance a otevře detail s kalendářem. Alternativně zvolí pohled podle pracoviště (řádky pracovníků). Na stránce detailu je roční kalendář (12 měsíců). Klik na pracovní den otevře dialog s předvyplněným polem Od ; prázdné Do znamená jen ten den. Tlačítko „Přidat blok“ otevře prázdný dialog Od–Do (případně půlden). U jednodenního bloku lze zvolit půlden (dopoledne / odpoledne), pokud je půldenní dovolená povolena. Schválení vytvoří směny typu D v dlouhodobém plánu a absenci v docházce. Nárok roku se má ideálně vyčerpat do 31. 12. roku vzniku (§ 218 odst. 1); nejzazší lhůta je 31. 12. následujícího roku (odst. 3). Tyto lhůty systém zobrazuje a varuje při nevyčerpaném zůstatku. V administraci (nároky dovolené) je může upravit jen role administrátor (např. výjimky § 218 odst. 5) — zaškrtněte lhůty nastaveny ručně , jinak je systém při obnově nároku znovu nastaví na výchozí. Ostatní uživatelé s přístupem do adminu lhůty jen vidí. Datum „vyčerpat převod do“ se nastaví jen při převodu z minulého roku — na 31. 12. roku, ve kterém převod evidujeme (např. převod z 2026 do 2027 → 31.12.2027). Bez převodu je pole prázdné. Výjimky (nemoc, mateřská/rodičovská) systém zatím neprodlužují automaticky. Globální pravidla (výměra, půlden, kontroly, souvislý úsek) zůstávají jen v administraci Django . Min. souvislý úsek se počítá v pracovních dnech Po–Pá ; započtení svátků lze v pravidlech zapnout. Plány dovolené se spravují jen v aplikaci, ne v adminu. Individuální navýšení týdnů a půlden nastavíte na kartě zaměstnance. Program připravuje podklady podle nastavení; není osvědčením právní správnosti. Lhůty nároku roku (ideálně / nejzazší) a převodu (§ 218) jsou v aplikaci i v administraci; výchozí hodnoty smí v adminu měnit jen administrátor (ruční zámek lhůt). SYNERA · nápověda · datum formátu dd.mm.rrrr"
+  },
+  {
+    "id": "pages/pracoviste.html",
+    "title": "Pracoviště",
+    "url": "/napoveda/pages/pracoviste.html",
+    "headings": [
+      "Pracoviště",
+      "Seznam",
+      "Přiřazení zaměstnanců",
+      "Archivace"
+    ],
+    "text": "SYNERA Hledat v nápovědě Nic nenalezeno. Zkuste jiné klíčové slovo. Adresa /pracoviste/ zobrazuje pracoviště (např. parkovací domy). Filtrujte podle názvu nebo adresy; archivovaná lze zobrazit zvlášť. Pracoviště s platností od/do nastavíte nejlépe na kartě zaměstnance ( /zamestnanci/…/upravit/ ) — platnosti se nesmí překrývat. Alternativně lze přiřadit i z detailu pracoviště (stejná evidence EmployeeWorkplace ). Pracoviště archivujte místo mazání, aby zůstaly historické vazby a budoucí směny/úkoly. Zpět na úvod nápovědy"
+  },
+  {
+    "id": "pages/prehled.html",
+    "title": "Přehled",
+    "url": "/napoveda/pages/prehled.html",
+    "headings": [
+      "Přehled",
+      "Úvodní stránka",
+      "Zdravotní kontrola",
+      "Administrace"
+    ],
+    "text": "SYNERA Hledat v nápovědě Nic nenalezeno. Zkuste jiné klíčové slovo. Úvodní stránka / zobrazuje dlaždice modulů, ke kterým máte přístup podle role. Dlouhodobý plán, docházka a dovolená jsou pod společnou dlaždicí Provoz ( /provoz/ ). Pokud máte prošlé nebo blížící se kvalifikace či doklady vozidel, zobrazí se dialog s jejich seznamem. Adresa /health/ vrací JSON {\"status\":\"ok\"} bez citlivých údajů. Slouží k ověření, že služba běží. Účty, skupiny, číselníky a audit popisuje samostatná stránka Nápověda Administrace (pro uživatele s přístupem do /admin/ ). Zpět na úvod nápovědy"
+  },
+  {
+    "id": "pages/prihlaseni.html",
+    "title": "Přihlášení",
+    "url": "/napoveda/pages/prihlaseni.html",
+    "headings": [
+      "Přihlášení",
+      "Povinné přihlášení",
+      "Účet",
+      "Kde se přihlásit"
+    ],
+    "text": "SYNERA Hledat v nápovědě Nic nenalezeno. Zkuste jiné klíčové slovo. Adresa aplikace ( http://127.0.0.1:8000/ nebo http://<IP>:8000/ ) vyžaduje přihlášení. Bez platné session jste přesměrováni na /prihlaseni/ . Na přihlášení se zobrazí logo, název SYNERA a krátký popis provozu. Zadejte uživatelské jméno a heslo. Přihlašovací účet zakládá správce systému. Pro lokální vývoj může účet připravit příkaz ensure_dev_admin (součást start-dev.bat ). Konkrétní jméno a heslo do nápovědy neuvádíme. Přihlašovací formulář: /prihlaseni/ Odhlášení: tlačítko Odhlásit v horní liště ( /odhlaseni/ ) Administrace: /admin/ (vlastní přihlášení adminu) Veřejná zůstává jen zdravotní kontrola /health/ . Zpět na úvod nápovědy"
+  },
+  {
+    "id": "pages/smeny.html",
+    "title": "Dlouhodobý plán",
+    "url": "/napoveda/pages/smeny.html",
+    "headings": [
+      "Dlouhodobý plán",
+      "Měsíční přehled",
+      "Typy směn (definice)",
+      "Šablony směn",
+      "Fond a vyrovnávací období",
+      "Svátky a plánované hodiny",
+      "Stavy směny"
+    ],
+    "text": "SYNERA Hledat v nápovědě Nic nenalezeno. Zkuste jiné klíčové slovo. Adresa /smeny/ zobrazuje měsíční matici dlouhodobého plánu: řádky jsou zaměstnanci (příjmení jméno), seskupení podle pracoviště; sloupce jsou dny měsíce. V buňce je symbol typu směny (např. R ). Časy jsou Europe/Prague, data dd.mm.rrrr. Vedoucí a administrátor vidí všechny aktivní zaměstnance a mohou plán upravovat. Zaměstnanec vidí jen sebe (a jen publikované směny). Seskupení je podle primárního pracoviště v měsíci (střed měsíce, jinak nejdelší interval). Při změně pracoviště uprostřed měsíce (nebo půlměsíční rotaci) se pod jménem zobrazí intervaly, např. A (1.–15.9.) · B (16.–30.9.) . V plánu měsíce jsou jen zaměstnanci s aktivním pracovním vztahem překrývajícím měsíc (nástup již nastal a vztah ještě neskončil). Bez dne nástupu se v dlouhodobém plánu nezobrazí a směnu nelze vytvořit ani vygenerovat. Přiřazení pracoviště samo nestačí. Zaměstnanci bez pracoviště v daném měsíci jsou ve skupině „Bez pracoviště“ (s poznámkou budoucího přiřazení, pokud existuje). Podrobnosti typů směn jsou ve sbalitelné legendě nahoře. Adresa /smeny/typy/ spravuje definice směn bez zaměstnance : symbol, název, druh (práce / pohotovost), začátek/konec, pauza. Tlačítko „Nová směna“ zde založí typ, nikoli přiřazení osobě. Výchozí příklady: R ranní 08:00–14:00, O odpolední 14:00–22:00, N noční 22:00–06:00. Pohotovost (§ 140) je doba držení se, ne klasická práce: v matici se zobrazí v závorkách (např. (P) ) a nezapočítává se do sloupce Plánováno ani do odpracovaných hodin. Výplata za pohotovost patří do mzdových podkladů. Pracovní cesta a překážky v práci se evidují v docházce (samostatný modul). Přiřazení k zaměstnanci probíhá až v měsíční matici (buňka dne nebo „Přiřadit směnu“): vyberete osobu, den, typ a pracoviště. Legendu typů na měsíčním plánu otevřete tlačítkem „Zobrazit legendu“. Adresa /smeny/sablony/ spravuje cyklické vzory délky 7 nebo 14 dní (krátký/dlouhý týden). Příklad Po–Pá typ R = RRRRR·· . Přiřazení na /smeny/sablony/prirazeni/ obsahuje pracoviště, platnost a kotvu cyklu (1. den šablony) pro fázový posun při nepřetržitém provozu. Tlačítko Vygenerovat… otevře formulář: povinný výběr šablony , pracoviště a kotvy cyklu, dále rozsah (měsíc / celý rok / od–do) a zaměstnance. Šablona platí pro tento běh; trvalé přiřazení zůstává ve Šablony → Přiřazení. Výchozí kotva je pondělí týdne začátku intervalu (u šablony Po–Pá typu RRRRR·· ). Existující směny stejného typu se nepřepisují. Klik na + v buňce otevře kontextové menu s typy směn (bez odchodu na jinou stránku). Pracoviště bere z přiřazení šablony nebo z vazby zaměstnance na pracoviště. V jednom dni může být až 12 časově se nepřekrývajících směn (např. ranní + noční/pohotovost), zobrazení např. R+N . Úvazek nastavíte u zaměstnance na /zamestnanci/…/upravit/ v sekci Pracovní vztah (sjednaná týdenní doba, režim, předvolba). Předvolby (výchozí 40 / 38,75 / 37,5 h) spravuje administrátor na /smeny/fond/predvolby/ ; ve formuláři jen vyplní minuty. Fond se počítá ze sjednané týdenní doby. Sloupec Fond sčítá po dnech Po–Pá včetně všedního státního svátku (září 2026 při 37,5 h = 22 × 7,5 = 165 h; při 40 h = 176 h). Změna úvazku uprostřed měsíce: nastavte nové „platí od“ na kartě zaměstnance — starý úvazek se ukončí dnem předtím a výpočet se rozdělí sám. Na /smeny/fond/ nastavíte vyrovnávací období (cíl fondu, horizont generování) a uvidíte přehled úvazků. Pro stejné období u více lidí použijte Stejné období pro více… . Čisté časy typů směn se zobrazují v hodinách (např. R = 6:00), uvnitř systému zůstávají minuty. Sloupec Plánováno sčítá jen publikované směny druhu práce. Státní svátky ČR jsou v hlavičce dnů zvýrazněné. Do fondu (běžný jednosměnný režim) se všední svátek počítá jako fondový den. Zda se směna ve svátek vygeneruje do plánu, řídí příznak typu Povoleno ve svátek (Typy směn). Typy bez příznaku se ve svátek přeskočí. Sloupec „Plánováno“ sčítá čisté hodiny publikovaných směn práce v měsíci (ne počet dní × 8 hodin a ne pohotovost). Dlouhodobý plán a skutečná docházka jsou oddělené evidence. Potvrzení práce a absence (dovolená, lékař, nemoc) najdete v Docházce ( /dochazka/ ); z měsíčního plánu vede odkaz „Docházka tohoto měsíce“. Návrh – připravená, nepočítá se do fondu Publikováno – platí v plánu a v součtu hodin Zrušeno – neplatí Systém blokuje překryv směn stejného zaměstnance včetně směn přes půlnoc. Souběžné úpravy kontroluje verze záznamu. Zpět na úvod nápovědy"
+  },
+  {
+    "id": "pages/spusteni.html",
+    "title": "Spuštění",
+    "url": "/napoveda/pages/spusteni.html",
+    "headings": [
+      "Spuštění aplikace",
+      "Požadavky",
+      "Spouštěcí soubor start-dev.bat",
+      "Databáze SQLite"
+    ],
+    "text": "SYNERA Hledat v nápovědě Nic nenalezeno. Zkuste jiné klíčové slovo. Windows 10 nebo novější Python 3.12+ a virtuální prostředí .venv SQLite – žádná samostatná databázová služba se neinstaluje V kořeni projektu spusťte start-dev.bat . Skript provede migrace, zajistí vývojový účet přes ensure_dev_admin a spustí server na portu 8000. Adresa: http://127.0.0.1:8000/ Data jsou v souboru db.sqlite3 v kořeni projektu. PostgreSQL ani Linuxové služby se nepoužívají. Zpět na úvod nápovědy"
+  },
+  {
+    "id": "pages/technika.html",
+    "title": "Technika – nápověda SYNERA",
+    "url": "/napoveda/pages/technika.html",
+    "headings": [
+      "Technika (vozidla)",
+      "Co spravujete",
+      "Doklady a upozornění",
+      "Přiřazení k činnosti"
+    ],
+    "text": "SYNERA Hledat v nápovědě Nic nenalezeno. Zkuste jiné klíčové slovo. Evidence vozidel, dokladů s platností a volitelné přiřazení k činnosti. V sekci Technika evidujete vozidla: SPZ, volitelné označení, odpovědnou osobu a doklady (STK, pojistka). Archivace vozidlo deaktivuje, ale historie přiřazení v činnostech zůstane. Typy dokladů spravuje administrátor (číselník). U typu nastavíte, zda vyžaduje číslo a kolik dní před koncem platnosti zobrazit varování. U vozidla evidujete platnost od / do. Prošlé a blížící se doklady se zobrazí na Přehledu v dialogu, podobně jako kvalifikace zaměstnanců. Vedoucí a administrátor vidí všechna vozidla; odpovědná osoba vidí doklady vozidel, která má na starosti. V plánu činností můžete k položce volitelně přiřadit vozidlo (na část hodiny nebo celý den podle intervalu činnosti). Bez platného řidičského průkazu (kvalifikace zaměstnance) nelze vozidlo přiřadit. Stejné vozidlo nesmí mít ve stejném čase dvě činnosti — překryv systém zakáže. Neaktivní (archivované) vozidlo nelze přiřadit. Zpět na úvod nápovědy"
+  },
+  {
+    "id": "pages/zamestnanci.html",
+    "title": "Zaměstnanci",
+    "url": "/napoveda/pages/zamestnanci.html",
+    "headings": [
+      "Zaměstnanci",
+      "Seznam",
+      "Údaje na kartě",
+      "Kvalifikace a zkoušky",
+      "Pracovní vztah, úvazek a pracoviště",
+      "Archivace"
+    ],
+    "text": "SYNERA Hledat v nápovědě Nic nenalezeno. Zkuste jiné klíčové slovo. Adresa /zamestnanci/ zobrazuje zaměstnance včetně dne nástupu a upozornění na prošlé kvalifikace. Lze filtrovat podle jména, interního čísla, funkce, telefonu a e-mailu. Archivované záznamy se zobrazí po zaškrtnutí filtru. Základ: jméno, příjmení, interní číslo, funkce, telefon, e-mail, pracovní kontakt, poznámka a volitelná vazba na přihlašovací účet. Zaměstnanec nemusí mít účet. Jméno a e-mail u účtu se při přiřazení (pole Účet) automaticky vezmou ze zaměstnance — nemusíte je zadávat podruhé v administraci uživatele. Řidičský průkaz, odborná způsobilost elektro i další oprávnění se evidují jednotně jako kvalifikace s typem, číslem, skupinami/rozsahem a platností do (dd.mm.rrrr). Prošlá platnost je na detailu i v seznamu zvýrazněna. Typy kvalifikací spravuje administrátor v administraci ( Typy kvalifikací ). U typu nastavíte upozornit dní před expirací (výchozí např. 30 dní u řidičáku, 60 u elektro). Po přihlášení na Přehledu se zobrazí dialog s prošlými a blížícími se kvalifikacemi – zaměstnanci vidí vlastní, vedoucí a administrátor všechny. Výchozí typy: Řidičský průkaz a Odborná způsobilost elektro. Další typy (např. jeřáb, VZV) lze přidat bez změny programu. Na úpravě zaměstnance ( /zamestnanci/…/upravit/ ) v jedné sekci nastavíte den nástupu, druh vztahu, mzdové číslo, úvazek (týdenní doba → fond) a pracoviště s platností od–do. Den nástupu (pracovní vztah) musí být vyplněný a platný k datu směny, jinak nelze směnu naplánovat v dlouhodobém plánu ani v docházce potvrdit práci — přiřazení pracoviště samo nestačí. Platnost pracoviště nesmí začínat dříve než den nástupu. Úvazek: předvolba (40 / 38,75 / 37,5 h) nebo ruční minuty; u stanovené i sjednané doby se pod polem zobrazí i ekvivalent v hodinách (např. 2325 min = 38,75 h). Při změně zvolte nové „platí od“. Platnosti pracovišť se nesmí překrývat — v jeden den smí být jen jedno. Více pracovišť v čase (např. střídání měsíců) je v pořádku, pokud na sebe navazují bez překryvu. Formulář úpravy je kompaktní (pole v řádcích). V sekci dovolené lze nastavit navýšení týdnů a zda je u vztahu povolena půldenní dovolená (nebo podle globálních pravidel). Pro DPP a DPČ zatím nelze použít finální mzdový export stejnými pravidly jako u pracovního poměru. Zaměstnance neodstraňujte. Tlačítko Archivovat nastaví stav neaktivní a zachová historii. Úpravy vyžadují roli vedoucí nebo administrátor (nebo práva superuživatele). Zpět na úvod nápovědy"
+  }
+]

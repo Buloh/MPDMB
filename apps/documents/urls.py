@@ -1,0 +1,77 @@
+from django.urls import path
+
+from . import views
+
+urlpatterns = [
+    path("dokumenty/", views.documents_hub, name="documents_hub"),
+    path(
+        "dokumenty/sablony/",
+        views.template_list,
+        name="document_template_list",
+    ),
+    path(
+        "dokumenty/sablony/nova/",
+        views.template_create,
+        name="document_template_create",
+    ),
+    path(
+        "dokumenty/sablony/<int:pk>/",
+        views.template_detail,
+        name="document_template_detail",
+    ),
+    path(
+        "dokumenty/sablony/verze/<int:pk>/stahnout/",
+        views.template_download,
+        name="document_template_download",
+    ),
+    path(
+        "dokumenty/sablony/<int:pk>/csv/",
+        views.template_csv_download,
+        name="document_template_csv",
+    ),
+    path(
+        "dokumenty/sablony/obnovit-univerzalni/",
+        views.templates_refresh_universal,
+        name="document_templates_refresh_universal",
+    ),
+    path(
+        "dokumenty/zamestnanci/",
+        views.employee_document_list,
+        name="document_employee_list",
+    ),
+    path(
+        "dokumenty/technika/",
+        views.vehicle_document_list,
+        name="document_vehicle_list",
+    ),
+    path(
+        "dokumenty/moje/",
+        views.my_document_list,
+        name="document_my_list",
+    ),
+    path(
+        "dokumenty/zamestnanec/<int:employee_id>/novy/",
+        views.employee_generate,
+        name="document_employee_generate",
+    ),
+    path(
+        "dokumenty/vozidlo/<int:vehicle_id>/novy/",
+        views.vehicle_generate,
+        name="document_vehicle_generate",
+    ),
+    path(
+        "dokumenty/soubor/<int:pk>/stahnout/",
+        views.stored_download,
+        name="document_stored_download",
+    ),
+    path(
+        "dokumenty/soubor/<int:pk>/archivovat/",
+        views.stored_archive,
+        name="document_stored_archive",
+    ),
+    path(
+        "dokumenty/soubor/<int:pk>/smazat/",
+        views.stored_delete,
+        name="document_stored_delete",
+    ),
+]

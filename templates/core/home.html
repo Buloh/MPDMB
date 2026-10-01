@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}Přehled{% endblock %}
+
+{% block content %}
+  <h1>Přehled</h1>
+  <p class="muted">Vyberte sekci, ke které máte přístup.</p>
+
+  {% if qualification_alerts %}
+    <dialog id="qual-alert-dialog" class="mpdmb-dialog" open>
+      <form method="dialog" class="panel">
+        <h2>Kvalifikace k řešení</h2>
+        <p class="muted">Prošlé nebo blížící se konci platnosti podle nastavení typu.</p>
+        <ul class="qual-alert-list">
+          {% for alert in qualification_alerts %}
+            <li class="{% if alert.severity == 'expired' %}danger{% else %}warning{% endif %}">
+              <strong>{{ alert.employee.last_name }} {{ alert.employee.first_name }}</strong>
+              – {{ alert.qualification.qualification_type.name }}
+              · {{ alert.label }}
+              · do {{ alert.valid_until|date:"d.m.Y" }}
+              {% if alert.severity == "soon" %}
+                (zbývá {{ alert.days }} d.)
+              {% endif %}
+              {% if can_open_employees %}
+                <a href="{% url 'employee_detail' alert.employee.pk %}">Detail</a>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+        <div class="toolbar">
+          <button type="submit" value="ok">Rozumím</button>
+        </div>
+      </form>
+    </dialog>
+  {% endif %}
+
+  {% if vehicle_document_alerts %}
+    <dialog id="vehicle-doc-alert-dialog" class="mpdmb-dialog" open>
+      <form method="dialog" class="panel">
+        <h2>Doklady vozidel k řešení</h2>
+        <p class="muted">Prošlé nebo blížící se STK / pojistky podle nastavení typu.</p>
+        <ul class="qual-alert-list">
+          {% for alert in vehicle_document_alerts %}
+            <li class="{% if alert.severity == 'expired' %}danger{% else %}warning{% endif %}">
+              <strong>{{ alert.vehicle.plate }}</strong>
+              – {{ alert.document.document_type.name }}
+              · {{ alert.label }}
+              · do {{ alert.valid_until|date:"d.m.Y" }}
+              {% if alert.severity == "soon" %}
+                (zbývá {{ alert.days }} d.)
+              {% endif %}
+              {% if can_open_technika %}
+                <a href="{% url 'vehicle_detail' alert.vehicle.pk %}">Detail</a>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+        <div class="toolbar">
+          <button type="submit" value="ok">Rozumím</button>
+        </div>
+      </form>
+    </dialog>
+  {% endif %}
+
+  {% if tiles %}
+    <div class="tile-grid">
+      {% for tile in tiles %}
+        <a class="tile" href="{{ tile.resolve_url }}">
+          <span class="tile-icon" aria-hidden="true">
+            {% if tile.icon == "employees" %}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+            {% elif tile.icon == "workplaces" %}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 21h18"/>
+                <path d="M5 21V7l7-4 7 4v14"/>
+                <path d="M9 21v-6h6v6"/>
+                <path d="M9 10h.01"/>
+                <path d="M15 10h.01"/>
+                <path d="M9 14h.01"/>
+                <path d="M15 14h.01"/>
+              </svg>
+            {% elif tile.icon == "ops" %}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2"/>
+                <path d="M16 2v4"/>
+                <path d="M8 2v4"/>
+                <path d="M3 10h18"/>
+                <path d="M8 14h.01"/>
+                <path d="M12 14h.01"/>
+                <path d="M16 14h.01"/>
+              </svg>
+            {% elif tile.icon == "shifts" %}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 6v6l4 2"/>
+              </svg>
+            {% elif tile.icon == "activities" %}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+            {% elif tile.icon == "technika" %}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 17h14v-5l-2-4H7l-2 4z"/>
+                <path d="M5 12h14"/>
+                <circle cx="7.5" cy="17" r="1.5"/>
+                <circle cx="16.5" cy="17" r="1.5"/>
+              </svg>
+            {% elif tile.icon == "documents" %}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <path d="M14 2v6h6"/>
+                <path d="M16 13H8"/>
+                <path d="M16 17H8"/>
+                <path d="M10 9H8"/>
+              </svg>
+            {% elif tile.icon == "admin" %}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M12 1v2"/>
+                <path d="M12 21v2"/>
+                <path d="M4.22 4.22l1.42 1.42"/>
+                <path d="M18.36 18.36l1.42 1.42"/>
+                <path d="M1 12h2"/>
+                <path d="M21 12h2"/>
+                <path d="M4.22 19.78l1.42-1.42"/>
+                <path d="M18.36 5.64l1.42-1.42"/>
+              </svg>
+            {% else %}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                <path d="M12 8v4"/>
+                <path d="M12 16h.01"/>
+              </svg>
+            {% endif %}
+          </span>
+          <h2>{{ tile.title }}</h2>
+          <p>{{ tile.description }}</p>
+        </a>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if show_limited_notice %}
+    <p class="notice">
+      Další sekce budou dostupné podle vašeho oprávnění.
+    </p>
+  {% endif %}
+{% endblock %}

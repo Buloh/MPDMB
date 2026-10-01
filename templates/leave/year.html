@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <div class="list-toolbar">
+    <h1>Dovolená {{ year }}</h1>
+    <form class="list-filters" method="get">
+      <div class="list-field">
+        <label for="year">Rok</label>
+        <input id="year" type="number" name="year" value="{{ year }}" min="2000" max="2100">
+      </div>
+      <button type="submit">Zobrazit</button>
+      <a class="button secondary" href="{% url 'leave_year' %}?year={{ prev_year }}">Předchozí</a>
+      <a class="button secondary" href="{% url 'leave_year' %}?year={{ next_year }}">Následující</a>
+    </form>
+    <div class="list-actions">
+      <a class="button secondary" href="{% url 'ops_hub' %}">Provoz</a>
+    </div>
+  </div>
+  <p class="muted leave-year-hint">
+    Nárok: <strong>naběhlé</strong> (docházka) a <strong>odhad</strong> (vč. plánovaných směn) ·
+    zůstatek = odhad · výměra mzda {{ policy.default_weeks_wage }} /
+    plat {{ policy.default_weeks_salary }} týdnů · pravidla v administraci.
+    {% if workplaces %}
+      · Pracoviště:
+      {% for wp in workplaces %}
+        <a href="{% url 'leave_workplace' wp.pk %}?year={{ year }}">{{ wp.name }}</a>{% if not forloop.last %}, {% endif %}
+      {% endfor %}
+    {% endif %}
+  </p>
+  <div class="table-wrap">
+    <table class="leave-year-table">
+      <thead>
+        <tr>
+          <th>Zaměstnanec</th>
+          <th>Naběhlé</th>
+          <th>Odhad</th>
+          <th>Převod</th>
+          <th>Naplánováno</th>
+          <th>Zůstatek (odhad)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in rows %}
+          <tr>
+            <td>
+              <a href="{% url 'leave_employee' row.employee.pk %}?year={{ year }}">
+                {{ row.employee.last_name }} {{ row.employee.first_name }}
+              </a>
+              {% if row.warn_carryover %}
+                <span class="badge warning">převod k vyčerpání</span>
+              {% endif %}
+              {% if row.warn_own_year %}
+                <span class="badge warning">nárok k vyčerpání</span>
+              {% endif %}
+              {% if row.warn_own_deadline and not row.warn_own_year %}
+                <span class="badge warning">lhůta nároku</span>
+              {% elif row.warn_own_deadline and row.warn_own_year %}
+                <span class="badge danger">lhůta nároku</span>
+              {% endif %}
+            </td>
+            <td>{{ row.accrued_label }}</td>
+            <td>{{ row.entitled_label }}</td>
+            <td>{{ row.carried_label }}</td>
+            <td>{{ row.planned_label }}</td>
+            <td>{{ row.remaining_label }}</td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="6">Žádní zaměstnanci s pracovním poměrem v tomto roce.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

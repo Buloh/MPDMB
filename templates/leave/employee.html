@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>Dovolená · {{ employee.last_name }} {{ employee.first_name }}</h1>
+  <div class="list-toolbar">
+    <p class="muted">Rok {{ year }} · interní č. {{ employee.internal_number }}</p>
+    <div class="list-actions">
+      <a class="button secondary" href="{% url 'leave_year' %}?year={{ year }}">Roční přehled</a>
+      <a class="button secondary" href="{% url 'leave_employee' employee.pk %}?year={{ prev_year }}">{{ prev_year }}</a>
+      <a class="button secondary" href="{% url 'leave_employee' employee.pk %}?year={{ next_year }}">{{ next_year }}</a>
+      {% if can_manage %}
+        <button type="button"
+                class="button"
+                data-leave-open-dialog
+                data-employee-id="{{ employee.pk }}"
+                data-year="{{ year }}">Přidat blok</button>
+      {% endif %}
+    </div>
+  </div>
+
+  <section class="panel leave-summary">
+    <p>
+      Naběhlé: <strong>{{ accrued_label }}</strong>
+      · odhad: <strong>{{ entitled_label }}</strong>
+      · převod: {{ carried_label }}
+      · naplánováno: {{ planned_label }}
+      · zůstatek odhadu: <strong>{{ remaining_label }}</strong>
+      · zůstatek naběhlého: {{ accrued_remaining_label }}
+    </p>
+    <p class="muted">Naběhlé = docházka (§ 213); odhad = naběhlé + publikované směny práce do konce roku.</p>
+    {% if entitlement.source_note %}
+      <p class="muted">{{ entitlement.source_note }}</p>
+    {% endif %}
+    {% if entitlement.entitled_minutes or entitlement.accrued_minutes %}
+      <p class="notice">
+        Nárok roku: ideálně do {{ entitlement.preferred_use_by|date:"d.m.Y" }}{% if entitlement.statutory_latest_use_by %};
+        nejzazší do {{ entitlement.statutory_latest_use_by|date:"d.m.Y" }}{% endif %}
+        (§&nbsp;218){% if entitlement.deadlines_manual %} · lhůty nastaveny ručně{% endif %}.
+      </p>
+    {% endif %}
+    {% if warn_own_year %}
+      <p class="notice warning-soft">Nárok roku {{ year }} měl být vyčerpán do konce roku — zbývá zůstatek.</p>
+    {% endif %}
+    {% if warn_own_deadline %}
+      <p class="notice warning-soft">Blíží se nebo uplynula nejzazší lhůta vyčerpání nároku roku (§&nbsp;218 odst.&nbsp;3).</p>
+    {% endif %}
+    {% if entitlement.must_use_by and entitlement.carried_in_minutes %}
+      <p class="notice">Převod vyčerpat do {{ entitlement.must_use_by|date:"d.m.Y" }}.</p>
+    {% endif %}
+  </section>
+
+  <div class="leave-cal-plans">
+    <section class="panel leave-cal-panel">
+      <h2>Kalendář {{ year }}</h2>
+      <p class="muted leave-legend">
+        <span class="leave-swatch leave-day--approved"></span> schváleno (D)
+        <span class="leave-swatch leave-day--draft"></span> návrh (N)
+        · klik na pracovní den otevře dialog
+      </p>
+      {% include "leave/_year_calendar.html" with calendar_months=calendar_months employee_id=employee.pk can_manage=can_manage year=year %}
+    </section>
+
+    <section class="panel leave-plans-panel">
+      <h2>Plány</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Období</th>
+              <th>Minuty</th>
+              <th>Stav</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for plan in plans %}
+              <tr>
+                <td>
+                  {{ plan.starts_on|date:"d.m.Y" }} – {{ plan.ends_on|date:"d.m.Y" }}
+                  {% if plan.portion == "am" %}
+                    <span class="badge">dopoledne</span>
+                  {% elif plan.portion == "pm" %}
+                    <span class="badge">odpoledne</span>
+                  {% endif %}
+                </td>
+                <td>{{ plan.total_minutes }}</td>
+                <td>{{ plan.get_status_display }}</td>
+                <td>
+                  {% if can_manage %}
+                    {% if plan.status == "draft" %}
+                      <form method="post" action="{% url 'leave_plan_approve' plan.pk %}" style="display:inline">
+                        {% csrf_token %}
+                        <button type="submit" class="secondary" style="min-height:auto;padding:4px 8px">Schválit</button>
+                      </form>
+                    {% endif %}
+                    {% if plan.status != "cancelled" %}
+                      <form method="post" action="{% url 'leave_plan_cancel' plan.pk %}" style="display:inline" onsubmit="return confirm('Zrušit plán a směny dovolené?');">
+                        {% csrf_token %}
+                        <button type="submit" class="secondary" style="min-height:auto;padding:4px 8px">Zrušit</button>
+                      </form>
+                    {% endif %}
+                  {% endif %}
+                </td>
+              </tr>
+            {% empty %}
+              <tr><td colspan="4">Zatím žádný plán v tomto roce.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  {% if can_manage %}
+    {% include "leave/_plan_dialog.html" %}
+  {% endif %}
+{% endblock %}
+
+{% block extra_body %}
+  {% if can_manage %}
+    <script src="{% static 'mpdmb/js/leave_plan_dialog.js' %}?v={{ APP_VERSION }}" defer></script>
+  {% endif %}
+{% endblock %}

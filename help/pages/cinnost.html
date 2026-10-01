@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="/static/mpdmb/img/favicon.svg" type="image/svg+xml">
+  <title>Činnost · Nápověda SYNERA</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body data-help-base="/napoveda/">
+  <header class="help-header">
+    <a class="brand" href="/">SYNERA</a>
+    <div class="search-wrap">
+      <label for="help-search">Hledat v nápovědě</label>
+      <input id="help-search" type="search" placeholder="hledat…" autocomplete="off">
+      <ul id="search-results" aria-live="polite"></ul>
+      <p id="search-empty">Nic nenalezeno. Zkuste jiné klíčové slovo.</p>
+    </div>
+  </header>
+  <div class="help-shell">
+    <nav class="help-nav" aria-label="Obsah nápovědy">
+      <a href="../index.html">Úvod</a>
+      <a href="spusteni.html">Spuštění</a>
+      <a href="prihlaseni.html">Přihlášení</a>
+      <a href="prehled.html">Přehled</a>
+      <a href="administrace.html">Administrace</a>
+      <a href="zamestnanci.html">Zaměstnanci</a>
+      <a href="pracoviste.html">Pracoviště</a>
+      <a href="smeny.html">Dlouhodobý plán</a>
+      <a href="dochazka.html">Docházka</a>
+      <a href="cinnost.html" aria-current="page">Činnost</a>
+      <a href="technika.html">Technika</a>
+      <a href="dokumenty.html">Dokumenty</a>
+    </nav>
+    <main class="help-main">
+      <h1>Činnost</h1>
+      <section class="panel">
+        <h2 id="co-je-cinnost">Co je modul Činnost</h2>
+        <p>
+          Modul <strong>Činnost</strong> (<code>/cinnost/</code>) slouží vedoucímu
+          k plánování návštěv lokalit v rámci <strong>publikované směny práce</strong>
+          (např. typ R 08:00–14:00). Technik dostane srozumitelný denní list
+          přes export / tisk. Živé GPS ani výpočet přejezdů v této etapě nejsou.
+        </p>
+      </section>
+      <section class="panel">
+        <h2 id="lokality">Lokality na mapě</h2>
+        <p>
+          V <code>/cinnost/lokality/</code> spravujete číselník lokalit.
+          Existují <strong>hlavní lokace</strong> a volitelné <strong>podlokace</strong>
+          (jedna úroveň, např. Sever › B2). Hlavní i podlokace mají vlastní
+          polygon. Činnost lze naplánovat na hlavní lokaci i na podlokaci.
+        </p>
+        <p>
+          Mapa používá Leaflet a podklad <strong>OpenStreetMap (DE)</strong>
+          s dobrým pokrytím ČR při přiblížení. Ve správě (administrace)
+          lze nastavit <strong>mapová města</strong> (střed lat/lon a zoom);
+          na stránce lokalit zvolíte, které město mapa ukáže — střed města
+          se nepřepisuje podle polygonů v jiných lokalitách.
+          Kliknutím na polygon se pod mapou zobrazí popis lokality, kód,
+          nadřazená lokace, pracoviště a odkaz Upravit.
+          Nakreslete polygon: ikona mnohoúhelníku na mapě, vrcholy klikáním,
+          uzavření dvojklikem; pak kód, název, <strong>barvu polygonu</strong>
+          (pro přehlednost na mapě) a Uložit.
+          Při <strong>nové lokalitě</strong> i úpravě zůstávají na mapě
+          stávající polygony jako needitovatelný podklad (překryvy).
+          Volitelně nadřazená lokace (podlokace) a pracoviště.
+        </p>
+      </section>
+      <section class="panel">
+        <h2 id="plan-dne">Denní rozvrh</h2>
+        <p>
+          Na <code>/cinnost/</code> zvolte <strong>den</strong>. Pokud není vybrané
+          pracoviště ani zaměstnanec, uvidíte přehled <strong>Směny dne</strong>:
+          kdo má publikovanou směnu z dlouhodobého plánu, na jakém pracovišti
+          a v jakém čase. Kliknutím na jméno otevřete detail; klik na pracoviště
+          otevře desku.
+        </p>
+        <p>
+          Vedle filtrů je <strong>měsíční kalendář</strong>: vybraný den je vždy stejný
+          jako pole <strong>Den</strong> (bez parametru = dnes). Klik na den v kalendáři
+          nastaví Den. Dny se <strong>směnou</strong> (někdo má publikovanou směnu
+          na libovolném pracovišti) a dny s již <strong>naplánovanými</strong>
+          činnostmi jsou barevně označené. U pracoviště ve filtru je počet osob
+          se směnou v daný den, např. Managment (1).
+        </p>
+        <p>
+          Po výběru <strong>pracoviště</strong> se zobrazí hodinová deska. U jména
+          je vidět typ a čas směny. Kliknutím na buňku otevřete dialog: až
+          <strong>10 činností</strong> v hodině (typ povinný, lokalita a vozidlo
+          volitelné, <strong>víceřádkové očekávání</strong>).
+          <strong>Od–Do</strong> se předvyplní podle hodinového úseku;
+          další položka naváže Od na Do předchozí. Lze upravit uvnitř úseku
+          (např. 08:10–08:30 v buňce 08–09); prázdná pole = celá hodina.
+          Lze přidávat, ukládat a <strong>mazat</strong> jednotlivé položky
+          nebo vymazat celou hodinu. V matici buňka ukazuje
+          <strong>čas, typ, lokalitu a zkrácené očekávání</strong>.
+          Barva buňky odpovídá barvě první lokality (pokud je).
+        </p>
+        <p>
+          <strong>Export</strong> u rozvrhu nebo detailu otevře dialog:
+          rozsah (celé pracoviště / konkrétní zaměstnanec) a formát
+          (PDF pro tisk, nebo Excel). Sestava obsahuje směny, hodinové činnosti
+          s plným očekáváním, denní úkoly a legendu lokalit.
+        </p>
+        <p>
+          Výběrem zaměstnance (filtr nebo klik na jméno) přepnete na
+          <strong>detail směny</strong> (osa po hodinách) se stejnými dialogy
+          a akcemi Generovat / Přegenerovat / Vymazat den.
+          Deska pracoviště a detail se nezobrazují současně — z detailu se vrátíte
+          odkazem <strong>Zpět na rozvrh</strong>.
+          V seznamu jsou jen lidé s aktivním pracovním vztahem a publikovanou směnou práce;
+          samotný nástup nestačí.
+        </p>
+      </section>
+      <section class="panel">
+        <h2 id="vozidlo">Vozidlo u činnosti</h2>
+        <p>
+          K položce činnosti lze volitelně přiřadit <strong>vozidlo</strong>
+          (SPZ z evidence Technika) — na část intervalu nebo celý den.
+          Zaměstnanec musí mít platný řidičský průkaz; stejné vozidlo nesmí
+          být ve stejném čase u dvou činností. Pokud v Technice ještě není
+          žádné aktivní vozidlo, select to napíše a odkáže na založení evidence.
+          Podrobnosti viz
+          <a href="technika.html">Technika</a>.
+        </p>
+      </section>
+      <section class="panel">
+        <h2 id="denni-ukoly">Denní úkoly</h2>
+        <p>
+          Mimo hodinovou mřížku můžete přidat <strong>denní úkol</strong>
+          (např. „B2 kontrola 4×“) — typ, volitelná lokalita a
+          <strong>víceřádková poznámka</strong> (delší text).
+          Úkol patří k celému dni (rozsah publikovaných směn práce),
+          v hodinových buňkách se nezobrazuje. Sekce je pod deskou pracoviště
+          i na detailu zaměstnance; generátor z preferencí denní úkoly nevytváří
+          a při přegenerování hodinového plánu je nemění.
+        </p>
+      </section>
+      <section class="panel">
+        <h2 id="preference">Šablona lokalit a generátor</h2>
+        <p>
+          U zaměstnance nastavíte <strong>šablonu lokalit</strong> (tlačítko
+          Šablona lokalit na detailu dne): které lokality a jak často (váha/četnost)
+          mají vyplnit směnu. Lze přidat až 20 lokalit. Pořadí určuje pořadí bloků.
+          Volitelný výchozí typ činnosti se propsá do vygenerovaných položek.
+        </p>
+        <p>
+          <strong>Generovat</strong> naplní den podle šablony a směny (jen pokud den
+          ještě nemá činnosti). <strong>Přegenerovat</strong> plán přepíše.
+          Bez šablony lokalit nebo bez směny generátor odmítne požadavek.
+        </p>
+        <p>
+          Návrh počítá s budoucím rozšířením o další typy činností a požadavky
+          (číselník typů + poznámka / typ u slotu); matice hodin se nemění.
+        </p>
+      </section>
+      <section class="panel">
+        <h2 id="export">Export pro technika</h2>
+        <p>
+          Tlačítko <strong>Export</strong> u rozvrhu nebo detailu zaměstnance
+          otevře dialog: zvolíte, koho exportovat (pracoviště / jeden zaměstnanec)
+          a formát (PDF nebo Excel). PDF uložíte přes <strong>Tisk / PDF</strong>
+          v prohlížeči; Excel stáhne soubor .xlsx.
+          Export vyžaduje oprávnění
+          <em>Může exportovat plán činností</em>
+          (skupiny vedoucí/administrátor, nebo individuálně v administraci uživatele).
+        </p>
+      </section>
+      <section class="panel">
+        <h2 id="opravneni">Oprávnění</h2>
+        <p>
+          Plánovat činnosti a spravovat lokality může vedoucí a administrátor
+          (stejné oprávnění jako u plánu směn). Běžný zaměstnanec sekci
+          Činnost v navigaci nevidí.
+        </p>
+      </section>
+      <p class="help-footer">SYNERA · nápověda · datum formátu dd.mm.rrrr</p>
+    </main>
+  </div>
+  <script src="../search.js" data-index="../search-index.json"></script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Přihlášení · {{ APP_NAME }}</title>
+  <link rel="icon" href="{% static 'mpdmb/img/favicon.svg' %}" type="image/svg+xml">
+  <link rel="stylesheet" href="{% static 'mpdmb/css/theme.css' %}?v={{ APP_VERSION }}">
+</head>
+<body class="login-page">
+  <div class="login-shell">
+    <div class="login-card">
+      <div class="login-branding">
+        <img class="login-logo" src="{% static 'mpdmb/img/favicon.svg' %}" width="56" height="56" alt="">
+        <div>
+          <p class="login-brand">{{ APP_NAME }}</p>
+          <p class="login-tagline muted">{{ APP_TAGLINE }}</p>
+        </div>
+      </div>
+      <h1 class="login-title">Přihlášení</h1>
+      <p class="login-lead muted">Zadejte přihlašovací údaje.</p>
+
+      {% if form.non_field_errors %}
+        <div class="notice danger-soft" role="alert">
+          {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+        </div>
+      {% endif %}
+
+      <form class="login-form" method="post" action="{% url 'login' %}" novalidate>
+        {% csrf_token %}
+        {% if next %}
+          <input type="hidden" name="next" value="{{ next }}">
+        {% endif %}
+
+        <div class="login-field">
+          <label for="id_username">Uživatelské jméno</label>
+          <input type="text" name="username" id="id_username" autocomplete="username"
+                 required autofocus value="{{ form.username.value|default:'' }}">
+          {% if form.username.errors %}
+            <span class="field-error">{{ form.username.errors.0 }}</span>
+          {% endif %}
+        </div>
+
+        <div class="login-field">
+          <label for="id_password">Heslo</label>
+          <input type="password" name="password" id="id_password" autocomplete="current-password" required>
+          {% if form.password.errors %}
+            <span class="field-error">{{ form.password.errors.0 }}</span>
+          {% endif %}
+        </div>
+
+        <button class="login-submit" type="submit">Přihlásit</button>
+      </form>
+      <p class="muted login-version">Verze {{ APP_VERSION }}</p>
+    </div>
+  </div>
+</body>
+</html>

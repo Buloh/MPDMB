@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <div class="list-toolbar">
+    <h1>Šablona lokalit · {{ employee }}</h1>
+    <div class="list-actions">
+      <a class="button secondary" href="{% url 'activity_day' %}?day={{ day|date:'Y-m-d' }}&employee={{ employee.pk }}{% if workplace_id %}&workplace={{ workplace_id }}{% endif %}">Zpět na plán dne</a>
+    </div>
+  </div>
+  <p class="muted">
+    Tyto řádky použije tlačítko <strong>Generovat</strong> / <strong>Přegenerovat</strong>
+    na plánu dne — rozdělí směnu mezi zvolené lokality.
+    <strong>Četnost</strong> je váha podílu (např. 2 a 1 ≈ dvě třetiny a jedna třetina hodin).
+    <strong>Pořadí</strong> určuje pořadí bloků. Typ činnosti je volitelný výchozí pro generátor.
+    Můžete přidat až 20 lokalit.
+  </p>
+  <section class="panel">
+    <form method="post" class="stack-form" id="activity-pref-form" data-pref-max="20">
+      {% csrf_token %}
+      {{ formset.management_form }}
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Lokalita</th>
+              <th>Četnost</th>
+              <th>Pořadí</th>
+              <th>Typ činnosti</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody class="activity-pref-rows">
+            {% for form in formset %}
+              <tr class="activity-pref-row" data-pref-row {% if form.DELETE.value %}hidden{% endif %}>
+                <td>
+                  {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
+                  {{ form.location }}
+                  {% if form.DELETE %}{{ form.DELETE.as_hidden }}{% endif %}
+                </td>
+                <td>{{ form.frequency }}</td>
+                <td>{{ form.sort_order }}</td>
+                <td>{{ form.default_activity_type }}</td>
+                <td>
+                  <button type="button" class="secondary" data-pref-remove style="min-height:auto;padding:4px 8px">Odebrat</button>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <template id="activity-pref-empty-row">
+        <tr class="activity-pref-row" data-pref-row>
+          <td>
+            {% for hidden in formset.empty_form.hidden_fields %}{{ hidden }}{% endfor %}
+            {{ formset.empty_form.location }}
+            {% if formset.empty_form.DELETE %}{{ formset.empty_form.DELETE.as_hidden }}{% endif %}
+          </td>
+          <td>{{ formset.empty_form.frequency }}</td>
+          <td>{{ formset.empty_form.sort_order }}</td>
+          <td>{{ formset.empty_form.default_activity_type }}</td>
+          <td>
+            <button type="button" class="secondary" data-pref-remove style="min-height:auto;padding:4px 8px">Odebrat</button>
+          </td>
+        </tr>
+      </template>
+      <div class="form-actions toolbar">
+        <button type="button" class="secondary" data-pref-add>Přidat lokalitu</button>
+        <button type="submit">Uložit šablonu</button>
+        <a class="button secondary" href="{% url 'activity_day' %}?day={{ day|date:'Y-m-d' }}&employee={{ employee.pk }}{% if workplace_id %}&workplace={{ workplace_id }}{% endif %}">Zrušit</a>
+      </div>
+    </form>
+  </section>
+{% endblock %}
+
+{% block extra_body %}
+  <script src="{% static 'mpdmb/js/activity_preferences.js' %}?v={{ APP_VERSION }}" defer></script>
+{% endblock %}

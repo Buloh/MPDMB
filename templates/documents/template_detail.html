@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>{{ template.name }}</h1>
+  <div class="toolbar">
+    {% if current_version %}
+      <a class="button" href="{% url 'document_template_download' current_version.pk %}">Stáhnout aktuální verzi (.docx)</a>
+    {% endif %}
+    <a class="button secondary" href="{% url 'document_template_csv' template.pk %}">Stáhnout CSV polí</a>
+    {% if template.is_active %}
+      <form method="post" style="display:inline" onsubmit="return confirm('Deaktivovat šablonu? Generování ji už nenabídne.');">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="deactivate">
+        <button type="submit" class="secondary">Deaktivovat šablonu</button>
+      </form>
+    {% else %}
+      <form method="post" style="display:inline">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="activate">
+        <button type="submit" class="secondary">Znovu aktivovat</button>
+      </form>
+    {% endif %}
+    <a class="button secondary" href="{% url 'document_template_list' %}">Zpět na šablony</a>
+  </div>
+
+  <section class="panel">
+    <h2>Údaje</h2>
+    <p><strong>Okruh:</strong> {{ template.get_scope_display }}</p>
+    <p>
+      <strong>Stav:</strong>
+      {% if template.is_active %}
+        <span class="badge success">aktivní</span>
+      {% else %}
+        <span class="badge warning">neaktivní</span>
+      {% endif %}
+    </p>
+    <p>
+      <strong>Aktuální verze:</strong>
+      {% if current_version %}v{{ current_version.version_number }}{% else %}—{% endif %}
+    </p>
+    <p class="muted">
+      CSV použijte ve Wordu: Korespondence → Vybrat příjemce → tento soubor →
+      Vložit sloučené pole. Generování v SYNERA vyplní MERGEFIELD i textové
+      placeholdery ve tvaru dvojitých složených závorek.
+    </p>
+  </section>
+
+  <section class="panel">
+    <h2>Katalog polí</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Pole (MERGEFIELD)</th>
+            <th>Název</th>
+            <th>Popis</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in placeholder_catalog %}
+            <tr>
+              <td><code>{{ item.key }}</code></td>
+              <td>{{ item.label }}</td>
+              <td>{{ item.help_text }}</td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="3">Katalog je prázdný.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Vložit sloučené pole do Wordu</h2>
+    <p class="muted">
+      Připíše MERGEFIELD na konec aktuální šablony jako novou verzi.
+      Soubor stáhněte, ve Wordu pole rozmístěte a případně nahrajte zpět.
+    </p>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="placeholder">
+      {% if append_form.non_field_errors %}
+        <div class="notice danger-soft" role="alert">{{ append_form.non_field_errors }}</div>
+      {% endif %}
+      <p>
+        <label for="{{ append_form.placeholder_key.id_for_label }}">{{ append_form.placeholder_key.label }}</label>
+        {{ append_form.placeholder_key }}
+      </p>
+      <button type="submit">Vložit do Wordu</button>
+    </form>
+  </section>
+
+  <section class="panel">
+    <h2>Nahrát novou verzi</h2>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="version">
+      {% if version_form.non_field_errors %}
+        <div class="notice danger-soft" role="alert">{{ version_form.non_field_errors }}</div>
+      {% endif %}
+      {% for field in version_form %}
+        <p>
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}<span class="notice danger-soft">{{ field.errors }}</span>{% endif %}
+        </p>
+      {% endfor %}
+      <button type="submit">Uložit verzi (.docx)</button>
+    </form>
+  </section>
+
+  <section class="panel">
+    <h2>Historie verzí</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Verze</th>
+            <th>Nahrál</th>
+            <th>Čas</th>
+            <th>Poznámka</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for ver in template.versions.all %}
+            <tr>
+              <td>v{{ ver.version_number }}</td>
+              <td>{{ ver.uploaded_by|default:"—" }}</td>
+              <td>{{ ver.created_at|date:"d.m.Y H:i" }}</td>
+              <td>{{ ver.notes|default:"—" }}</td>
+              <td>
+                <a href="{% url 'document_template_download' ver.pk %}">Stáhnout</a>
+              </td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="5">Žádné verze.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+{% endblock %}

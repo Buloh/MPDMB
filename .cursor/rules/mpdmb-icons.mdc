@@ -1,0 +1,17 @@
+---
+description: Ikony UI a favicon — stejné SVG jako dashboard, bez emoji
+alwaysApply: true
+---
+
+# Ikony a favicon MPDMB / SYNERA
+
+- **Favicon:** každá samostatná HTML stránka (mimo šablony dědící `base.html`) musí mít
+  `<link rel="icon" href="{% static 'mpdmb/img/favicon.svg' %}" type="image/svg+xml">`
+  (stejně jako login, admin, nápověda). Soubor: `static/mpdmb/img/favicon.svg`.
+- **UI ikony:** používej stejné stroke SVG jako na dashboardu
+  (`templates/core/home.html`, `templates/core/ops_hub.html`) — např. Činnost = map pin,
+  směny = hodiny. Kopíruj existující `viewBox="0 0 24 24"` pathy; nevymýšlej nové styly.
+- **Zakázáno:** emoji v navigaci a dlaždicích (včetně „dalekohledu“ / search / telescope
+  placeholderů). Stav nevyznačuj jen emoji.
+- Při nové dlaždici nebo ikoně v UI nejdřív zkontroluj, zda už odpovídající SVG
+  na dashboardu existuje, a tu znovu použij.

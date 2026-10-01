@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Provoz{% endblock %}
+
+{% block content %}
+  <h1>Provoz</h1>
+  <p class="muted">
+    Dlouhodobý plán směn, skutečná docházka a roční plán dovolené.
+    <a href="{% url 'home' %}">Zpět na přehled</a>
+  </p>
+
+  {% if tiles %}
+    <div class="tile-grid">
+      {% for tile in tiles %}
+        <a class="tile" href="{{ tile.resolve_url }}">
+          <span class="tile-icon" aria-hidden="true">
+            {% if tile.icon == "shifts" %}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 6v6l4 2"/>
+              </svg>
+            {% elif tile.icon == "attendance" %}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 11l3 3L22 4"/>
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+              </svg>
+            {% else %}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2"/>
+                <path d="M16 2v4"/>
+                <path d="M8 2v4"/>
+                <path d="M3 10h18"/>
+              </svg>
+            {% endif %}
+          </span>
+          <h2>{{ tile.title }}</h2>
+          <p>{{ tile.description }}</p>
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="notice">Nemáte přístup k žádné sekci provozu.</p>
+  {% endif %}
+{% endblock %}

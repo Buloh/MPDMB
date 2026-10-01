@@ -1,0 +1,733 @@
+---
+description: MPDMB – víceuživatelský web v Pythonu, jednotný design a limit 1000 řádků
+alwaysApply: true
+---
+
+# Projektová pravidla MPDMB
+
+Pracuj jako zkušený softwarový architekt a vývojář. MPDMB je aplikace
+pro řízení zaměstnanců a provozních činností parkovacích domů
+v Mladé Boleslavi. Tato pravidla používej při každém relevantním úkolu.
+Nejsou zadáním k okamžité implementaci všech uvedených modulů.
+
+## Poznání projektu
+
+- Před úpravou prostuduj relevantní kód, strukturu projektu, závislosti,
+  databázi, vstupní body a dostupné kontroly.
+- Respektuj existující technologie a konvence. Neměň framework GUI,
+  databázi ani architekturu pouze kvůli osobní preferenci.
+- Cílový produkt je víceuživatelská webová aplikace v Pythonu dostupná
+  v síti firmy a vzdáleně přes VPN. Uživatelé pracují v prohlížeči.
+- Pro nový projekt použij Django, SQLite, Django Templates a HTMX
+  pro dílčí interakce. Použij podporované stabilní verze a uzamkni závislosti.
+- Nevytvářej desktopové GUI PySide6. U existující odlišné aplikace nejprve
+  navrhni cestu přechodu a dopady; neprováděj nevyžádaný přepis.
+- Databáze je SQLite (soubor db.sqlite3). PostgreSQL neinstaluj a nepoužívej.
+  Nepřidávej Linuxové služby ani kontejnery; vše běží pod Windows.
+- Realizuj aktuálně zadaný úkol; nepřidávej nesouvisející funkce.
+
+## Délka souborů
+
+- Ručně psaný zdrojový soubor nesmí překročit 1000 fyzických řádků,
+  včetně komentářů a prázdných řádků.
+- Limit platí pro Python, JavaScript, TypeScript, JSX, TSX, HTML, CSS
+  a ostatní ručně psané zdrojové soubory používané v projektu.
+- Usiluj o běžnou velikost 300–500 řádků, pokud to odpovídá účelu souboru.
+  Tento doporučený rozsah není důvodem pro umělé dělení.
+- Kolem 800 řádků posuď odpovědnosti souboru a připrav rozdělení tak,
+  aby další změny nepřekročily limit.
+- Limit neobcházej zhušťováním kódu, slučováním příkazů na jeden řádek,
+  odstraněním potřebných komentářů ani zhoršením formátování.
+- Vyjmi automaticky generovaný kód, externí knihovny, závislosti,
+  lock soubory, binární soubory a datové soubory.
+- Existující nadlimitní soubory eviduj a refaktoruj postupně v rozsahu
+  souvisejícího úkolu. Neprováděj nevyžádaný hromadný přepis projektu.
+
+## Modularita a odpovědnosti
+
+- Každý soubor má mít jasný účel. Rozděluj podle odpovědností,
+  nikoliv mechanicky po určitém počtu řádků.
+- Používej výstižné názvy. Nevytvářej part1.py, part2.py, utils2.py
+  ani obdobné soubory bez srozumitelného významu.
+- Odděluj GUI, aplikační logiku, databázový přístup, validaci,
+  konfiguraci, oprávnění a exporty podle skutečné složitosti.
+- Do obsluhy tlačítek nevkládej rozsáhlou provozní logiku nebo SQL.
+  GUI volá příslušné služby a zobrazuje jejich výsledky.
+- manage.py a konfigurační vstupní body neobsahují provozní logiku.
+- Nevytvářej univerzální soubor, který postupně pohltí celý projekt.
+- Nepřidávej zbytečné abstrakce a desítky drobných souborů
+  pro jednoduchou funkcionalitu.
+- Nevytvářej kruhové importy ani duplicitní implementace.
+
+## Funkční členění MPDMB
+
+Podle zadání a skutečné potřeby organizuj funkce do modulů:
+- zaměstnanci;
+- plánování směn;
+- pracovní úkoly;
+- objekty a pracoviště;
+- závady, servis a údržba;
+- technika (vozidla) jako první řez vybavení a majetku;
+- vybavení a majetek (další majetek mimo vozidla);
+- provozní záznamy;
+- dokumenty;
+- reporting.
+
+Společné jádro zahrnuje konfiguraci, databázovou infrastrukturu,
+přihlášení, oprávnění, auditní záznamy a sdílené číselníky,
+pokud jsou tyto funkce součástí projektu.
+
+Moduly komunikují přes jasně definovaná rozhraní, služby nebo události.
+Nesmějí přímo manipulovat s interními widgety jiných modulů.
+Neimplementuj nový modul jen proto, že je uveden v tomto pravidle.
+
+## Bezpečné změny
+
+- Při rozdělení souborů zachovej dosavadní chování, veřejná rozhraní,
+  oprávnění, validace a kompatibilitu uložených dat.
+- Oprav všechny dotčené importy, exporty, odkazy a vstupní body.
+- Postupuj po souvisejících funkčních celcích a průběžně ověřuj funkčnost.
+- Změny databázové struktury prováděj prostřednictvím migračního
+  mechanismu projektu; neodstraňuj uložená data kvůli refaktoringu.
+- Nevkládej hesla a přístupové údaje do zdrojového kódu.
+- U víceuživatelské aplikace vynucuj oprávnění také v důvěryhodné
+  aplikační vrstvě, nikoliv pouze skrytím prvků GUI.
+
+## Automatická kontrola délky
+
+- Pravidlo pro AI není technická blokace. Používej dostupný kontrolní
+  skript projektu; pokud chybí, při úkolu zavedení těchto pravidel
+  vytvoř scripts/check_file_lengths.py nebo ekvivalent podle konvencí.
+- Kontrola má procházet relevantní zdrojové soubory projektu,
+  zobrazit cestu a počet řádků nadlimitních souborů a vrátit
+  nenulový návratový kód při překročení limitu.
+- Vynechávej virtuální prostředí, node_modules, externí závislosti,
+  build výstupy a generované soubory podle konfigurace projektu.
+- Výjimky musí být explicitní a zdůvodněné; nepřidávej je jen proto,
+  aby kontrola prošla bez potřebného rozdělení kódu.
+- Kontrolu zapoj do existujícího workflow nebo CI, pokud je dostupné.
+
+## Česká lokalizace
+
+- Komunikuj česky a používej české texty uživatelského rozhraní.
+- Zobrazuj datum dd.mm.rrrr, čas HH:mm, částky v Kč a teploty v °C.
+- V databázi používej vhodné datové typy a technické formáty.
+  České formátování aplikuj při zobrazení a exportu.
+- Peněžní výpočty prováděj přesným desetinným typem nebo
+  celočíselnou reprezentací haléřů, nikoliv nepřesným float.
+- Názvy v kódu přizpůsob existujícím konvencím projektu.
+- Auditní záznamy (`AuditEvent`): identifikátory `operation` a `object_type`
+  v databázi mohou zůstat anglické/technické, ale v administraci a UI
+  musí být české popisky. Každý nový kód operace nebo typu objektu
+  povinně doplň do `apps/core/audit_labels.py` (`OPERATION_LABELS` /
+  `OBJECT_TYPE_LABELS`). Filtry a seznamy v adminu ukazují češtinu,
+  ne surový anglický kód jako hlavní text.
+
+## Ověření a předání
+
+- Po úpravách ověř délku vytvořených a změněných zdrojových souborů.
+- Spusť dostupné kontroly odpovídající změně, zejména ověření importů
+  a testy dotčené funkcionality. U změn GUI ověř související tok aplikace.
+- Při nové nebo změněné funkci aktualizuj HTML nápovědu ve složce help/,
+  přegeneruj index skriptem scripts/build_help_index.py a ověř hledání.
+- Po dodání uživatelsky viditelné změny vždy aktualizuj číslo verze
+  aplikace (viz sekce Verze aplikace).
+- Pokud ověření nemůžeš provést, jasně to uveď a vysvětli omezení.
+- Na závěr stručně popiš změny, provedené kontroly a zbývající problémy.
+  Netvrď, že kontrola nebo test proběhl, pokud nebyl skutečně spuštěn.
+  V závěru uveď nové číslo verze.
+
+## Verze aplikace
+
+- Jediný zdroj verze: `apps/core/version.py` (`__version__`, např. `0.7.2`).
+  Patička a kontext berou hodnotu odtud (`APP_VERSION`); neudržuj
+  duplicitní číslo verze jinde.
+- Při každé dokončené etapě s uživatelsky viditelnou změnou (nová funkce,
+  oprava chování v UI, změna oprávnění, šablony dokumentů, nápověda
+  k provozu) **povinně zvyš** `__version__` před předáním.
+- Ve stejném kroku **povinně** doplň záznam do `CHANGELOG.md` v kořeni
+  projektu (co se v této verzi změnilo), ať je historie vidět.
+  Formát: `## X.Y.Z — dd.mm.rrrr`, pod tím krátké české odrážky
+  (např. Funkce / Opravy). Novější verze nahoře.
+- **Zakázáno** psát historii změn do `.js`, CSS, komentářů ve zdrojácích
+  nebo jiných rozptýlených poznámek. Nápověda `help/` popisuje chování
+  pro uživatele; changelog je přehled „co se v této verzi stalo“.
+- Semantika (MAJOR.MINOR.PATCH):
+  - PATCH — oprava bez nové oblasti funkcí;
+  - MINOR — nová funkce nebo větší úprava stávajícího modulu;
+  - MAJOR — nekompatibilní změna nebo zásadní milník (jen po dohodě).
+- Čistě interní refaktoring bez změny chování verzi ani changelog
+  nezvyšuj/nepíš, pokud uživatel výslovně nepožádá.
+- Samotné načtení těchto pravidel není důvodem ke změně verze.
+
+## Nápověda (povinná)
+
+- Udržuj moderní českou HTML nápovědu ve složce help/ s fulltextovým
+  vyhledáváním (search-index.json + search.js) dostupnou na /napoveda/.
+- Nápověda používá jednotnou paletu MPDMB; není to samostatný brand.
+- Při každé nové uživatelské funkci povinně doplň stránku nebo sekci
+  nápovědy, aktualizuj rozcestník a přegeneruj index.
+- Nedodávej etapu jako hotovou, pokud nápověda nepopisuje novou funkci.
+- Nepoužívej emoji navigaci; text musí být srozumitelný a prohledatelný.
+
+## Jednotný grafický systém
+
+Vizuální zdroj: https://www.parkovanimb.cz/, ověřeno 30.09.2026.
+Zachovej modré nadpisy, šedé pozadí, bílé plochy a zelený akcent.
+Nejde o oficiální brand manuál; použité hodnoty jsou z vykresleného webu.
+Logo v obrázku obsahuje další modré odstíny, které nebyly přesně vzorkovány.
+
+Ověřené barvy z vypočtených stylů webu:
+- primary: #166999 (nadpis a odkaz názvu webu);
+- link: #21759B (další modré odkazy);
+- background: #EEEEEE (světlá plocha);
+- surface: #FFFFFF (bílá);
+- text: #333333;
+- text-secondary: #54595F;
+- accent-source: #61CE70 (zelený akcent na webu);
+- blue-light-source: #6EC1E4 (světle modrý akcent);
+- navigation-source: #666666 (šedý navigační prvek).
+
+Pro aplikaci přidej odvozené funkční barvy:
+- primary-hover: #12567D;
+- primary-soft: #E8F2F8;
+- border: #D8DEE3;
+- success: #237A35, success-soft: #EAF5EC;
+- warning: #865600, warning-soft: #FFF4D6;
+- danger: #B42318, danger-soft: #FDECEA.
+Tyto odvozené barvy nejsou přesnou kopií webu.
+Zelenou #61CE70 nepoužívej s bílým drobným textem. Pro zelené tlačítko
+použij tmavší success. Ověř kontrast textu a aktivních ovládacích prvků.
+
+- Všechny barvy, mezery, velikosti a zaoblení definuj jako centrální
+  CSS proměnné v static/mpdmb/css/theme.css; nepřidávej lokální palety.
+- Používej jeden společný templates/base.html pro všechny moduly.
+- Základ: horní lišta s MPDMB, uživatelem a odhlášením; levá navigace;
+  pracovní plocha s nadpisem, filtry, tabulkou a hlavní akcí.
+- Pozadí světle šedé, panely bílé, hlavní tlačítka modrá, aktivní
+  navigace světle modrá. Výstrahy barevné pouze podle významu.
+- Font system-ui, Segoe UI, Arial, sans-serif; běžný text 14–16 px.
+  Mezery vycházejí z 4/8/12/16/24/32 px, panely mají poloměr 8 px.
+- Sdílej komponenty tlačítek, formulářů, tabulek, stavových štítků,
+  dialogů, prázdných stavů, chyb a stránkování.
+- Neznázorňuj stav pouze barvou; přidej text a případně ikonu.
+- Zajisti viditelný focus, ovládání klávesnicí, popisky polí,
+  chyby u konkrétních polí a čitelnost při zvětšení na 200 %.
+- Zajisti responzivní provoz na mobilu, tabletu a PC. Navigace se
+  na mobilu sbalí; tabulky mají kontrolovaný posun nebo podobu seznamu.
+- Používej jeden konzistentní systém ikon. Nevytvářej emoji navigaci.
+- Logo používej z oprávněně dodaného souboru; nenapodobuj městský znak
+  ani nevytvářej nové logo vydávané za originál.
+- Přiložený mpdmb-theme.css je výchozí vizuální šablona.
+  mpdmb-ui-preview.html je statický návrh, nikoliv funkční aplikace.
+
+## Kompaktní UX a modal vs stránka
+
+- Usiluj o **kompaktní a zároveň přehledný** vzhled: hustší řádky a formuláře,
+  méně zbytečného prázdna, zachovaný kontrast, focus a čitelnost.
+- Kde opakovaný zápis nebo drobná úprava **zrychlí ovládání** (den, blok,
+  potvrzení v matici), preferuj **modal** (`mpdmb-dialog` + fetch)
+  před samostatnou stránkou.
+- Modal **není povinnost** — u komplexních, jednorázových nebo dlouhých
+  toků mohou zůstat plné stránky.
+- Při nejasnosti, zda použít modal nebo stránku, **zeptej se uživatele**.
+
+## Konkrétní architektura webové aplikace
+
+- Vytvoř modulární monolit, nikoliv mikroservisy.
+- Doporučené členění: config/settings/{base,dev,production}.py;
+  apps/{core,accounts,employees,workplaces,shifts,tasks,attendance,payroll,activities,technika};
+  templates; static/mpdmb/{css,js}; scripts; tests; docs.
+- V každém modulu odděluj modely, formuláře, views, služby pro změny,
+  dotazy a testy podle potřeby. Nedělej povinný repository obal
+  nad Django ORM bez konkrétního přínosu.
+- Použij serverové sessions, Django autentizaci a skupiny oprávnění.
+  Vlastní uživatelský model definuj před první migrací nového projektu.
+- Odděl zaměstnance od přihlašovacího účtu: zaměstnanec nemusí mít účet.
+- Předpokládané role: administrátor, vedoucí, zaměstnanec, čtenář.
+  Administrátor spravuje účty a konfiguraci, vedoucí přidělená pracoviště,
+  zaměstnanec vlastní směny a úkoly; čtenář jen schválené přehledy.
+- Kontroluj oprávnění i rozsah pracovišť na serveru pro každé čtení,
+  změnu a export. Django modelové permissions samy nezajišťují
+  oprávnění ke konkrétním řádkům dat; tento rozsah implementuj výslovně.
+- Identifikátor pracoviště nebo uživatele od klienta není důkaz oprávnění.
+- U transakcí používej atomic; kolize úprav řeš verzí záznamu
+  a srozumitelným konfliktem, nikoliv tichým přepsáním cizí změny.
+- Kontrolu překryvu směn proveď i při souběžných zápisech v transakci
+  s vhodným zamykáním nebo databázovým omezením.
+- Časy ukládej s podporou časových pásem; zobrazení Europe/Prague.
+  Směny přes půlnoc a změnu letního času musí být podporované.
+- Formuláře chrání CSRF, změny nejsou dostupné přes GET.
+  HTML automaticky escapuj a citlivé údaje nevkládej do logů.
+- Audituj důležité změny: kdo, kdy, typ operace a dotčený objekt;
+  přístup k auditu omez a audit nezpřístupni běžným uživatelům k úpravám.
+  České popisky operací a typů udržuj v `apps/core/audit_labels.py`
+  (viz sekce Česká lokalizace).
+- Soubory a exporty poskytuj až po ověření oprávnění; osobní údaje
+  nesmějí být dostupné přes veřejnou cestu static/media.
+
+## První funkční verze a datový model
+
+Schválený rozsah: zaměstnanci, pracoviště, směny, pracovní úkoly,
+skutečná docházka, svátky a podklady pro mzdy s exportem XLSX.
+Technika (vozidla): evidence SPZ, odpovědná osoba, doklady (STK, pojistka)
+s platností a varováním, volitelné přiřazení k činnosti s kontrolou
+překryvu a platného řidičského průkazu. Závady, servis, obecný majetek
+mimo vozidla a integrace zůstávají budoucí rozšíření.
+Neimplementuj platební systém, ovládání závor nebo živou obsazenost
+bez samostatného zadání a dokumentace příslušného rozhraní.
+
+- Employee: jméno, příjmení, interní číslo, funkce, aktivita,
+  volitelný účet, pracovní kontakt pouze podle potřeby.
+- Workplace: název, typ, adresa, aktivita.
+- EmployeeWorkplace: vztah zaměstnance k pracovišti a platnost.
+- Shift: zaměstnanec, pracoviště, začátek a konec s časovým pásmem,
+  stav návrh/publikováno/zrušeno, poznámka, verze záznamu.
+- Task: název, popis, pracoviště, řešitel, zadavatel, termín,
+  priorita, stav, dokončení, verze záznamu.
+- TaskComment a TaskHistory: komentáře a historie změn úkolu.
+- AuditEvent: uživatel, čas, operace, typ a identifikátor objektu.
+- Modely doplň o odpovídající constraints a indexy. Historické
+  záznamy nenič smazáním zaměstnance nebo pracoviště; archivuj je.
+
+Požadované obrazovky a operace:
+- přihlášení, odhlášení, změna vlastního hesla;
+- přehled dne a vlastních úkolů s reálnými údaji z databáze;
+- zaměstnanci: seznam, filtry, detail, vytvoření, úprava a archivace;
+- pracoviště: seznam a správa pro oprávněnou roli;
+- směny: týdenní/měsíční přehled, tvorba, úprava a publikace;
+- úkoly: seznam s filtry, detail, přidělení, změna stavu a komentáře;
+- export přehledů CSV a mzdových podkladů XLSX s kontrolou oprávnění;
+- skutečná docházka, přestávky, absence, svátky a náhradní volno;
+- úvazky, pružná doba, přesčasy, odměny a mzdová uzávěrka;
+- administrace účtů, skupin a přístupů.
+
+Stavy úkolu: nový, přidělený, v řešení, čeká, dokončený, zrušený.
+Povolené přechody definuj v aplikační službě. Dokončení vyžaduje
+čas a uživatele; znovuotevření musí být auditované.
+Plán směn a skutečná docházka jsou samostatné evidence. Pravidla
+pracovní doby a mzdových podkladů určuje rozšíření níže. Aplikace
+nevypočítává čistou mzdu ani daňové a pojistné odvody.
+
+## Vývoj a nasazení
+
+- Aplikace běží v izolovaném Python virtuálním prostředí .venv.
+  Virtuální prostředí není virtuální počítač ani síťová izolace.
+- Pro tento projekt na Windows je pracovní složka F:\Python\MPDMB.
+  Založení prostředí v PowerShellu: py -m venv .venv
+  Aktivace v PowerShellu: .\.venv\Scripts\Activate.ps1
+  Aktivace v CMD: .venv\Scripts\activate.bat
+  Pokud aktivaci blokuje politika PowerShellu, neměň globální politiku;
+  použij přímo .\.venv\Scripts\python.exe pro všechny příkazy.
+- Závislosti instaluj do .venv, nikoliv do globálního Pythonu.
+  Příklad při existenci requirements.txt:
+  .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+- Vývojové spuštění pro přístup ze sítě:
+  .\.venv\Scripts\python.exe manage.py runserver 0.0.0.0:8000
+- 0.0.0.0 je adresa naslouchání, nikoliv adresa pro prohlížeč.
+  Uživatelé otevírají http://<skutečná-IP-počítače>:8000/.
+  Na hostitelském počítači lze otevřít http://127.0.0.1:8000/.
+- Skutečnou IPv4 zjisti příkazem ipconfig a použij adresu síťového
+  adaptéru dostupného z firemní sítě/VPN. Nevymýšlej konkrétní IP.
+  Pro trvalý provoz doporuč rezervaci adresy v DHCP nebo interní DNS.
+- Vývojové ALLOWED_HOSTS nastav přes konfiguraci na skutečnou IP,
+  localhost a 127.0.0.1. Nepoužívej wildcard *. Port do ALLOWED_HOSTS
+  nepatří. Pro vývoj nepoužívej nastavení Secure cookies vyžadující
+  HTTPS, pokud server skutečně běží pouze přes HTTP; produkční
+  bezpečné nastavení ponech oddělené a zapnuté.
+- Pro přístup jiných PC zajisti povolení příchozího TCP portu 8000
+  ve firewallu pouze pro důvěryhodnou firemní síť/VPN a příslušný
+  síťový profil. Firewall nevypínej a port nevystavuj internetu.
+- Počítač musí být zapnutý, dostupný v síti a server spuštěný.
+  .venv ani samotná IP nezajišťují automatický běh po restartu.
+- Produkční režim zachová .venv a port 8000, ale nepoužije runserver.
+  Preferuj interní HTTPS reverse proxy dostupnou na portu 8000
+  a aplikační WSGI/ASGI server na jiném lokálním portu.
+  Klientská adresa je pak https://<IP-nebo-interní-DNS>:8000/;
+  certifikát musí odpovídat použité IP/DNS a být důvěryhodný.
+  Připrav službu s automatickým startem, logováním a restartem.
+- Vývoj umožni na Windows 10+: virtuální prostředí, závislosti,
+  .env.example bez tajných hodnot a SQLite soubor db.sqlite3.
+- Připrav README s příkazy pro instalaci, migrace, vytvoření
+  administrátora, spuštění, nápovědu a ověření. Odděl vývojové
+  a produkční příkazy.
+- Produkci navrhni na Windows počítači nebo Windows Serveru ve firmě.
+  Klienti se připojují přes HTTPS v interní síti/VPN.
+  PostgreSQL, Linux server ani Nginx z Linuxu nepoužívej jako cíl.
+- Nasazení: reverse proxy na Windows a produkční WSGI/ASGI server.
+  Nepoužívej Django runserver v produkci. Veřejný internet není cílem.
+- VPN nenahrazuje přihlášení a oprávnění aplikace.
+- DEBUG=False, konkrétní ALLOWED_HOSTS, tajný klíč z prostředí,
+  Secure/HttpOnly session cookies, přiměřená expirace sessions,
+  CSRF nastavení a omezení opakovaných pokusů o přihlášení.
+- Interní TLS zajisti důvěryhodným certifikátem pro firemní zařízení;
+  nezadávej vypnutí kontroly certifikátů jako řešení.
+- Připrav pravidelné zálohy souboru db.sqlite3 i případných příloh,
+  omezené přístupy, retenci a ověřený postup obnovy.
+- Přidej zdravotní kontrolu služby bez zveřejnění citlivých údajů,
+  provozní logování a postup aktualizace a rollbacku.
+- Nikdy nenasazuj neodsouhlasené změny do existující produkce.
+
+## Postup tvorby aplikace při výslovném zadání implementace
+
+1. Prostuduj projekt, uveď výchozí stav a stručný plán.
+2. Založ strukturu, nastavení, SQLite, model účtu a první migrace.
+3. Přidej přihlášení, role a omezení podle pracovišť.
+4. Vytvoř společný layout, centrální téma a opakovaně použitelné prvky.
+5. Implementuj kompletní zaměstnance a pracoviště včetně oprávnění.
+6. Implementuj směny s překryvy, publikací a konflikty souběžných změn.
+7. Implementuj úkoly, historii, komentáře a povolené přechody stavů.
+8. Implementuj docházku a legislativní kontroly, mzdové podklady,
+   uzávěrku, exporty XLSX, audit a kontrolu 1000 řádků.
+9. Ověř role, nepovolený přístup k cizím záznamům, souběžné úpravy,
+   směnu přes půlnoc a základní práci v mobilním rozhraní.
+10. Připrav dokumentaci, HTML nápovědu s indexem a interní nasazení
+    na Windows včetně obnovy ze zálohy db.sqlite3.
+
+Každá etapa má mít funkční vertikální průchod od formuláře po databázi.
+Nedodávej jen prázdné moduly, TODO nebo tlačítka bez funkce.
+Ukázková data označ a nepoužívej skutečné osobní údaje zaměstnanců.
+Při neznámých údajích o infrastruktuře připrav konfigurovatelný výchozí
+postup; nevymýšlej domény, přístupové údaje ani rozhraní dodavatelů.
+
+Samotné načtení tohoto pravidla neznamená pokyn začít vývoj nebo nasazení.
+
+## Docházka, svátky a podklady pro mzdy – závazné rozšíření
+
+Tento oddíl rozšiřuje schválený rozsah o skutečnou pracovní dobu,
+absence, svátky, přesčasy, odměny a export podkladů pro mzdy do XLSX.
+Právní základ byl ověřen ve veřejných podkladech MPSV dne 30.09.2026.
+Jde o implementační zadání, ne o osvědčení právní správnosti programu.
+Při implementaci ověř účinné znění pro konkrétní zúčtované období.
+Pravidla a sazby verzuj podle účinnosti; změna nastavení nesmí přepsat
+uzavřené měsíce. Interní dohody nesmějí obcházet kogentní zákonné limity.
+
+### Rozsah a vstupní konfigurace
+
+- První implementace pokrývá dospělé zaměstnance v pracovním poměru.
+  DPP, DPČ, mladistvé a konto pracovní doby nesmí přepočítávat pravidly
+  běžného pracovního poměru; při výskytu vytvoř zvláštní ověřený profil
+  nebo zablokuj finální mzdový export pro nepodporovaný vztah.
+- Pružná doba, nerovnoměrné rozvržení a konto pracovní doby nejsou totéž.
+- Odděl tři veličiny: plán směn, skutečnou evidovanou práci a mzdové nároky.
+  Průchod vstupním čipem sám není evidencí pracovní doby (§ 96).
+- Eviduj začátek a konec práce, přesčasu, noční práce, práce během
+  pohotovosti i držené pohotovosti, pokud se pohotovost používá.
+- Zaměstnanec zapisuje/potvrzuje vlastní údaje, vedoucí je kontroluje,
+  mzdová účetní schvaluje mzdové podklady. Odpovědnost zaměstnavatele
+  za řádné vedení evidence se nepřenáší na zaměstnance.
+- Způsob odměňování zatím není znám. Podporuj měsíční i hodinovou mzdu.
+  Neodvozuj skutečné sazby z ukázkových hodnot.
+- Zjisti právní formu zaměstnavatele a režim podle § 109: mzda nebo plat.
+  Městské vlastnictví samo neznamená platový režim. Níže uvedené sazby
+  příplatků jsou pro mzdu; plat vyžaduje vlastní profil §§ 125–127, 135.
+- Pokud režim, úvazek, rozvrh, dohoda o náhradním volnu nebo potřebný
+  průměrný výdělek chybí, zobraz konkrétní nevyřešenou položku.
+  Export hodin je možný jako neuzavřený návrh; finální peněžní podklad
+  nevytvářej s chybějícími údaji nahrazenými nulou.
+- Ulož kolektivní smlouvu, vnitřní předpis a individuální dohody jako
+  reference na dokument a platnost; nezaměňuj jejich právní možnosti.
+
+### Rozšířený datový model
+
+- Employee zachovává dosavadní pole. Úvazek a mzdu nepřepisuj přímo
+  v jeho aktuálním řádku bez historie.
+- Employment: zaměstnanec, druh vztahu, začátek/konec, mzdové číslo,
+  režim mzda/plat, pracovní funkce, aktivita.
+- WorkTimeProfile: vztah, platnost od/do, stanovené týdenní minuty,
+  sjednané týdenní minuty, režim jednosměnný/dvousměnný/vícesměnný/
+  nepřetržitý, rovnoměrné/nerovnoměrné rozvržení, pružný režim ano/ne,
+  zdroj případného zkrácení stanovené doby, referenční rozvrh.
+- BalancingPeriod: profil, začátek/konec, druh vyrovnávání, právní základ,
+  cílové minuty a jejich výpočet. Období směn a období přesčasů eviduj
+  samostatně; nemusí mít stejné hranice.
+- FlexibleTimeRule: platnost, základní a volitelné časové intervaly
+  podle dne, referenční směny pro svátek, dovolenou a výjimky.
+- ScheduleVersion/Shift: neměnná publikovaná verze, začátek/konec,
+  čistá plánovaná práce, plánované přestávky, okamžik zveřejnění,
+  seznámení zaměstnance, zdroj změny a případná dohoda o kratší lhůtě.
+- HolidayCalendar/Holiday: země CZ, datum, označení, zákonný typ,
+  účinnost pravidla, verze a algoritmus pohyblivých svátků.
+- AttendanceEvent: původní příchod/odchod nebo import, čas, zdroj,
+  importní identifikátor, autor, důvod opravy; původní událost zachovej.
+- WorkInterval: pracovní vztah, pracoviště, začátek/konec, vazba na směnu,
+  verze, stav návrh/potvrzeno/schváleno; dovol více úseků za den.
+- BreakInterval: začátek/konec, druh, započítává se do pracovní doby,
+  plán/skutečnost, potvrzení, autor a důvod výjimky.
+- AbsenceType/Absence: typ, interval, plánované zameškané hodiny,
+  schválení, důvod náhrady a samostatný způsob započtení do fondu.
+  Nepožaduj zdravotní diagnózu; eviduj potřebný typ nepřítomnosti.
+- OvertimeRecord: skutečný interval, klasifikace nařízený/dohodnutý/
+  dodatečně uznaný, důkaz příkazu nebo souhlasu, režim kompenzace,
+  rozhodnutí oprávněné osoby; sporné případy nesmaž.
+- CompensatoryLeaveLedger: původ přesčas/svátek, vznik, čerpání,
+  vazba na konkrétní nárok, dohoda, splatnost, zůstatek a vypořádání.
+- PayRateHistory: platnost, měsíční/hodinová základní mzda, měna,
+  skutečný versus plný úvazek, pravidlo krácení a zdroj dokumentu.
+- AverageEarnings: vztah, rozhodné období, účinnost, Kč/h, průměrný/
+  pravděpodobný, zdroj mzdové účetní a schválení.
+- PremiumRule: kód, účinnost, právní režim, procento/částka za hodinu,
+  základ výpočtu, dohoda, pravidlo souběhu a zákonné omezení.
+- BonusAward: období, druh odměny/prémie, částka nebo procento,
+  explicitní základ procenta, podmínky, navrhovatel a schvalovatel.
+- PayrollPeriod/PayrollSnapshot/PayrollLine: uzávěrka, neměnný výsledek,
+  zdrojové intervaly, minuty, sazba, základ, částka, kód, použitá pravidla,
+  schválení a verze. Oprava tvoří novou verzi a rozdíl vůči předchozí.
+- ExportTemplate/ExportRun: verze mapování, názvy a pořadí sloupců,
+  formáty, rozsah dat, verze uzávěrky, autor, čas a hash souboru.
+- Původní Workplace, EmployeeWorkplace, Task, TaskComment, TaskHistory
+  a AuditEvent zachovej a propoj vhodnými cizími klíči.
+- Použij constraints na časové intervaly, překryvy profilů a sazeb,
+  duplicitní importy, čerpání nad zůstatek a jedinečnost výpočetních řádků.
+
+### Úvazky, rozvrh a fond pracovní doby
+
+- Rozlišuj stanovenou týdenní dobu od individuálně sjednané kratší doby.
+  Základní profily: 40 h, dvousměnný 38,75 h, vícesměnný/nepřetržitý
+  37,5 h (§ 79). Jinou zkrácenou stanovenou dobu vyžaduje právní titul.
+- Podporuj individuální kratší úvazek, například 20 nebo 30 h týdně.
+  Desetinné hodiny převeď na minuty: 38,75 h = 38 h 45 min.
+- Každý zaměstnanec může mít jiný profil a změnu v průběhu měsíce.
+  Výpočet rozděl podle účinnosti profilů a nástupu/skončení vztahu.
+- Rovnoměrnost posuzuj po týdnech, ne jako povinných 8 h pondělí–pátek.
+- U nerovnoměrnosti porovnávej plán a plnění za vyrovnávací období,
+  standardně nejvýše 26 týdnů; až 52 jen s kolektivní smlouvou.
+  Vyšší počet hodin v jednom týdnu sám neznamená přesčas.
+- Pružnost modeluj vedle typu rozvržení: základní povinná přítomnost,
+  volitelné intervaly, saldo a vyrovnání (26/52 týdnů dle právního titulu).
+  Volitelně delší přítomnost není automatický schválený přesčas.
+- Pro dovolenou, pracovní cestu, nemoc a další výjimky pružnosti použij
+  předem určené referenční směny (§ 85); překážky posuzuj podle § 97
+  a jejich druhu, ne jako všechny automaticky placené 8 hodin.
+- Měsíční plánovaný fond odvoď ze schválených čistých směn. Zvlášť uveď
+  kalendářní referenci, plán, skutečnou práci a zameškané plánované hodiny.
+  Nepoužívej univerzální vzorec počet pracovních dnů krát 8.
+- Svátek, absence a náhradní volno se započítávají odlišně pro různé účely.
+  Odděl započtení do fondu, náhradu mzdy a hodiny skutečné práce.
+- Saldo nerozhoduje samo o mzdě ani o dluhu zaměstnance. Nedostatek
+  směn přidělených zaměstnavatelem není automaticky neplacené volno.
+- U pracovní smlouvy kontroluj seznámení s rozvrhem obvykle 2 týdny
+  předem; odlišnou lhůtu dolož dohodou (§ 84).
+
+### Přestávky – návrh podle směny, potvrzení skutečnosti
+
+- Aplikace navrhne přestávku podle směny a pravidla pracoviště.
+  Návrh nesmí sám vytvořit skutečně vyčerpanou neplacenou přestávku.
+- U dospělého zajisti nejpozději po 6 h nepřetržité práce přestávku
+  na jídlo a oddech nejméně 30 min; při dělení jedna část alespoň 15 min.
+  Neumisťuj ji na začátek ani konec práce (§ 88).
+- Zkontroluj i další úseky nepřetržité práce během delšího výkonu.
+  Samotná krátká vložená pauza nesmí automaticky vyřešit všechny podmínky.
+- Směna končící po přesně 6 h práce není důvodem zpětně odečíst 30 min.
+- Odčítej jen potvrzené neplacené intervaly, jejich sjednocení bez dvojího
+  odečtu, a pouze jejich překryv s evidovanou pracovní dobou.
+- Bezpečnostní přestávka se započítává (§ 89); souběžná část s přestávkou
+  na jídlo se neodečítá. U práce, kterou nelze přerušit, započti přiměřenou
+  dobu jídla a oddechu. Výjimku musí doložit podmínky práce, ne pouhý název
+  nepřetržitého provozu nebo nedostatek personálu.
+- Chybějící potvrzení přestávky označ k vyřešení; neskrývej skutečně
+  odpracovaný čas fiktivní automatickou srážkou.
+- Příklad: 06:00–14:30 a potvrzená pauza 11:30–12:00 = 8 h práce.
+  Příklad: 06:00–12:00 bez pauzy = 6 h práce, nikoliv 5,5 h.
+
+### Svátky a kalendář
+
+- Podle zákona č. 245/2000 Sb. zahrň 01.01., Velký pátek, Velikonoční
+  pondělí, 01.05., 08.05., 05.07., 06.07., 28.09., 28.10., 17.11.,
+  24.12., 25.12. a 26.12. Pohyblivé svátky vypočítej pro libovolný rok.
+- Dvě označení 01.01. nezakládají dva svátky. Významný den není svátek.
+  Svátek o víkendu se automaticky nepřesouvá na následující pracovní den.
+- Rozlišuj práci ve svátek, nepracování kvůli svátku na obvyklý pracovní
+  den a svátek bez naplánované směny. Nikdy nepřidávej všem 8 hodin.
+- Práce ve svátek v běžném rozvrhu není sama o sobě práce přesčas.
+- U mzdy je základ pro práci ve svátek dosažená mzda a placené náhradní
+  volno; příplatek alespoň 100 % průměrného výdělku místo volna vyžaduje
+  dohodu. Eviduj čerpání do konce třetího následujícího kalendářního měsíce
+  nebo jiný dohodnutý termín (§ 115).
+- Za neodpracovaný obvyklý pracovní den kvůli svátku eviduj náhradu jen
+  za skutečně ušlou mzdu. Pokud se měsíční mzda kvůli svátku nekrátí,
+  nepřičítej navíc duplicitní náhradu.
+- U nočních směn explicitně konfiguruj použití posunuté hranice dne
+  pracovního klidu podle § 91 odst. 6 pro mzdové účely; není vždy půlnoc.
+  V exportu uveď použitou hranici. Bez schválené výjimky používej
+  kalendářní den a upozorni na potřebu ověření režimu nočních směn.
+
+### Přesčasy, příplatky a odměny – mzdový režim
+
+- Přesčas vyžaduje práci nad stanovenou týdenní dobu mimo rozvrh
+  a příkaz nebo souhlas zaměstnavatele (§ 78, § 93). Souhlas může být
+  dodatečný; nepřítomnost písemného předběžného schválení sama nezruší
+  možné zákonné právo. Sporný nárok předej k posouzení.
+- U kratšího úvazku odděl práci navíc do stanovené doby od přesčasu.
+  Příklad při sjednaných 30 a stanovených 40 h: práce 35 h není pouze
+  kvůli překročení 30 h přesčas. Zaměstnanci s kratším úvazkem nelze
+  přesčas nařídit. Zkrácená stanovená doba má jiný právní význam.
+- Nařízený přesčas kontroluj 8 h v jednotlivém týdnu a 150 h ročně;
+  celkový přesčas průměrně 8 h týdně v období 26/52 týdnů.
+  Pro účely § 93 odst. 5 zvlášť eviduj přesčas kompenzovaný volnem.
+  Limity nevytvářej jediným univerzálním ročním číslem 416.
+- U pružnosti zohledni také základní dobu (§ 98); kladné saldo samo
+  nezakládá příplatek. Rozpoznávej napracování volna na vlastní žádost.
+- Příplatek za přesčas: alespoň 25 % průměrného hodinového výdělku
+  plus dosažená mzda. Dohodnuté volno nahrazuje příplatek, ne dosaženou
+  mzdu. Pokud volno není poskytnuto do 3 kalendářních měsíců nebo jiné
+  dohodnuté doby, eviduj povinnost doplatit příplatek (§ 114).
+- Přesčas již zahrnutý ve sjednané mzdě použij jen s platným konkrétním
+  smluvním rozsahem podle § 114 odst. 3; jednostranný mzdový výměr
+  nestačí. Evidenci přesčasu a kontroly limitů přesto zachovej.
+- Noční práce: 22:00–06:00. Výchozí příplatek 10 % průměrného výdělku
+  (§ 116); sobota/neděle výchozí 10 % (§ 118). Zákon připouští sjednanou
+  jinou minimální výši/způsob; odchylku použij jen s doloženou dohodou.
+- Příplatky vyhodnocuj za skutečné zlomky hodin, nikoliv celé započaté
+  hodiny. Noční intervaly určuj zvlášť od posunuté hranice svátku.
+- Souběh právních titulů podporuj: stejná hodina může být noční,
+  víkendová, sváteční a přesčasová. Základní hodinu zaplať pouze jednou,
+  oprávněné příplatky přidej samostatně; automaticky je nevylučuj.
+- Odměny mají pevnou částku nebo procento z přesně určeného základu,
+  zdroj pravidla, období a schválení. Nezapočítej stejnou odměnu dvakrát.
+- Případná pohotovost má vlastní evidenci, dohodu a pravidlo § 140;
+  nezařazuj dobu bez výkonu práce mezi odpracované hodiny.
+
+### Odpočinek, absence a průměrný výdělek
+
+- Pro dospělé kontroluj běžný limit směny 12 h (§ 83), denní odpočinek
+  11 h v rámci 24 h (§ 90) a týdenní odpočinek 24 + 11 = 35 h (§ 92).
+  Denní kontrola nemá být pouze rozdílem dvou začátků směn.
+- Zákonné výjimky dovol jen s odpovídajícím právním důvodem a kontrolou
+  náhradního odpočinku. Nelze volně vypnout kontrolu tlačítkem.
+  U nočních zaměstnanců přidej samostatné posouzení limitů § 94.
+- Evidence skutečné práce se uloží i při zjištěném porušení limitu;
+  systém je nesmí zakrýt smazáním hodin. Porušení vyžaduje řešení,
+  ne automatickou ztrátu mzdového nároku.
+- Podporuj dovolenou v hodinách, nemoc, OČR, lékaře, placené i neplacené
+  překážky, neplacené volno a náhradní volno; náhrada závisí na typu.
+  Zameškané hodiny odvoď z platných směn/referenčních směn.
+- Svátek při dovolené posuzuj dle § 219 odst. 2 včetně výjimek;
+  nedělej plošný dvojí odečet dovolené a svátku.
+- Nemoc eviduj pro podklady podle plánovaných zameškaných hodin;
+  náhradu v prvních 14 kalendářních dnech a redukční hranice počítej
+  pouze ověřeným samostatným pravidlem § 192. Není to 100 % mzdy.
+  OČR ani jiné dávky nepočítej jako běžnou mzdu hrazenou zaměstnavatelem.
+- Pro příplatky a náhrady používej platný průměrný hodinový výdělek
+  z předchozího kalendářního čtvrtletí, nikoliv automaticky tarifní sazbu.
+  Při méně než 21 odpracovaných dnech použij ověřený pravděpodobný
+  výdělek (§§ 351–362). Preferuj schválený import od mzdové účetní;
+  nový výpočet průměru vyžaduje správné zúčtované mzdy a rozdělení odměn.
+- Minimální mzdu, zaručený plat a redukční hranice nevkládej jako
+  neměnné konstanty; aplikuj správný rok, režim a úvazek.
+
+### Výpočetní služba a uzávěrka
+
+- Vytvoř oddělené služby pro kalendář, fond, klasifikaci intervalů,
+  přestávky, přesčasy, saldo, náhrady, peněžní podklad a export.
+- Ukládej přesné časové okamžiky v UTC, klasifikuj v Europe/Prague.
+  Interval rozděl na hranicích dne, noci, svátku, přestávky, sazby,
+  úvazku a zúčtovaného měsíce. Podporuj přechod letního času.
+- Čistá práce = délka schválených pracovních intervalů minus sjednocení
+  potvrzených nezapočítávaných přestávek; nepřičítej absenci jako práci.
+- Peněžní řádek příplatku = oprávněné hodiny × průměrný výdělek
+  × příslušný koeficient. U částky Kč/h použij příslušnou sazbu.
+- Základ hodinové mzdy = oprávněné skutečné hodiny × platná sazba.
+  U měsíční mzdy ulož schválenou metodu krácení a samostatného ocenění
+  práce navíc; měsíční částku nelze obecně rozdělit na 160 h.
+- Rozlišuj celkový tarif pro plný úvazek a sjednanou částku za skutečný
+  úvazek, aby nedošlo k druhému poměrnému krácení.
+- Zaokrouhluj podle verzované metodiky, ne po každé minutě; přesné
+  časové údaje zachovej. Peníze počítej Decimal, čas bez float.
+- Každý součet musí být rozkliknutelný na intervaly, právní titul,
+  sazbu, zdroj a schválení. Očekávaný výsledek nevydávej za skutečnost.
+- Uzávěrka: návrh → kontrola vedoucího → kontrola mzdové účetní
+  → uzavřeno. Odděl právo správy účtů od práva číst mzdy.
+- Uzávěrku a export chrání serverová oprávnění, transakce a verze;
+  opakovaný export téhož snapshotu nezmění výsledky.
+- Po uzavření opravuj novou verzí s důvodem a rozdílovým výkazem.
+- Aplikace připravuje podklady pro hrubou mzdu, nikoliv čistou výplatu,
+  odvody nebo daň. Účetní systém zůstává místem konečného zúčtování.
+
+### Export Excel XLSX – výchozí změnitelná šablona
+
+- Vytvoř skutečný .xlsx pomocí openpyxl nebo ekvivalentní knihovny.
+  Výpočty jsou na serveru; Excel zobrazuje jejich schválený výsledek.
+- Exportní formát je počáteční návrh, nikoliv závazný formát účetnictví.
+  Zaveď verzované mapování sloupců a mzdových kódů; změna šablony
+  nesmí vyžadovat změnu výpočetních služeb ani zničit staré exporty.
+- List Souhrn: měsíc, mzdové číslo, zaměstnanec, úvazek, typ rozvržení,
+  plánované hodiny, skutečná práce, svátek bez práce, dovolená,
+  nemoc, ostatní absence, noční, víkendové a sváteční hodiny,
+  práce nad kratší úvazek, přesčas, přesčas zahrnutý ve mzdě,
+  čerpané náhradní volno a saldo vyrovnávacího období.
+- List Denni_evidence: vztah, datum, pracoviště, plán od/do,
+  skutečnost od/do, úseky přestávek, čistá práce, absence, příplatkové
+  kategorie, přesčas, stav schválení a zdrojové identifikátory.
+- List Mzdove_polozky: zaměstnanec, mzdový kód, právní titul,
+  hodiny, sazba/základ, procento, částka Kč, období nároku/zúčtování,
+  stav, vysvětlení a zdrojová verze. Neznámé částky zůstávají prázdné
+  a výslovně označené, nikoliv 0 Kč.
+- List Odmeny: druh, částka/procento, základ, důvod a schválení.
+- List Nahradni_volno: původ, vznik, čerpání, zůstatek, lhůta a dohoda.
+- List Kontroly: zaměstnanec, datum, závažnost, kód chyby,
+  vysvětlení, výsledek posouzení; zahrň i nevyřešené kolize.
+- List Metodika: verze exportu a pravidel, čas vytvoření, uzávěrka,
+  zdroje, hranice svátku, definice sloupců a pravidla zaokrouhlení.
+- Datumy zapisuj jako datum s formátem dd.mm.yyyy, časy hh:mm,
+  délky jako Excel trvání [h]:mm a současně desetinné hodiny pro účetní.
+  Například 7:30 = 7,50 h, nikoliv 7,30 h. Částky jsou číselné v Kč.
+- Mzdové číslo uchovej jako text včetně počátečních nul.
+- Hlavičky zmraz, použij filtry, vhodné šířky a formát tisku;
+  všechny listy mají stejnou modrou/šedou paletu MPDMB.
+- Součty příplatkových hodin mohou přesáhnout čistou práci kvůli
+  souběhu titulů; nezobrazuj jejich součet jako odpracovanou dobu.
+- Textové vstupy zapisuj jako text, ne jako Excel vzorce; ošetři
+  formula injection. Exporty obsahující mzdy povol jen oprávněným rolím.
+- Pro náhled použij syntetické zaměstnance a viditelné označení návrhu.
+
+### Povinné ověřovací případy při implementaci
+
+- 40, 38,75 a 37,5 h; kratší 20/30 h; změna úvazku uprostřed měsíce.
+- Přesně 6 h bez pauzy; 8,5 h přítomnosti s 30 min potvrzené pauzy;
+  plánovaná nepotvrzená pauza; dělená pauza; placená bezpečnostní pauza.
+- Nerovnoměrné 48/32 h při 40 h průměru bez automatického přesčasu.
+- 30 h úvazek se stanovenými 40 h a skutečnost 35 h: 5 h práce navíc,
+  ne automaticky 5 h přesčasového příplatku.
+- Kladné pružné saldo bez přesčasového příkazu versus uznaný přesčas.
+- Svátek bez směny, svátek na obvyklý pracovní den, práce ve svátek,
+  svátek o víkendu a souběh svátku s noční prací a přesčasem.
+- 01.01. jednou; Velký pátek a pondělí různých let; posunutá hranice
+  svátku podle § 91 odst. 6; směna přes půlnoc a konec měsíce.
+- Čerpání náhradního volna pouze jednou a výpočet nedočerpaného nároku.
+- Měsíční mzda nekrácená svátkem bez druhé sváteční náhrady.
+- Výdělek platný v novém čtvrtletí, chybějící sazba a pravděpodobný výdělek.
+- Dovolená versus svátek, nemoc jen v plánovaných hodinách a absence
+  při pružné době s referenčním rozvrhem.
+- Změna času: 25.10.2026 01:00–04:00 Europe/Prague = 4 reálné hodiny;
+  29.03.2026 01:00–04:00 = 2 reálné hodiny před případnou pauzou.
+- Uzavřený měsíc, oprava novou verzí, opakovaný export, nepovolený
+  přístup zaměstnance k cizí docházce a neoprávněný přístup ke mzdám.
+- XLSX se otevře v Excelu; hodnoty odpovídají snapshotu, trvání nad
+  24 h se správně zobrazí a text nemůže vytvořit spustitelný vzorec.
+
+### Právní a metodické zdroje pro implementaci
+
+Zákoník práce: https://ppropo.mpsv.cz/zakon_262_2006
+Svátky: zákon č. 245/2000 Sb.; seznam a noční hranice:
+https://ppropo.mpsv.cz/VIII83Dnypracovnihoklidu
+Úvazky: https://ppropo.mpsv.cz/viii2delkapracovnidoby
+Rozvrhy: https://ppropo.mpsv.cz/VIII3Rozvrzenipracovnidoby
+Nerovnoměrnost: https://ppropo.mpsv.cz/VIII32Nerovnomernerozvrzenipraco
+Pružnost: https://ppropo.mpsv.cz/VIII33Pruznapracovnidoba
+Přestávky: https://ppropo.mpsv.cz/VIII4Prestavkavpraciabezpecnostn
+Přesčasy: https://ppropo.mpsv.cz/VIII5Praceprescas
+Evidence: https://ppropo.mpsv.cz/VIII9Evidencepracovnidoby
+Denní odpočinek: https://ppropo.mpsv.cz/viii81nepretrzitydenniodpocinek
+Týdenní odpočinek: https://ppropo.mpsv.cz/VIII82Nepretrzityodpocinekvtydnu
+Noční zaměstnanci: https://ppropo.mpsv.cz/VIII6Nocniprace
+Přesčasová mzda: https://ppropo.mpsv.cz/XIX2Mzdanebonahradnivolnozapraci
+Sváteční mzda: https://ppropo.mpsv.cz/xix4mzdanahradnivolnonebonahrada
+Noční příplatek: https://ppropo.mpsv.cz/xix5mzdazanocnipraci
+Víkendový příplatek: https://ppropo.mpsv.cz/xix7mzdazapracivsobotuavnedeli
+Průměrný výdělek: https://ppropo.mpsv.cz/XXI8Prumernyvydelek
+Minimální mzda: https://mpsv.gov.cz/minimalni-mzda
+
+Pravidla směn, evidence a exportu implementuj před použitím skutečných
+mzdových dat. Firemní sazby, dohody a metodiku měsíční mzdy potvrzuje
+oprávněná mzdová účetní; program nemá neznámé údaje domýšlet.

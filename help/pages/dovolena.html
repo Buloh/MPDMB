@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="/static/mpdmb/img/favicon.svg" type="image/svg+xml">
+  <title>Dovolená · Nápověda SYNERA</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body data-help-base="/napoveda/">
+  <header class="help-header">
+    <a class="brand" href="/">SYNERA</a>
+    <div class="search-wrap">
+      <label for="help-search">Hledat v nápovědě</label>
+      <input id="help-search" type="search" placeholder="hledat…" autocomplete="off">
+      <ul id="search-results" aria-live="polite"></ul>
+      <p id="search-empty">Nic nenalezeno. Zkuste jiné klíčové slovo.</p>
+    </div>
+  </header>
+  <div class="help-shell">
+    <nav class="help-nav" aria-label="Obsah nápovědy">
+      <a href="../index.html">Úvod</a>
+      <a href="spusteni.html">Spuštění</a>
+      <a href="prihlaseni.html">Přihlášení</a>
+      <a href="prehled.html">Přehled</a>
+      <a href="administrace.html">Administrace</a>
+      <a href="zamestnanci.html">Zaměstnanci</a>
+      <a href="pracoviste.html">Pracoviště</a>
+      <a href="smeny.html">Dlouhodobý plán</a>
+      <a href="dochazka.html">Docházka</a>
+      <a href="dovolena.html" aria-current="page">Dovolená</a>
+      <a href="cinnost.html">Činnost</a>
+      <a href="technika.html">Technika</a>
+      <a href="dokumenty.html">Dokumenty</a>
+    </nav>
+    <main class="help-main">
+      <h1>Dovolená</h1>
+      <section class="panel">
+        <h2 id="prehled">Roční plán</h2>
+        <p>
+          Modul <strong>Dovolená</strong> (<code>/dovolena/</code>) je pod
+          rozcestníkem <strong>Provoz</strong>. Nárok se počítá podle
+          §&nbsp;212–213 zákoníku práce z <strong>celých odpracovaných
+          násobků</strong> týdenní pracovní doby (min. 4 násobky a poměr
+          trvá alespoň 28 dní). Zobrazuje se <strong>naběhlé</strong>
+          (potvrzená docházka + započtená dovolená) i <strong>odhad</strong>
+          (naběhlé + publikované směny práce do konce roku). Plánování
+          kontroluje zůstatek odhadu. Zaokrouhlení výsledku je nahoru
+          na celé hodiny. Program není osvědčením právní správnosti.
+        </p>
+        <p>
+          Vedoucí na roční přehledu klikne na <strong>jméno zaměstnance</strong>
+          a otevře detail s kalendářem. Alternativně zvolí pohled
+          <strong>podle pracoviště</strong> (řádky pracovníků).
+          Na stránce detailu je <strong>roční kalendář</strong> (12 měsíců).
+          Klik na pracovní den otevře dialog s předvyplněným polem
+          <strong>Od</strong>; prázdné <strong>Do</strong> znamená jen ten den.
+          Tlačítko „Přidat blok“ otevře prázdný dialog Od–Do (případně půlden).
+        </p>
+        <p>
+          U jednodenního bloku lze zvolit <strong>půlden</strong>
+          (dopoledne / odpoledne), pokud je půldenní dovolená povolena.
+          Schválení vytvoří směny typu <strong>D</strong> v dlouhodobém plánu
+          a absenci v docházce.
+          Nárok roku se má ideálně vyčerpat do <strong>31.&nbsp;12. roku vzniku</strong>
+          (§&nbsp;218 odst.&nbsp;1); nejzazší lhůta je
+          <strong>31.&nbsp;12. následujícího roku</strong> (odst.&nbsp;3).
+          Tyto lhůty systém zobrazuje a varuje při nevyčerpaném zůstatku.
+          V administraci (nároky dovolené) je může upravit
+          <strong>jen role administrátor</strong>
+          (např. výjimky §&nbsp;218 odst.&nbsp;5) — zaškrtněte
+          <em>lhůty nastaveny ručně</em>, jinak je systém při obnově nároku
+          znovu nastaví na výchozí. Ostatní uživatelé s přístupem do adminu
+          lhůty jen vidí.
+          Datum „vyčerpat převod do“ se nastaví
+          <strong>jen při převodu</strong> z minulého roku — na
+          <strong>31.&nbsp;12. roku, ve kterém převod evidujeme</strong>
+          (např. převod z 2026 do 2027 → 31.12.2027). Bez převodu je pole
+          prázdné. Výjimky (nemoc, mateřská/rodičovská) systém zatím
+          neprodlužují automaticky.
+        </p>
+      </section>
+      <section class="panel">
+        <h2 id="pravidla">Pravidla a kontroly</h2>
+        <p>
+          Globální pravidla (výměra, půlden, kontroly, souvislý úsek) zůstávají
+          <strong>jen v administraci Django</strong>. Min. souvislý úsek se
+          počítá v <strong>pracovních dnech Po–Pá</strong>; započtení svátků
+          lze v pravidlech zapnout. Plány dovolené se spravují jen v aplikaci,
+          ne v adminu. Individuální navýšení týdnů a půlden nastavíte na kartě
+          zaměstnance.
+        </p>
+        <p>
+          Program připravuje podklady podle nastavení; není osvědčením právní
+          správnosti. Lhůty nároku roku (ideálně / nejzazší) a převodu
+          (§&nbsp;218) jsou v aplikaci i v administraci; výchozí hodnoty smí
+          v adminu měnit jen <strong>administrátor</strong> (ruční zámek lhůt).
+        </p>
+      </section>
+      <p class="help-footer">SYNERA · nápověda · datum formátu dd.mm.rrrr</p>
+    </main>
+  </div>
+  <script src="../search.js" data-index="../search-index.json"></script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<div class="cell-modal-body">
+  <h2>{{ title }}</h2>
+  <p>
+    <strong>{{ employee.last_name }} {{ employee.first_name }}</strong>
+    · {{ day|date:"d.m.Y" }}
+    {% if workplace %}· {{ workplace.name }}{% else %}<span class="badge warning">bez pracoviště</span>{% endif %}
+  </p>
+
+  {% if form_error %}
+    <div class="notice danger-soft" role="alert">{{ form_error }}</div>
+  {% endif %}
+
+  {% if not types %}
+    <p class="notice warning-soft">Nejsou k dispozici aktivní typy směn.</p>
+  {% endif %}
+  {% if not workplace %}
+    <p class="notice warning-soft">
+      Chybí pracoviště pro tento den. Přiřaďte šablonu s pracovištěm
+      nebo vazbu zaměstnance na pracoviště.
+    </p>
+  {% endif %}
+
+  <form class="form-narrow cell-modal-form" method="post" action="{% url 'shift_cell_modal' %}">
+    {% csrf_token %}
+    <input type="hidden" name="partial" value="1">
+    <input type="hidden" name="year" value="{{ year }}">
+    <input type="hidden" name="month" value="{{ month }}">
+    <input type="hidden" name="employee" value="{{ employee.pk }}">
+    <input type="hidden" name="day" value="{{ day|date:'Y-m-d' }}">
+    {% if form.non_field_errors %}
+      <div class="notice danger-soft" role="alert">{{ form.non_field_errors }}</div>
+    {% endif %}
+    <p class="form-field">
+      <label for="{{ form.shift_type.id_for_label }}">{{ form.shift_type.label }}</label>
+      {{ form.shift_type }}
+      {% if form.shift_type.errors %}<span class="field-error">{{ form.shift_type.errors.0 }}</span>{% endif %}
+    </p>
+    <p class="form-field form-check">
+      <label for="{{ form.publish.id_for_label }}">
+        {{ form.publish }} {{ form.publish.label }}
+      </label>
+    </p>
+    <div class="toolbar">
+      <button type="submit" {% if not types or not workplace %}disabled{% endif %}>Přidat</button>
+      <button type="button" class="button secondary" data-close-cell-dialog>Zrušit</button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>{{ title }}</h1>
+  <p class="muted"><a href="{% url 'document_template_list' %}">Zpět na šablony</a></p>
+  <section class="panel">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="notice danger-soft" role="alert">{{ form.non_field_errors }}</div>
+      {% endif %}
+      {% for field in form %}
+        <p>
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.help_text %}<span class="muted">{{ field.help_text }}</span>{% endif %}
+          {% if field.errors %}<span class="notice danger-soft">{{ field.errors }}</span>{% endif %}
+        </p>
+      {% endfor %}
+      <button type="submit">Uložit šablonu</button>
+    </form>
+  </section>
+{% endblock %}

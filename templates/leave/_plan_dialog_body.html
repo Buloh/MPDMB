@@ -1,0 +1,48 @@
+<div class="panel cell-dialog-content cell-modal-body leave-plan-modal">
+  <h2>Blok dovolené</h2>
+  <p class="muted">
+    {{ employee.last_name }} {{ employee.first_name }} · {{ year }}
+    · zůstatek {{ remaining_label }}
+  </p>
+  <p class="notice danger-soft leave-plan-error" hidden role="alert"></p>
+  <form class="stack-form form-compact leave-plan-form" method="post" action="{% url 'leave_plan_create' %}">
+    {% csrf_token %}
+    <input type="hidden" name="employee_id" value="{{ employee.pk }}">
+    <input type="hidden" name="year" value="{{ year }}">
+    <div class="form-row">
+      <div class="form-field">
+        <label for="{{ form.starts_on.id_for_label }}">{{ form.starts_on.label }}</label>
+        {{ form.starts_on }}
+        {% if form.starts_on.errors %}<span class="field-error">{{ form.starts_on.errors.0 }}</span>{% endif %}
+      </div>
+      <div class="form-field">
+        <label for="{{ form.ends_on.id_for_label }}">{{ form.ends_on.label }}</label>
+        {{ form.ends_on }}
+        {% if form.ends_on.errors %}<span class="field-error">{{ form.ends_on.errors.0 }}</span>{% endif %}
+      </div>
+    </div>
+    {% if allow_half_day %}
+      <div class="form-field">
+        <label for="{{ form.portion.id_for_label }}">{{ form.portion.label }}</label>
+        {{ form.portion }}
+        {% if form.portion.help_text %}<span class="muted">{{ form.portion.help_text }}</span>{% endif %}
+        {% if form.portion.errors %}<span class="field-error">{{ form.portion.errors.0 }}</span>{% endif %}
+      </div>
+    {% else %}
+      {{ form.portion }}
+    {% endif %}
+    <div class="form-field">
+      <label for="{{ form.note.id_for_label }}">{{ form.note.label }}</label>
+      {{ form.note }}
+    </div>
+    <div class="form-field form-check">
+      <label for="{{ form.approve_now.id_for_label }}">
+        {{ form.approve_now }} {{ form.approve_now.label }}
+      </label>
+    </div>
+    <div class="form-actions toolbar">
+      <button type="submit">Uložit</button>
+      <button type="button" class="secondary" data-leave-close-dialog>Zrušit</button>
+    </div>
+  </form>
+</div>

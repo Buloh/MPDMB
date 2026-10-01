@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>{{ title }}</h1>
+  <p class="muted">Typ směny není vázaný na zaměstnance. Přiřazení provedete v měsíční matici.</p>
+  <section class="panel">
+    <form class="form-narrow" method="post" novalidate>
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="notice danger-soft" role="alert">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <p class="form-field">
+        <label for="{{ form.code.id_for_label }}">{{ form.code.label }}</label>
+        {{ form.code }}
+        {% if form.code.errors %}<span class="field-error">{{ form.code.errors.0 }}</span>{% endif %}
+        {% if form.code.help_text %}<span class="muted">{{ form.code.help_text }}</span>{% endif %}
+      </p>
+
+      <p class="form-field">
+        <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+        {{ form.name }}
+        {% if form.name.errors %}<span class="field-error">{{ form.name.errors.0 }}</span>{% endif %}
+      </p>
+
+      <p class="form-field">
+        <label for="{{ form.kind.id_for_label }}">{{ form.kind.label }}</label>
+        {{ form.kind }}
+        {% if form.kind.errors %}<span class="field-error">{{ form.kind.errors.0 }}</span>{% endif %}
+        {% if form.kind.help_text %}<span class="muted">{{ form.kind.help_text }}</span>{% endif %}
+      </p>
+
+      <div class="form-row">
+        <p class="form-field">
+          <label for="{{ form.start_time.id_for_label }}">{{ form.start_time.label }}</label>
+          {{ form.start_time }}
+          {% if form.start_time.errors %}<span class="field-error">{{ form.start_time.errors.0 }}</span>{% endif %}
+        </p>
+        <p class="form-field">
+          <label for="{{ form.end_time.id_for_label }}">{{ form.end_time.label }}</label>
+          {{ form.end_time }}
+          {% if form.end_time.errors %}<span class="field-error">{{ form.end_time.errors.0 }}</span>{% endif %}
+          {% if form.end_time.help_text %}<span class="muted">{{ form.end_time.help_text }}</span>{% endif %}
+        </p>
+      </div>
+
+      <p class="form-field">
+        <label for="{{ form.break_minutes.id_for_label }}">{{ form.break_minutes.label }}</label>
+        {{ form.break_minutes }}
+        {% if form.break_minutes.errors %}<span class="field-error">{{ form.break_minutes.errors.0 }}</span>{% endif %}
+      </p>
+
+      <div class="form-checks">
+        <p class="form-field form-check">
+          <label for="{{ form.counts_as_work.id_for_label }}">
+            {{ form.counts_as_work }} {{ form.counts_as_work.label }}
+          </label>
+          {% if form.counts_as_work.errors %}<span class="field-error">{{ form.counts_as_work.errors.0 }}</span>{% endif %}
+        </p>
+
+        <p class="form-field form-check">
+          <label for="{{ form.applies_on_holiday.id_for_label }}">
+            {{ form.applies_on_holiday }} {{ form.applies_on_holiday.label }}
+          </label>
+          {% if form.applies_on_holiday.errors %}<span class="field-error">{{ form.applies_on_holiday.errors.0 }}</span>{% endif %}
+        </p>
+
+        <p class="form-field form-check">
+          <label for="{{ form.is_active.id_for_label }}">
+            {{ form.is_active }} {{ form.is_active.label }}
+          </label>
+          {% if form.is_active.errors %}<span class="field-error">{{ form.is_active.errors.0 }}</span>{% endif %}
+        </p>
+      </div>
+
+      <p class="form-field">
+        <label for="{{ form.sort_order.id_for_label }}">{{ form.sort_order.label }}</label>
+        {{ form.sort_order }}
+        {% if form.sort_order.errors %}<span class="field-error">{{ form.sort_order.errors.0 }}</span>{% endif %}
+      </p>
+
+      <div class="toolbar">
+        <button type="submit">Uložit</button>
+        <a class="button secondary" href="{% url 'shift_type_list' %}">Zrušit</a>
+      </div>
+    </form>
+  </section>
+{% endblock %}

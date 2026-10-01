@@ -1,0 +1,25 @@
+{% comment %}Položky v hodinové buňce / ose — max. 3 + zbytek.{% endcomment %}
+{% if items %}
+  {% for it in items %}
+    {% if forloop.counter <= 3 %}
+      <span class="activity-slot-item">
+        <span class="activity-slot-item-time">{{ it.starts_at|date:"H:i" }}–{{ it.ends_at|date:"H:i" }}</span>
+        <span class="activity-slot-item-type">{{ it.activity_type.name }}</span>
+        {% if it.location_id %}
+          <span class="activity-slot-item-loc">{{ it.location.code }}</span>
+        {% endif %}
+        {% if it.vehicle_id %}
+          <span class="activity-slot-item-loc">{{ it.vehicle.plate }}</span>
+        {% endif %}
+        {% if it.note %}
+          <span class="activity-slot-item-note">{{ it.note|truncatechars:50 }}</span>
+        {% endif %}
+      </span>
+    {% endif %}
+  {% endfor %}
+  {% if items|length > 3 %}
+    <span class="activity-slot-item-more">+{{ items|length|add:"-3" }} další</span>
+  {% endif %}
+{% else %}
+  <span class="activity-slot-empty">+</span>
+{% endif %}

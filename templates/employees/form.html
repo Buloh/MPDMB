@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>{{ title }}</h1>
+  <form method="post" novalidate id="employee-form" class="form-compact">
+    {% csrf_token %}
+
+    {% if form.non_field_errors or employment_form.non_field_errors or qualification_formset.non_form_errors or work_time_form.non_field_errors or workplace_formset.non_form_errors or leave_settings_form.non_field_errors %}
+      <div class="notice danger-soft" role="alert">
+        {{ form.non_field_errors }}
+        {{ employment_form.non_field_errors }}
+        {{ work_time_form.non_field_errors }}
+        {{ qualification_formset.non_form_errors }}
+        {{ workplace_formset.non_form_errors }}
+        {{ leave_settings_form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    <section class="panel">
+      <h2>Základní údaje</h2>
+      <div class="form-row">
+        {% include "employees/_field.html" with field=form.first_name %}
+        {% include "employees/_field.html" with field=form.last_name %}
+      </div>
+      <div class="form-row">
+        {% include "employees/_field.html" with field=form.internal_number %}
+        {% include "employees/_field.html" with field=form.job_title %}
+      </div>
+      <div class="form-row">
+        {% include "employees/_field.html" with field=form.phone %}
+        {% include "employees/_field.html" with field=form.email %}
+      </div>
+      <div class="form-row">
+        {% include "employees/_field.html" with field=form.work_contact %}
+      </div>
+      {% include "employees/_field.html" with field=form.notes %}
+    </section>
+
+    <section class="panel">
+      <h2>Kvalifikace a zkoušky</h2>
+      <p class="muted">
+        Typy přidá administrátor. Prázdný řádek se neuloží.
+      </p>
+      {{ qualification_formset.management_form }}
+      <div id="qualification-forms">
+        {% for qform in qualification_formset %}
+          <div class="qualification-row form-compact-row">
+            {% for hidden in qform.hidden_fields %}{{ hidden }}{% endfor %}
+            <div class="form-row">
+              {% include "employees/_field.html" with field=qform.qualification_type %}
+              {% include "employees/_field.html" with field=qform.number %}
+              {% include "employees/_field.html" with field=qform.categories %}
+            </div>
+            <div class="form-row">
+              {% include "employees/_field.html" with field=qform.valid_from %}
+              {% include "employees/_field.html" with field=qform.valid_until %}
+              {% include "employees/_field.html" with field=qform.issued_by %}
+              {% include "employees/_field.html" with field=qform.is_active %}
+              {% if qform.DELETE %}
+                <div class="form-field form-check qual-delete">
+                  <label for="{{ qform.DELETE.id_for_label }}">
+                    {{ qform.DELETE }} Odstranit
+                  </label>
+                </div>
+              {% endif %}
+            </div>
+            {% include "employees/_field.html" with field=qform.notes %}
+          </div>
+        {% endfor %}
+      </div>
+      <template id="qualification-empty-form">
+        <div class="qualification-row form-compact-row">
+          {% for hidden in qualification_formset.empty_form.hidden_fields %}{{ hidden }}{% endfor %}
+          <div class="form-row">
+            {% include "employees/_field.html" with field=qualification_formset.empty_form.qualification_type %}
+            {% include "employees/_field.html" with field=qualification_formset.empty_form.number %}
+            {% include "employees/_field.html" with field=qualification_formset.empty_form.categories %}
+          </div>
+          <div class="form-row">
+            {% include "employees/_field.html" with field=qualification_formset.empty_form.valid_from %}
+            {% include "employees/_field.html" with field=qualification_formset.empty_form.valid_until %}
+            {% include "employees/_field.html" with field=qualification_formset.empty_form.issued_by %}
+            {% include "employees/_field.html" with field=qualification_formset.empty_form.is_active %}
+            {% if qualification_formset.empty_form.DELETE %}
+              <div class="form-field form-check qual-delete">
+                <label>
+                  {{ qualification_formset.empty_form.DELETE }} Odstranit
+                </label>
+              </div>
+            {% endif %}
+          </div>
+          {% include "employees/_field.html" with field=qualification_formset.empty_form.notes %}
+        </div>
+      </template>
+      <button type="button" class="secondary" id="add-qualification">Přidat kvalifikaci</button>
+    </section>
+
+    <section class="panel">
+      <h2>Pracovní vztah</h2>
+      <p class="muted">
+        Nástup, úvazek a pracoviště. Při změně úvazku nastavte nové „platí od“.
+      </p>
+      <div class="form-row">
+        {% include "employees/_field.html" with field=employment_form.relation_type %}
+        {% include "employees/_field.html" with field=employment_form.started_on %}
+        {% include "employees/_field.html" with field=employment_form.ended_on %}
+      </div>
+      <div class="form-row">
+        {% include "employees/_field.html" with field=employment_form.payroll_number %}
+        {% include "employees/_field.html" with field=employment_form.pay_regime %}
+        {% include "employees/_field.html" with field=employment_form.job_title %}
+        {% include "employees/_field.html" with field=employment_form.is_active %}
+      </div>
+
+      <h3>Úvazek (fond)</h3>
+      {% if work_time_form.derived_daily_label %}
+        <p class="notice" role="status">
+          Denní doba:
+          <strong id="work-time-daily-label">{{ work_time_form.derived_daily_label }}</strong>
+        </p>
+      {% endif %}
+      <div class="form-row">
+        {% include "employees/_field.html" with field=work_time_form.preset %}
+        {% include "employees/_field.html" with field=work_time_form.valid_from %}
+      </div>
+      <div class="form-row">
+        <div class="form-field">
+          <label for="{{ work_time_form.statutory_weekly_minutes.id_for_label }}">
+            {{ work_time_form.statutory_weekly_minutes.label }}
+          </label>
+          {{ work_time_form.statutory_weekly_minutes }}
+          <span
+            class="muted"
+            data-minutes-hours-for="{{ work_time_form.statutory_weekly_minutes.id_for_label }}"
+          ></span>
+          {% if work_time_form.statutory_weekly_minutes.errors %}
+            <span class="field-error">{{ work_time_form.statutory_weekly_minutes.errors.0 }}</span>
+          {% endif %}
+          {% if work_time_form.statutory_weekly_minutes.help_text %}
+            <span class="muted">{{ work_time_form.statutory_weekly_minutes.help_text }}</span>
+          {% endif %}
+        </div>
+        <div class="form-field">
+          <label for="{{ work_time_form.agreed_weekly_minutes.id_for_label }}">
+            {{ work_time_form.agreed_weekly_minutes.label }}
+          </label>
+          {{ work_time_form.agreed_weekly_minutes }}
+          <span
+            class="muted"
+            data-minutes-hours-for="{{ work_time_form.agreed_weekly_minutes.id_for_label }}"
+          ></span>
+          {% if work_time_form.agreed_weekly_minutes.errors %}
+            <span class="field-error">{{ work_time_form.agreed_weekly_minutes.errors.0 }}</span>
+          {% endif %}
+          {% if work_time_form.agreed_weekly_minutes.help_text %}
+            <span class="muted">{{ work_time_form.agreed_weekly_minutes.help_text }}</span>
+          {% endif %}
+        </div>
+        {% include "employees/_field.html" with field=work_time_form.regime %}
+        {% include "employees/_field.html" with field=work_time_form.distribution %}
+      </div>
+
+      {% if leave_settings_form %}
+        <h3>Dovolená</h3>
+        <div class="form-row">
+          {% include "employees/_field.html" with field=leave_settings_form.extra_weeks %}
+          {% include "employees/_field.html" with field=leave_settings_form.allow_half_day_choice %}
+        </div>
+      {% endif %}
+
+      <h3>Pracoviště</h3>
+      {{ workplace_formset.management_form }}
+      {% if workplace_formset.non_form_errors %}
+        <div class="notice danger-soft" role="alert">{{ workplace_formset.non_form_errors }}</div>
+      {% endif %}
+      <div id="workplace-forms">
+        {% for wpform in workplace_formset %}
+          <div class="workplace-row form-compact-row">
+            {% for hidden in wpform.hidden_fields %}{{ hidden }}{% endfor %}
+            <div class="form-row">
+              {% include "employees/_field.html" with field=wpform.workplace %}
+              {% include "employees/_field.html" with field=wpform.valid_from %}
+              {% include "employees/_field.html" with field=wpform.valid_to %}
+              {% if wpform.DELETE %}
+                <div class="form-field form-check qual-delete">
+                  <label for="{{ wpform.DELETE.id_for_label }}">
+                    {{ wpform.DELETE }} Odstranit
+                  </label>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      <template id="workplace-empty-form">
+        <div class="workplace-row form-compact-row">
+          {% for hidden in workplace_formset.empty_form.hidden_fields %}{{ hidden }}{% endfor %}
+          <div class="form-row">
+            {% include "employees/_field.html" with field=workplace_formset.empty_form.workplace %}
+            {% include "employees/_field.html" with field=workplace_formset.empty_form.valid_from %}
+            {% include "employees/_field.html" with field=workplace_formset.empty_form.valid_to %}
+            {% if workplace_formset.empty_form.DELETE %}
+              <div class="form-field form-check qual-delete">
+                <label>
+                  {{ workplace_formset.empty_form.DELETE }} Odstranit
+                </label>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </template>
+      <button type="button" class="secondary" id="add-workplace">Přidat pracoviště</button>
+    </section>
+
+    <section class="panel">
+      <h2>Účet a stav</h2>
+      <div class="form-row">
+        {% include "employees/_field.html" with field=form.user %}
+        {% include "employees/_field.html" with field=form.is_active %}
+      </div>
+    </section>
+
+    <div class="toolbar">
+      <button type="submit">Uložit</button>
+      <a class="button secondary" href="{% if employee %}{% url 'employee_detail' employee.pk %}{% else %}{% url 'employee_list' %}{% endif %}">Zrušit</a>
+    </div>
+  </form>
+{% endblock %}
+
+{% block extra_body %}
+  <script src="{% static 'mpdmb/js/qualification-formset.js' %}?v={{ APP_VERSION }}"></script>
+  <script src="{% static 'mpdmb/js/workplace-formset.js' %}?v={{ APP_VERSION }}"></script>
+  <script src="{% static 'mpdmb/js/work-time-preset.js' %}?v={{ APP_VERSION }}"></script>
+{% endblock %}

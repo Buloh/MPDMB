@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>Pracoviště</h1>
+  <div class="list-toolbar">
+    <form class="list-filters" method="get">
+      <div class="list-field">
+        <label for="q">Hledat</label>
+        <input id="q" type="search" name="q" value="{{ q }}" placeholder="název nebo adresa">
+      </div>
+      <div class="list-check">
+        <label for="archived">
+          <input id="archived" type="checkbox" name="archived" value="1" {% if show_archived %}checked{% endif %}>
+          Zobrazit i archivovaná
+        </label>
+      </div>
+      <button type="submit">Filtrovat</button>
+    </form>
+    <div class="list-actions">
+      <a class="button" href="{% url 'workplace_create' %}">Nové pracoviště</a>
+    </div>
+  </div>
+  <section class="panel">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Název</th>
+            <th>Typ</th>
+            <th>Adresa</th>
+            <th>Stav</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for workplace in workplaces %}
+            <tr>
+              <td><a href="{% url 'workplace_detail' workplace.pk %}">{{ workplace.name }}</a></td>
+              <td>{{ workplace.get_workplace_type_display }}</td>
+              <td>{{ workplace.address|default:"—" }}</td>
+              <td>
+                {% if workplace.is_active %}
+                  <span class="badge success">aktivní</span>
+                {% else %}
+                  <span class="badge warning">archivované</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="4">Žádná pracoviště neodpovídají filtru.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+{% endblock %}

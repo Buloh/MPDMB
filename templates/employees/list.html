@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>Zaměstnanci</h1>
+  <div class="list-toolbar">
+    <form class="list-filters" method="get">
+      <div class="list-field">
+        <label for="q">Hledat</label>
+        <input id="q" type="search" name="q" value="{{ q }}" placeholder="jméno nebo číslo">
+      </div>
+      <div class="list-check">
+        <label for="archived">
+          <input id="archived" type="checkbox" name="archived" value="1" {% if show_archived %}checked{% endif %}>
+          Zobrazit i archivované
+        </label>
+      </div>
+      <button type="submit">Filtrovat</button>
+    </form>
+    <div class="list-actions">
+      <a class="button" href="{% url 'employee_create' %}">Nový zaměstnanec</a>
+    </div>
+  </div>
+  <section class="panel">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Interní č.</th>
+            <th>Příjmení</th>
+            <th>Jméno</th>
+            <th>Funkce</th>
+            <th>Nástup</th>
+            <th>Kvalifikace</th>
+            <th>Stav</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for employee in employees %}
+            <tr>
+              <td><a href="{% url 'employee_detail' employee.pk %}">{{ employee.internal_number }}</a></td>
+              <td>{{ employee.last_name }}</td>
+              <td>{{ employee.first_name }}</td>
+              <td>{{ employee.job_title|default:"—" }}</td>
+              <td>
+                {% with emp=employee.current_employment %}
+                  {% if emp %}{{ emp.started_on|date:"d.m.Y" }}{% else %}—{% endif %}
+                {% endwith %}
+              </td>
+              <td>
+                {% if employee.has_expired_qualifications %}
+                  <span class="badge danger">{{ employee.expired_qualifications_count }} prošlé</span>
+                {% else %}
+                  —
+                {% endif %}
+              </td>
+              <td>
+                {% if employee.is_active %}
+                  <span class="badge success">aktivní</span>
+                {% else %}
+                  <span class="badge warning">archivovaný</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="7">Žádní zaměstnanci neodpovídají filtru.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+{% endblock %}

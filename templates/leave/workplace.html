@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>Dovolená · {{ workplace.name }}</h1>
+  <div class="list-toolbar">
+    <form class="list-filters" method="get">
+      <div class="list-field">
+        <label for="wp-year">Rok</label>
+        <input id="wp-year" type="number" name="year" value="{{ year }}" min="2000" max="2100">
+      </div>
+      <button type="submit">Zobrazit</button>
+    </form>
+    <div class="list-actions">
+      <a class="button secondary" href="{% url 'leave_year' %}?year={{ year }}">Roční přehled</a>
+      <a class="button secondary" href="{% url 'leave_workplace' workplace.pk %}?year={{ prev_year }}">{{ prev_year }}</a>
+      <a class="button secondary" href="{% url 'leave_workplace' workplace.pk %}?year={{ next_year }}">{{ next_year }}</a>
+    </div>
+  </div>
+
+  {% if workplaces %}
+    <p class="muted leave-wp-switch">
+      Pracoviště:
+      {% for wp in workplaces %}
+        {% if wp.pk == workplace.pk %}
+          <strong>{{ wp.name }}</strong>
+        {% else %}
+          <a href="{% url 'leave_workplace' wp.pk %}?year={{ year }}">{{ wp.name }}</a>
+        {% endif %}
+        {% if not forloop.last %} · {% endif %}
+      {% endfor %}
+    </p>
+  {% endif %}
+
+  {% for row in rows %}
+    <section class="panel leave-wp-employee">
+      <div class="list-toolbar">
+        <h2 class="leave-wp-emp-title">
+          <a href="{% url 'leave_employee' row.employee.pk %}?year={{ year }}">
+            {{ row.employee.last_name }} {{ row.employee.first_name }}
+          </a>
+        </h2>
+        {% if can_manage %}
+          <button type="button"
+                  class="button secondary"
+                  data-leave-open-dialog
+                  data-employee-id="{{ row.employee.pk }}"
+                  data-year="{{ year }}">Přidat blok</button>
+        {% endif %}
+      </div>
+      {% include "leave/_year_calendar.html" with calendar_months=row.calendar_months employee_id=row.employee.pk can_manage=can_manage year=year %}
+    </section>
+  {% empty %}
+    <p class="notice">Na tomto pracovišti nejsou v roce {{ year }} zaměstnanci s pracovním poměrem.</p>
+  {% endfor %}
+
+  {% if can_manage %}
+    {% include "leave/_plan_dialog.html" %}
+  {% endif %}
+{% endblock %}
+
+{% block extra_body %}
+  {% if can_manage %}
+    <script src="{% static 'mpdmb/js/leave_plan_dialog.js' %}?v={{ APP_VERSION }}" defer></script>
+  {% endif %}
+{% endblock %}

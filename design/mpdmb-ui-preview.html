@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SYNERA – náhled rozhraní</title>
+  <link rel="stylesheet" href="mpdmb-theme.css">
+</head>
+<body>
+  <header>
+    <div>
+      <div class="brand">SYNERA</div>
+      <div class="muted">Synergie v jednom systému</div>
+    </div>
+    <div class="muted">Uživatel Návrh · Odhlásit</div>
+  </header>
+  <div class="shell">
+    <nav aria-label="Hlavní navigace">
+      <a href="#" aria-current="page">Přehled</a>
+      <a href="#">Zaměstnanci</a>
+      <a href="#">Pracoviště</a>
+      <a href="#">Směny</a>
+      <a href="#">Úkoly</a>
+    </nav>
+    <main>
+      <label class="mobile-nav" for="mobile-nav-select">Sekce</label>
+      <select id="mobile-nav-select" class="mobile-nav" aria-label="Navigace">
+        <option>Přehled</option>
+        <option>Zaměstnanci</option>
+        <option>Pracoviště</option>
+        <option>Směny</option>
+        <option>Úkoly</option>
+      </select>
+
+      <p class="notice">
+        Statický náhled designu. Není funkční aplikací ani ukázkou
+        skutečných osobních údajů.
+      </p>
+
+      <h1>Přehled dne</h1>
+      <section class="panel">
+        <div class="toolbar">
+          <div>
+            <label for="datum">Datum</label>
+            <input id="datum" type="text" value="30.09.2026" readonly>
+          </div>
+          <button type="button">Filtrovat</button>
+          <a class="button secondary" href="#">Nový úkol</a>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Zaměstnanec</th>
+                <th>Pracoviště</th>
+                <th>Směna</th>
+                <th>Stav úkolu</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Jana Nováková</td>
+                <td>Parkovací dům Centrum</td>
+                <td>06:00–14:30</td>
+                <td><span class="badge info">v řešení</span></td>
+              </tr>
+              <tr>
+                <td>Petr Svoboda</td>
+                <td>Parkovací dům Jih</td>
+                <td>14:00–22:00</td>
+                <td><span class="badge warning">čeká</span></td>
+              </tr>
+              <tr>
+                <td>Eva Dvořáková</td>
+                <td>Parkovací dům Sever</td>
+                <td>22:00–06:00</td>
+                <td><span class="badge success">dokončený</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Paleta</h2>
+        <div class="palette">
+          <div class="swatch"><span style="background:#166999"></span> primary</div>
+          <div class="swatch"><span style="background:#eeeeee;border-color:#d8dee3"></span> background</div>
+          <div class="swatch"><span style="background:#ffffff;border-color:#d8dee3"></span> surface</div>
+          <div class="swatch"><span style="background:#237a35"></span> success</div>
+          <div class="swatch"><span style="background:#865600"></span> warning</div>
+          <div class="swatch"><span style="background:#b42318"></span> danger</div>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>{{ title }}</h1>
+  <p class="muted">Cyklus 7 nebo 14 dní. Prázdný den = volno.</p>
+  <section class="panel">
+    <form class="form-narrow" method="post" novalidate>
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="notice danger-soft" role="alert">{{ form.non_field_errors }}</div>
+      {% endif %}
+      <p class="form-field">
+        <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+        {{ form.name }}
+        {% if form.name.errors %}<span class="field-error">{{ form.name.errors.0 }}</span>{% endif %}
+      </p>
+      <p class="form-field">
+        <label for="{{ form.cycle_length.id_for_label }}">{{ form.cycle_length.label }}</label>
+        {{ form.cycle_length }}
+        {% if form.cycle_length.errors %}<span class="field-error">{{ form.cycle_length.errors.0 }}</span>{% endif %}
+      </p>
+      <p class="form-field form-check">
+        <label for="{{ form.is_active.id_for_label }}">
+          {{ form.is_active }} {{ form.is_active.label }}
+        </label>
+      </p>
+      <h2>Dny cyklu</h2>
+      {% for slot in slot_days %}
+        <p class="form-field">
+          <label for="slot_{{ slot.index }}">{{ slot.label }}</label>
+          <select id="slot_{{ slot.index }}" name="slot_{{ slot.index }}">
+            <option value="">— volno —</option>
+            {% for t in shift_types %}
+              <option value="{{ t.pk }}" {% if slot.selected == t.pk %}selected{% endif %}>
+                {{ t.code }} – {{ t.name }} ({{ t.net_hours_label }})
+              </option>
+            {% endfor %}
+          </select>
+        </p>
+      {% endfor %}
+      <div class="toolbar">
+        <button type="submit">Uložit</button>
+        <a class="button secondary" href="{% url 'schedule_template_list' %}">Zrušit</a>
+      </div>
+    </form>
+  </section>
+{% endblock %}

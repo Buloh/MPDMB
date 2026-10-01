@@ -1,0 +1,266 @@
+/* Kalendář plánu činností (sync s polem Den) */
+.activity-day-filter-layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.activity-day-filter-form {
+  flex: 1 1 16rem;
+  min-width: 0;
+}
+.activity-month-cal {
+  flex: 0 0 auto;
+  max-width: 17rem;
+}
+.activity-month-cal-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+.activity-month-cal-title {
+  font-size: 14px;
+  color: var(--primary);
+  text-transform: capitalize;
+}
+.activity-month-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1.7rem);
+  gap: 2px;
+  justify-content: center;
+}
+.activity-cal-wd {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+.activity-cal-day {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.7rem;
+  height: 1.7rem;
+  font-size: 12px;
+  border-radius: 4px;
+  text-decoration: none;
+  color: var(--text);
+  border: 1px solid transparent;
+}
+a.activity-cal-day:hover {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+}
+.activity-cal-day--empty {
+  visibility: hidden;
+}
+.activity-cal-day--today {
+  border-color: var(--border);
+  font-weight: 600;
+}
+.activity-cal-day--shift {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+.activity-cal-day--planned {
+  background: var(--success-soft);
+  color: var(--success);
+  font-weight: 600;
+}
+.activity-cal-day--selected {
+  background: var(--primary);
+  color: var(--surface);
+  font-weight: 700;
+  border-color: var(--primary);
+}
+.activity-cal-day--selected.activity-cal-day--planned,
+.activity-cal-day--selected.activity-cal-day--shift {
+  background: var(--primary);
+  color: var(--surface);
+}
+.activity-month-cal-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  margin: var(--space-2) 0 0;
+  font-size: 12px;
+}
+.activity-cal-swatch {
+  display: inline-block;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  vertical-align: middle;
+  margin-right: 2px;
+}
+.activity-cal-swatch--shift { background: var(--warning-soft); }
+.activity-cal-swatch--planned { background: var(--success-soft); }
+.activity-cal-swatch--selected { background: var(--primary); border-color: var(--primary); }
+
+/* Roční kalendář dovolené */
+.leave-summary p { margin: 0; }
+.leave-year-hint {
+  margin: 0 0 var(--space-3);
+  font-size: 13px;
+  line-height: 1.4;
+}
+.leave-year-table th,
+.leave-year-table td {
+  padding: var(--space-1) var(--space-2);
+  font-size: 13px;
+  white-space: nowrap;
+}
+.leave-year-table td:first-child {
+  white-space: normal;
+}
+.leave-year-table .badge {
+  font-size: 11px;
+  padding: 2px 6px;
+  margin-left: var(--space-1);
+  vertical-align: middle;
+}
+.leave-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  margin: 0 0 var(--space-3);
+  font-size: 13px;
+}
+.leave-swatch {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  vertical-align: middle;
+}
+.leave-year-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.leave-month {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  padding: var(--space-1) 0;
+  min-height: 1.75rem;
+}
+.leave-month:last-child {
+  border-bottom: 0;
+}
+.leave-month-title {
+  margin: 0;
+  flex: 0 0 5rem;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+  line-height: 1.5rem;
+}
+.leave-month-days {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 1px;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-x: auto;
+  padding-bottom: 1px;
+}
+.leave-month-table {
+  display: none;
+}
+@media (max-width: 40rem) {
+  .leave-month-title {
+    flex-basis: 4.25rem;
+    font-size: 12px;
+  }
+}
+.leave-day {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 1.55rem;
+  width: 1.55rem;
+  min-height: 1.5rem;
+  margin: 0;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 11px;
+  line-height: 1;
+  cursor: default;
+}
+button.leave-day {
+  cursor: pointer;
+}
+button.leave-day:hover {
+  border-color: var(--primary);
+}
+.leave-day--empty {
+  background: transparent;
+  min-height: 1.5rem;
+}
+.leave-day--weekend {
+  color: var(--text-secondary);
+  background: var(--background);
+}
+.leave-day--holiday {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+.leave-day--approved {
+  background: var(--success-soft);
+  color: var(--success);
+  font-weight: 600;
+}
+.leave-day--draft {
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-weight: 600;
+}
+.leave-wp-emp-title {
+  margin: 0;
+  font-size: 1.05rem;
+}
+.leave-wp-employee .leave-year-grid {
+  margin-top: var(--space-2);
+}
+.leave-cal-plans {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+  align-items: start;
+}
+.leave-cal-panel,
+.leave-plans-panel {
+  min-width: 0;
+}
+.leave-plans-panel {
+  align-self: start;
+}
+@media (min-width: 1100px) {
+  .leave-cal-plans {
+    grid-template-columns: minmax(0, 1fr) minmax(16rem, 22rem);
+  }
+  .leave-plans-panel {
+    position: sticky;
+    top: var(--space-4);
+  }
+}
+#leave-plan-dialog {
+  max-width: min(440px, 94vw);
+}

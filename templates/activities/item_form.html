@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>{{ title }}</h1>
+  <p class="muted">
+    {{ item.employee }} · {{ item.day|date:"d.m.Y" }}
+  </p>
+  <section class="panel">
+    <form method="post" class="stack-form">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <div class="form-actions">
+        <button type="submit">Uložit</button>
+        <a class="button secondary" href="{% url 'activity_day' %}?employee={{ item.employee_id }}&day={{ item.day|date:'Y-m-d' }}">Zpět</a>
+      </div>
+    </form>
+  </section>
+{% endblock %}

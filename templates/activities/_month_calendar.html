@@ -1,0 +1,31 @@
+<nav class="activity-month-cal" aria-label="Kalendář plánu činností">
+  <div class="activity-month-cal-nav">
+    <a class="button secondary"
+       href="?day={{ month_cal.prev_day|date:'Y-m-d' }}{% if workplace %}&workplace={{ workplace.pk }}{% endif %}{% if employee %}&employee={{ employee.pk }}{% endif %}"
+       style="min-height:auto;padding:4px 8px">‹</a>
+    <strong class="activity-month-cal-title">{{ month_cal.title }}</strong>
+    <a class="button secondary"
+       href="?day={{ month_cal.next_day|date:'Y-m-d' }}{% if workplace %}&workplace={{ workplace.pk }}{% endif %}{% if employee %}&employee={{ employee.pk }}{% endif %}"
+       style="min-height:auto;padding:4px 8px">›</a>
+  </div>
+  <div class="activity-month-cal-grid" role="grid">
+    {% for wd in month_cal.weekday_headers %}
+      <span class="activity-cal-wd" role="columnheader">{{ wd }}</span>
+    {% endfor %}
+    {% for cell in month_cal.cells %}
+      {% if cell.empty %}
+        <span class="{{ cell.css }}" aria-hidden="true"></span>
+      {% else %}
+        <a class="{{ cell.css }}"
+           href="?day={{ cell.iso }}{% if workplace %}&workplace={{ workplace.pk }}{% endif %}{% if employee %}&employee={{ employee.pk }}{% endif %}"
+           title="{{ cell.title }}"
+           {% if cell.day == month_cal.selected %}aria-current="date"{% endif %}>{{ cell.label }}</a>
+      {% endif %}
+    {% endfor %}
+  </div>
+  <p class="activity-month-cal-legend muted">
+    <span class="activity-cal-swatch activity-cal-swatch--shift" aria-hidden="true"></span> směna
+    <span class="activity-cal-swatch activity-cal-swatch--planned" aria-hidden="true"></span> naplánováno
+    <span class="activity-cal-swatch activity-cal-swatch--selected" aria-hidden="true"></span> vybraný den
+  </p>
+</nav>

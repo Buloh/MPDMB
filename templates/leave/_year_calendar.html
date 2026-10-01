@@ -1,0 +1,22 @@
+<div class="leave-year-grid" role="group" aria-label="Roční kalendář">
+  {% for month in calendar_months %}
+    <div class="leave-month">
+      <h3 class="leave-month-title">{{ month.name }}</h3>
+      <div class="leave-month-days">
+        {% for cell in month.days %}
+          {% if can_manage and cell.clickable %}
+            <button type="button"
+                    class="{{ cell.css }}"
+                    title="{{ cell.title }}"
+                    data-leave-open-dialog
+                    data-employee-id="{{ employee_id }}"
+                    data-year="{{ year }}"
+                    data-starts-on="{{ cell.iso }}">{{ cell.mark }}</button>
+          {% else %}
+            <span class="{{ cell.css }}" title="{{ cell.title }}">{{ cell.mark }}</span>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  {% endfor %}
+</div>

@@ -1,0 +1,188 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Plán činností · {{ pack.scope_label }} · {{ pack.day|date:"d.m.Y" }}</title>
+  <link rel="icon" href="{% static 'mpdmb/img/favicon.svg' %}" type="image/svg+xml">
+  <style>
+    :root {
+      --primary: #166999;
+      --text: #333333;
+      --border: #D8DEE3;
+      --surface: #FFFFFF;
+      --bg: #EEEEEE;
+      --soft: #E8F2F8;
+    }
+    body {
+      font-family: system-ui, "Segoe UI", Arial, sans-serif;
+      font-size: 13px;
+      color: var(--text);
+      background: var(--bg);
+      margin: 0;
+      padding: 16px;
+    }
+    .sheet {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    h1 { color: var(--primary); font-size: 1.35rem; margin: 0 0 6px; }
+    h2 { color: var(--primary); font-size: 1.05rem; margin: 18px 0 6px; }
+    h3 { font-size: 0.95rem; margin: 14px 0 4px; }
+    .muted { color: #54595F; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+    th, td { border: 1px solid var(--border); padding: 6px 8px; text-align: left; vertical-align: top; }
+    th { background: var(--soft); }
+    td.note { white-space: pre-wrap; word-break: break-word; }
+    .toolbar { margin-bottom: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .toolbar button, .toolbar a.button {
+      background: var(--primary);
+      color: #fff;
+      border: 0;
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .toolbar a.button.secondary {
+      background: #fff;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+    ul { margin: 6px 0; padding-left: 18px; }
+    .location-color-swatch {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      border: 1px solid var(--border);
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+    .person-block { break-inside: avoid; page-break-inside: avoid; }
+    @media print {
+      body { background: #fff; padding: 0; }
+      .toolbar { display: none; }
+      .sheet { border: 0; padding: 0; max-width: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <button type="button" onclick="window.print()">Tisk / PDF</button>
+    {% if xlsx_url %}
+      <a class="button secondary" href="{{ xlsx_url }}">Stáhnout Excel</a>
+    {% endif %}
+  </div>
+  <div class="sheet">
+    <h1>Denní plán činností</h1>
+    <p>
+      <strong>{{ pack.scope_label }}</strong>
+      · {{ pack.day|date:"d.m.Y" }}
+      {% if pack.workplace %}· {{ pack.workplace }}{% endif %}
+    </p>
+    <p class="muted">Vytvořeno {{ pack.exported_at|date:"d.m.Y H:i" }} · pro technika v terénu</p>
+
+    {% for person in pack.persons %}
+      <div class="person-block">
+        {% if pack.persons|length > 1 %}
+          <h2>{{ person.employee.last_name }} {{ person.employee.first_name }}</h2>
+        {% endif %}
+
+        <h3>Směny</h3>
+        {% if person.shifts %}
+          <ul>
+            {% for s in person.shifts %}
+              <li>
+                {{ s.display_code }} · {{ s.starts_at|date:"H:i" }}–{{ s.ends_at|date:"H:i" }}
+                · {{ s.workplace }}
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="muted">Žádná publikovaná směna práce.</p>
+        {% endif %}
+
+        <h3>Činnosti (hodinové)</h3>
+        {% if person.hour_items %}
+          <table>
+            <thead>
+              <tr>
+                <th>Čas</th>
+                <th>Typ</th>
+                <th>Lokalita</th>
+                <th>Vozidlo</th>
+                <th>Očekávání</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in person.hour_items %}
+                <tr>
+                  <td>{{ item.starts_at|date:"H:i" }}–{{ item.ends_at|date:"H:i" }}</td>
+                  <td>{{ item.activity_type }}</td>
+                  <td>{% if item.location_id %}{{ item.location.hierarchy_label }}{% else %}—{% endif %}</td>
+                  <td>{% if item.vehicle_id %}{{ item.vehicle.plate }}{% else %}—{% endif %}</td>
+                  <td class="note">{{ item.note|default:"—" }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <p class="muted">Žádné hodinové činnosti.</p>
+        {% endif %}
+
+        <h3>Denní úkoly</h3>
+        {% if person.day_tasks %}
+          <table>
+            <thead>
+              <tr>
+                <th>Typ</th>
+                <th>Lokalita</th>
+                <th>Vozidlo</th>
+                <th>Poznámka</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in person.day_tasks %}
+                <tr>
+                  <td>{{ item.activity_type }}</td>
+                  <td>{% if item.location_id %}{{ item.location.hierarchy_label }}{% else %}—{% endif %}</td>
+                  <td>{% if item.vehicle_id %}{{ item.vehicle.plate }}{% else %}—{% endif %}</td>
+                  <td class="note">{{ item.note|default:"—" }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <p class="muted">Žádné denní úkoly.</p>
+        {% endif %}
+      </div>
+    {% empty %}
+      <p class="muted">Žádná data k exportu.</p>
+    {% endfor %}
+
+    <h2>Legenda lokalit</h2>
+    {% if pack.locations %}
+      <ul>
+        {% for loc in pack.locations %}
+          <li>
+            <span class="location-color-swatch"
+                  style="background:{{ loc.color }}"
+                  aria-hidden="true"></span>
+            <strong>{{ loc.hierarchy_label }}</strong>{% if loc.description %}: {{ loc.description }}{% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="muted">Bez lokalit v plánu.</p>
+    {% endif %}
+  </div>
+</body>
+</html>

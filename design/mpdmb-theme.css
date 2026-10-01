@@ -1,0 +1,51 @@
+/* MPDMB: ověřené barvy webu + odvozené přístupné stavové barvy. */
+:root {
+  --primary:#166999; --primary-hover:#12567d; --primary-soft:#e8f2f8;
+  --link:#21759b; --background:#eee; --surface:#fff; --text:#333;
+  --text-secondary:#54595f; --border:#d8dee3; --accent-source:#61ce70;
+  --blue-light-source:#6ec1e4; --navigation-source:#666;
+  --success:#237a35; --success-soft:#eaf5ec;
+  --warning:#865600; --warning-soft:#fff4d6;
+  --danger:#b42318; --danger-soft:#fdecea;
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px;
+  --space-6:24px; --space-8:32px; --radius:8px;
+}
+* {box-sizing:border-box}
+body {margin:0;background:var(--background);color:var(--text);font:16px/1.5 system-ui,'Segoe UI',Arial,sans-serif}
+a {color:var(--link)}
+header {background:var(--surface);padding:var(--space-4) var(--space-6);display:flex;flex-wrap:wrap;gap:var(--space-4);justify-content:space-between;border-bottom:1px solid var(--border)}
+.brand {color:var(--primary);font-size:24px;font-weight:700}
+.shell {display:grid;grid-template-columns:220px minmax(0,1fr);min-height:80vh}
+nav {background:var(--surface);padding:var(--space-4);border-right:1px solid var(--border)}
+nav a {display:block;text-decoration:none;color:var(--text);padding:var(--space-3);border-radius:var(--radius);margin-bottom:var(--space-1)}
+nav a[aria-current=page] {background:var(--primary-soft);color:var(--primary);font-weight:600}
+main {padding:var(--space-6);min-width:0}
+h1,h2 {color:var(--primary);margin:0 0 var(--space-4)}
+h1 {font-size:28px} h2 {font-size:20px}
+.muted {color:var(--text-secondary)}
+.notice {border-left:4px solid var(--primary);background:var(--primary-soft);padding:var(--space-3) var(--space-4);margin-bottom:var(--space-6)}
+.panel {background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:var(--space-6);margin-bottom:var(--space-6)}
+.toolbar {display:flex;align-items:end;flex-wrap:wrap;gap:var(--space-3);margin-bottom:var(--space-4)}
+label {display:block;font-size:14px}
+input,select,button,.button {font:inherit;border-radius:var(--radius);padding:var(--space-2) var(--space-3);min-height:44px}
+input,select {border:1px solid var(--border);background:var(--surface);color:var(--text);max-width:100%}
+button,.button {border:1px solid var(--primary);background:var(--primary);color:var(--surface);text-decoration:none;cursor:pointer;display:inline-block}
+button:hover,.button:hover {background:var(--primary-hover)}
+.secondary {background:var(--surface);color:var(--primary)}
+.secondary:hover {background:var(--primary-soft)}
+:focus-visible {outline:3px solid var(--primary);outline-offset:3px}
+.table-wrap {overflow-x:auto}
+table {width:100%;border-collapse:collapse;font-size:14px}
+th,td {text-align:left;padding:var(--space-3);border-bottom:1px solid var(--border)}
+th {background:var(--primary-soft)}
+.badge {display:inline-block;border-radius:var(--radius);padding:var(--space-1) var(--space-2);white-space:nowrap}
+.success {color:var(--success);background:var(--success-soft)}
+.warning {color:var(--warning);background:var(--warning-soft)}
+.danger {color:var(--danger);background:var(--danger-soft)}
+.info {color:var(--primary);background:var(--primary-soft)}
+.palette {display:flex;flex-wrap:wrap;gap:var(--space-4)}
+.swatch {display:flex;align-items:center;gap:var(--space-2);font-size:14px}
+.swatch span {width:28px;height:28px;border:1px solid var(--border);border-radius:var(--radius)}
+.mobile-nav {display:none}
+@media(max-width:760px){.shell{grid-template-columns:1fr}nav{display:none}.mobile-nav{display:block}main{padding:var(--space-4)}header{padding:var(--space-4)}.panel{padding:var(--space-4)}}
+@media print{nav,.toolbar,.mobile-nav{display:none}.shell{display:block}body{background:var(--surface)}}

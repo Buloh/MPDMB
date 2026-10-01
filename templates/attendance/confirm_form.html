@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>Upravit a potvrdit práci</h1>
+  <p class="muted">
+    {{ shift.employee }} · {{ shift.display_code }}
+    · {{ day|date:"d.m.Y" }}
+    · plán {{ shift.starts_at|date:"H:i" }}–{{ shift.ends_at|date:"H:i" }}
+    · {{ shift.workplace }}
+  </p>
+  <p class="muted">
+    Pauza je návrh z typu směny; bez potvrzení se automaticky neodečítá.
+  </p>
+
+  <section class="panel">
+    <form method="post" class="stack-form">
+      {% csrf_token %}
+      <input type="hidden" name="year" value="{{ year }}">
+      <input type="hidden" name="month" value="{{ month }}">
+      {% if form.non_field_errors %}
+        <div class="notice" role="alert">{{ form.non_field_errors }}</div>
+      {% endif %}
+      {{ form.expected_version }}
+      <p>
+        <label for="{{ form.start_time.id_for_label }}">{{ form.start_time.label }}</label>
+        {{ form.start_time }}
+        {{ form.start_time.errors }}
+      </p>
+      <p>
+        <label for="{{ form.end_time.id_for_label }}">{{ form.end_time.label }}</label>
+        {{ form.end_time }}
+        {{ form.end_time.errors }}
+      </p>
+      <p>
+        <label for="{{ form.break_minutes.id_for_label }}">{{ form.break_minutes.label }}</label>
+        {{ form.break_minutes }}
+        {{ form.break_minutes.errors }}
+      </p>
+      <p>
+        <label for="{{ form.note.id_for_label }}">{{ form.note.label }}</label>
+        {{ form.note }}
+        {{ form.note.errors }}
+      </p>
+      <div class="form-actions">
+        <button type="submit">Potvrdit práci</button>
+        <a class="button secondary" href="{% url 'attendance_day' %}?employee={{ shift.employee_id }}&day={{ day|date:'Y-m-d' }}&year={{ year }}&month={{ month }}">Zpět</a>
+      </div>
+    </form>
+  </section>
+{% endblock %}

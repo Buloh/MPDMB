@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>Dlouhodobý plán</h1>
+  <form class="csrf-holder" aria-hidden="true" tabindex="-1">{% csrf_token %}</form>
+  <div class="list-toolbar">
+    <form class="list-filters" method="get">
+      <div class="list-field">
+        <label for="year">Rok</label>
+        <input id="year" type="number" name="year" value="{{ year }}" min="2020" max="2100">
+      </div>
+      <div class="list-field">
+        <label for="month">Měsíc</label>
+        <input id="month" type="number" name="month" value="{{ month }}" min="1" max="12">
+      </div>
+      <button type="submit">Zobrazit</button>
+      <a class="button secondary" href="{% url 'shift_month' %}?year={{ prev_year }}&month={{ prev_month }}">Předchozí</a>
+      <a class="button secondary" href="{% url 'shift_month' %}?year={{ next_year }}&month={{ next_month }}">Následující</a>
+    </form>
+    {% if can_edit %}
+      <div class="list-actions">
+        <a class="button" href="{% url 'shift_cell_assign' %}?year={{ year }}&month={{ month }}">Přiřadit směnu</a>
+        <a class="button" href="{% url 'shift_generate_month' %}?year={{ year }}&month={{ month }}">Vygenerovat…</a>
+        <a class="button secondary" href="{% url 'schedule_template_list' %}">Šablony</a>
+        <a class="button secondary" href="{% url 'work_time_profile_list' %}">Fond</a>
+        <a class="button secondary" href="{% url 'shift_type_list' %}">Typy směn</a>
+        <a class="button secondary" href="{% url 'attendance_month' %}?year={{ year }}&month={{ month }}">Docházka tohoto měsíce</a>
+      </div>
+    {% else %}
+      <div class="list-actions">
+        <a class="button secondary" href="{% url 'attendance_month' %}?year={{ year }}&month={{ month }}">Docházka tohoto měsíce</a>
+      </div>
+    {% endif %}
+  </div>
+
+  <p class="muted">{{ month_label|date:"F Y" }} · časy Europe/Prague · plán ≠ docházka</p>
+
+  {% if shift_types %}
+    <details class="panel shift-legend-panel">
+      <summary>Zobrazit legendu typů</summary>
+      <ul class="shift-legend">
+        {% for t in shift_types %}
+          <li>
+            <strong>{% if t.kind == "standby" %}({{ t.code }}){% else %}{{ t.code }}{% endif %}</strong>
+            – {{ t.name }}
+            · {{ t.get_kind_display }}
+            ({{ t.start_time|time:"H:i" }}–{{ t.end_time|time:"H:i" }},
+            čistě {{ t.net_hours_label }})
+          </li>
+        {% endfor %}
+      </ul>
+    </details>
+  {% endif %}
+
+  <section class="panel">
+    <div class="table-wrap shift-matrix-wrap">
+      <table class="shift-matrix">
+        <thead>
+          <tr>
+            <th class="sticky-col">Zaměstnanec</th>
+            {% for h in day_headers %}
+              <th class="{% if h.is_holiday %}holiday{% elif h.is_weekend %}weekend{% endif %}" title="{% if h.holiday_name %}{{ h.holiday_name }} · {% endif %}{{ h.weekday_label }} {{ h.day|date:'d.m.Y' }}">
+                {{ h.day.day }}
+                <span class="muted day-dow">{{ h.weekday_label }}</span>
+              </th>
+            {% endfor %}
+            <th title="Součet čistých hodin publikovaných směn (délka typu směny)">Plánováno</th>
+            <th title="Fond = součet denních hodin dle účinného úvazku (změna uprostřed měsíce se sčítá po částech).">Fond</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% regroup rows by workplace_name as workplace_groups %}
+          {% for group in workplace_groups %}
+            <tr class="workplace-sep">
+              <td colspan="{{ day_headers|length|add:3 }}"><strong>{{ group.grouper }}</strong></td>
+            </tr>
+            {% for row in group.list %}
+              <tr>
+                <td class="sticky-col">
+                  {{ row.employee.last_name }} {{ row.employee.first_name }}
+                  {% if row.workplace_segments_label %}
+                    <div class="muted workplace-seg">{{ row.workplace_segments_label }}</div>
+                  {% elif row.workplace_future_hint %}
+                    <div class="muted workplace-seg">{{ row.workplace_future_hint }}</div>
+                  {% endif %}
+                </td>
+                {% for cell in row.cells %}
+                  <td class="shift-cell {% if cell.is_holiday %}holiday{% elif cell.is_weekend %}weekend{% endif %}">
+                    {% if cell.shifts %}
+                      <span class="cell-codes">
+                        {% for s in cell.shifts %}
+                          <a href="{% url 'shift_detail' s.pk %}"
+                             class="{% if s.shift_type_id and s.shift_type.kind == 'standby' %}standby-code{% endif %}"
+                             title="{{ s.get_status_display }} {{ s.starts_at|date:'H:i' }}–{{ s.ends_at|date:'H:i' }}">{{ s.display_code }}</a>{% if not forloop.last %}+{% endif %}
+                        {% endfor %}
+                      </span>
+                      {% if can_edit and cell.can_add %}
+                        <a class="cell-empty"
+                           href="#"
+                           data-employee="{{ row.employee.pk }}"
+                           data-day="{{ cell.day|date:'Y-m-d' }}"
+                           data-year="{{ year }}"
+                           data-month="{{ month }}"
+                           title="Přidat další směnu">+</a>
+                      {% endif %}
+                    {% elif can_edit %}
+                      <a class="cell-empty"
+                         href="#"
+                         data-employee="{{ row.employee.pk }}"
+                         data-day="{{ cell.day|date:'Y-m-d' }}"
+                         data-year="{{ year }}"
+                         data-month="{{ month }}"
+                         title="Přidat směnu">+</a>
+                    {% else %}
+                      —
+                    {% endif %}
+                  </td>
+                {% endfor %}
+                <td>{{ row.planned_label }} h</td>
+                <td>
+                  {% if row.fund %}
+                    {{ row.fund.fund_label }} h
+                    <span class="muted"
+                          title="{{ row.fund.daily_source }}{% if row.fund.is_continuous %} · nepřetržitý{% endif %}">
+                      ({{ row.fund.work_days }} dní{% if row.fund.holiday_weekdays %}, vč. {{ row.fund.holiday_weekdays }} svátek{% endif %})
+                    </span>
+                    {% if row.fund.segments_label %}
+                      <div class="muted workplace-seg">{{ row.fund.segments_label }}</div>
+                    {% endif %}
+                    {% if row.fund_delta_ok %}
+                      <span class="badge success" title="Plánováno = Fond">OK</span>
+                    {% elif row.fund_delta_short %}
+                      <span class="badge warning" title="Rozdíl Plánováno − Fond (úvazek / směny)">-{{ row.fund_delta_label }} h</span>
+                    {% elif row.fund_delta_over %}
+                      <span class="badge info" title="Rozdíl Plánováno − Fond (úvazek / směny)">+{{ row.fund_delta_label }} h</span>
+                    {% endif %}
+                    {% if row.balancing_list %}
+                      <div class="muted workplace-seg" title="Vyrovnávací období: plán / dynamický cíl">
+                        {% for b in row.balancing_list %}
+                          {{ b.label }}{% if not forloop.last %}; {% endif %}
+                        {% endfor %}
+                      </div>
+                    {% endif %}
+                  {% else %}
+                    <span class="muted">-</span>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          {% empty %}
+            <tr><td colspan="{{ day_headers|length|add:3 }}">Žádní zaměstnanci k zobrazení.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  {% if can_edit %}
+    <div id="shift-cell-menu"
+         class="shift-cell-menu"
+         hidden
+         role="menu"
+         data-post-url="{% url 'shift_cell_modal' %}"
+         data-types='[{% for t in shift_types %}{"id":{{ t.pk }},"code":"{{ t.code|escapejs }}","name":"{{ t.name|escapejs }}"}{% if not forloop.last %},{% endif %}{% endfor %}]'>
+      <p class="shift-cell-menu-title">Přidat směnu</p>
+      <ul class="shift-cell-menu-list"></ul>
+      <p class="shift-cell-menu-error notice danger-soft" hidden></p>
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block extra_body %}
+  {% if can_edit %}
+    <script src="{% static 'mpdmb/js/cell_menu.js' %}?v={{ APP_VERSION }}" defer></script>
+  {% endif %}
+{% endblock %}

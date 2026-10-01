@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>{{ title }}</h1>
+  <p class="muted">
+    Předvolba se nabízí ve formuláři profilu pracovní doby. Minuty lze v profilu
+    vždy upravit ručně.
+  </p>
+  <section class="panel">
+    <form class="form-narrow" method="post" novalidate>
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="notice danger-soft" role="alert">{{ form.non_field_errors }}</div>
+      {% endif %}
+      {% for field in form %}
+        {% if field.name == "is_active" %}
+          <p class="form-field form-check">
+            <label for="{{ field.id_for_label }}">{{ field }} {{ field.label }}</label>
+            {% if field.errors %}<span class="field-error">{{ field.errors.0 }}</span>{% endif %}
+          </p>
+        {% else %}
+          <p class="form-field">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}<span class="field-error">{{ field.errors.0 }}</span>{% endif %}
+            {% if field.help_text %}<span class="muted">{{ field.help_text }}</span>{% endif %}
+          </p>
+        {% endif %}
+      {% endfor %}
+      <div class="toolbar">
+        <button type="submit">Uložit</button>
+        <a class="button secondary" href="{% url 'work_time_preset_list' %}">Zrušit</a>
+      </div>
+    </form>
+  </section>
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% load static l10n %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block extra_head %}
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" crossorigin="">
+{% endblock %}
+
+{% block content %}
+  <h1>{{ title }}</h1>
+
+  <section class="panel">
+    <div class="location-editor-layout">
+      <div class="location-editor-map-col">
+        {% if map_cities %}
+          <form method="get" class="map-city-bar">
+            <label for="map-city">Mapové město</label>
+            <select id="map-city" name="city" onchange="this.form.submit()">
+              {% for c in map_cities %}
+                <option value="{{ c.code }}" {% if map_city and c.code == map_city.code %}selected{% endif %}>{{ c.name }}</option>
+              {% endfor %}
+            </select>
+          </form>
+        {% endif %}
+        <div id="location-editor-map"
+             class="activity-map activity-map--form"
+             role="img"
+             aria-label="Editor polygonu lokality"
+             data-center-lat="{{ map_center_lat|unlocalize }}"
+             data-center-lon="{{ map_center_lon|unlocalize }}"
+             data-zoom="{{ map_zoom }}"></div>
+        <p class="muted location-editor-status" id="polygon-status">Nakreslete polygon na mapě.</p>
+      </div>
+
+      <form method="post" class="location-editor-fields form-compact" id="location-form">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+          <div class="notice" role="alert">{{ form.non_field_errors }}</div>
+        {% endif %}
+        <div class="form-field">
+          <label for="{{ form.code.id_for_label }}">{{ form.code.label }}</label>
+          {{ form.code }}
+          {{ form.code.errors }}
+        </div>
+        <div class="form-field">
+          <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+          {{ form.name }}
+          {{ form.name.errors }}
+        </div>
+        <div class="form-field">
+          <label for="{{ form.description.id_for_label }}">{{ form.description.label }}</label>
+          {{ form.description }}
+          {{ form.description.errors }}
+        </div>
+        <div class="form-field">
+          <label for="{{ form.parent.id_for_label }}">{{ form.parent.label }}</label>
+          {{ form.parent }}
+          {{ form.parent.errors }}
+        </div>
+        <div class="form-field">
+          <label for="{{ form.workplace.id_for_label }}">{{ form.workplace.label }}</label>
+          {{ form.workplace }}
+          {{ form.workplace.errors }}
+        </div>
+        <div class="form-field">
+          <label for="{{ form.color.id_for_label }}">{{ form.color.label }}</label>
+          {{ form.color }}
+          {{ form.color.errors }}
+        </div>
+        <div class="form-field">
+          <label for="{{ form.sort_order.id_for_label }}">{{ form.sort_order.label }}</label>
+          {{ form.sort_order }}
+          {{ form.sort_order.errors }}
+        </div>
+        <div class="form-field form-check">
+          {{ form.is_active }}
+          <label for="{{ form.is_active.id_for_label }}">{{ form.is_active.label }}</label>
+          {{ form.is_active.errors }}
+        </div>
+        {{ form.geojson }}
+        {{ form.geojson.errors }}
+        <div class="form-actions">
+          <button type="submit">Uložit</button>
+          <a class="button secondary" href="{% url 'activity_location_list' %}">Zpět</a>
+        </div>
+      </form>
+    </div>
+  </section>
+{% endblock %}
+
+{% block extra_body %}
+  {% if map_geojson %}
+    {{ map_geojson|json_script:"locations-context-geojson" }}
+  {% endif %}
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js" crossorigin=""></script>
+  <script src="{% static 'mpdmb/js/activity_map_tiles.js' %}?v={{ APP_VERSION }}"></script>
+  <script src="{% static 'mpdmb/js/activity_location_editor.js' %}?v={{ APP_VERSION }}" defer></script>
+{% endblock %}

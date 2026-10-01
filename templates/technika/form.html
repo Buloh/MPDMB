@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>{{ title }}</h1>
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+      <div class="notice danger-soft" role="alert">{{ form.non_field_errors }}</div>
+    {% endif %}
+    <section class="panel">
+      <h2>Vozidlo</h2>
+      <div class="form-row">
+        {% include "employees/_field.html" with field=form.plate %}
+        {% include "employees/_field.html" with field=form.name %}
+        {% include "employees/_field.html" with field=form.responsible %}
+        {% include "employees/_field.html" with field=form.is_active %}
+      </div>
+      {% include "employees/_field.html" with field=form.notes %}
+    </section>
+
+    <section class="panel">
+      <h2>Doklady (STK, pojistka…)</h2>
+      <p class="muted">Platnost a upozornění před expirací podle typu dokladu.</p>
+      {{ document_formset.management_form }}
+      <div id="document-forms">
+        {% for dform in document_formset %}
+          <div class="document-row form-compact-row">
+            {% for hidden in dform.hidden_fields %}{{ hidden }}{% endfor %}
+            <div class="form-row">
+              {% include "employees/_field.html" with field=dform.document_type %}
+              {% include "employees/_field.html" with field=dform.number %}
+              {% include "employees/_field.html" with field=dform.valid_from %}
+              {% include "employees/_field.html" with field=dform.valid_until %}
+            </div>
+            <div class="form-row">
+              {% include "employees/_field.html" with field=dform.issued_by %}
+              {% include "employees/_field.html" with field=dform.is_active %}
+              {% if dform.DELETE %}
+                <div class="form-field form-check qual-delete">
+                  <label>{{ dform.DELETE }} Odstranit</label>
+                </div>
+              {% endif %}
+            </div>
+            {% include "employees/_field.html" with field=dform.notes %}
+          </div>
+        {% endfor %}
+      </div>
+      <template id="document-empty-form">
+        <div class="document-row form-compact-row">
+          {% for hidden in document_formset.empty_form.hidden_fields %}{{ hidden }}{% endfor %}
+          <div class="form-row">
+            {% include "employees/_field.html" with field=document_formset.empty_form.document_type %}
+            {% include "employees/_field.html" with field=document_formset.empty_form.number %}
+            {% include "employees/_field.html" with field=document_formset.empty_form.valid_from %}
+            {% include "employees/_field.html" with field=document_formset.empty_form.valid_until %}
+          </div>
+          <div class="form-row">
+            {% include "employees/_field.html" with field=document_formset.empty_form.issued_by %}
+            {% include "employees/_field.html" with field=document_formset.empty_form.is_active %}
+            {% if document_formset.empty_form.DELETE %}
+              <div class="form-field form-check qual-delete">
+                <label>{{ document_formset.empty_form.DELETE }} Odstranit</label>
+              </div>
+            {% endif %}
+          </div>
+          {% include "employees/_field.html" with field=document_formset.empty_form.notes %}
+        </div>
+      </template>
+      <button type="button" class="secondary" id="add-document">Přidat doklad</button>
+    </section>
+
+    <div class="toolbar">
+      <button type="submit">Uložit</button>
+      <a class="button secondary" href="{% if vehicle %}{% url 'vehicle_detail' vehicle.pk %}{% else %}{% url 'vehicle_list' %}{% endif %}">Zrušit</a>
+    </div>
+  </form>
+{% endblock %}
+
+{% block extra_body %}
+  <script src="{% static 'mpdmb/js/vehicle-document-formset.js' %}?v={{ APP_VERSION }}"></script>
+{% endblock %}

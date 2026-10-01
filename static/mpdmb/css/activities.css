@@ -1,0 +1,458 @@
+/* Činnosti a lokality */
+.activity-map {
+  width: 100%;
+  min-height: 640px;
+  height: 75vh;
+  max-height: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--primary-soft);
+}
+.activity-map--form {
+  width: 100%;
+  max-width: none;
+  height: 480px;
+  min-height: 420px;
+  max-height: 520px;
+  aspect-ratio: auto;
+}
+.location-editor-layout {
+  display: grid;
+  grid-template-columns: minmax(360px, 1fr) minmax(240px, 20rem);
+  gap: var(--space-4) var(--space-6);
+  align-items: start;
+}
+.location-editor-map-col {
+  min-width: 0;
+}
+.location-editor-map-col .map-city-bar {
+  margin-bottom: var(--space-2);
+}
+.location-editor-status {
+  margin: var(--space-2) 0 0;
+  font-size: 13px;
+}
+.location-editor-fields .form-field {
+  margin-bottom: var(--space-3);
+}
+.location-editor-fields .form-actions {
+  margin-top: var(--space-3);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+@media (max-width: 800px) {
+  .location-editor-layout {
+    grid-template-columns: 1fr;
+  }
+  .activity-map--form {
+    height: 360px;
+    min-height: 320px;
+    max-height: 420px;
+  }
+}
+.activity-board-wrap { overflow-x: auto; }
+.activity-board {
+  border-collapse: collapse;
+  font-size: 12px;
+  min-width: 100%;
+}
+.activity-board th,
+.activity-board td {
+  border: 1px solid var(--border);
+  padding: 2px;
+  text-align: center;
+  vertical-align: top;
+}
+.activity-board thead th {
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-weight: 600;
+  white-space: nowrap;
+  padding: 4px 6px;
+  vertical-align: middle;
+}
+.activity-board tbody th {
+  text-align: left;
+  padding: 4px 8px;
+  white-space: nowrap;
+  background: var(--surface);
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  vertical-align: middle;
+}
+.activity-board-shift-meta {
+  font-weight: 400;
+  font-size: 12px;
+  margin-top: 2px;
+  white-space: normal;
+}
+.activity-day-roster {
+  margin-top: var(--space-3);
+}
+.activity-day-roster h2 {
+  margin: 0 0 var(--space-2);
+  font-size: 1.05rem;
+}
+.activity-board-cell.off {
+  background: var(--background);
+}
+.activity-slot-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 2px;
+  width: 100%;
+  min-width: 6.5rem;
+  min-height: 2.5rem;
+  padding: 4px 5px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.25;
+  text-align: left;
+  white-space: normal;
+  cursor: pointer;
+}
+.activity-slot-btn:hover {
+  background: var(--primary-soft);
+}
+.activity-slot-btn--axis {
+  min-width: 7.5rem;
+  max-width: 11rem;
+  min-height: 4.5rem;
+}
+.activity-slot-time {
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 10px;
+}
+.activity-slot-item {
+  display: block;
+  padding: 2px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+.activity-slot-item:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+.activity-slot-item-time {
+  display: block;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.activity-slot-item-type {
+  display: block;
+  font-weight: 600;
+}
+.activity-slot-item-loc {
+  display: block;
+  opacity: 0.9;
+}
+.activity-slot-item-note {
+  display: block;
+  font-weight: 400;
+  opacity: 0.85;
+}
+.activity-slot-item-more,
+.activity-slot-empty {
+  display: block;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.activity-slot-btn[style*="background"] .activity-slot-item-time,
+.activity-slot-btn[style*="background"] .activity-slot-item-more,
+.activity-slot-btn[style*="background"] .activity-slot-empty {
+  color: inherit;
+  opacity: 0.9;
+}
+.activity-emp-axis {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+}
+#activity-slot-dialog {
+  max-width: min(640px, 96vw);
+}
+.activity-slot-modal h2 {
+  margin: 0 0 var(--space-2);
+  font-size: 18px;
+}
+.activity-slot-modal > .muted {
+  margin: 0 0 var(--space-2);
+  font-size: 13px;
+  line-height: 1.35;
+}
+.activity-slot-row {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-2);
+  margin-bottom: var(--space-2);
+  background: var(--background);
+}
+.activity-slot-row-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2) var(--space-3);
+  align-items: end;
+}
+.activity-slot-row-fields .form-field {
+  margin: 0;
+  min-width: 0;
+}
+.activity-slot-row-fields .form-field label {
+  margin-bottom: 2px;
+  font-size: 13px;
+}
+.activity-slot-row-fields .form-field input,
+.activity-slot-row-fields .form-field select {
+  width: 100%;
+  min-height: 36px;
+  padding: 4px 8px;
+}
+.activity-slot-note-field {
+  grid-column: 1 / -1;
+}
+.activity-slot-note-field textarea,
+textarea.activity-slot-note {
+  width: 100%;
+  min-height: 4.5rem;
+  max-height: 30vh;
+  resize: vertical;
+  line-height: 1.4;
+  font: inherit;
+  padding: var(--space-2) var(--space-3);
+}
+.activity-slot-row-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 2px;
+}
+.activity-slot-form .form-actions.toolbar {
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  margin-bottom: 0;
+}
+
+#activity-day-task-dialog {
+  max-width: min(520px, 96vw);
+}
+.activity-day-task-note-field {
+  margin-top: var(--space-2);
+}
+.activity-day-task-note-field textarea,
+textarea.activity-day-task-note {
+  width: 100%;
+  min-height: 7rem;
+  max-height: 40vh;
+  resize: vertical;
+  line-height: 1.4;
+  font: inherit;
+  padding: var(--space-2) var(--space-3);
+}
+.activity-day-task-note-cell {
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-width: 28rem;
+}
+
+/* Kompaktní stránka plánu činností */
+.activity-day-page .list-toolbar {
+  margin-bottom: var(--space-3);
+}
+.activity-day-page .list-toolbar h1 {
+  font-size: 22px;
+  margin: 0;
+}
+.activity-day-page .panel {
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-3);
+}
+.activity-day-page .panel > h2,
+.activity-day-page .list-toolbar h2 {
+  font-size: 17px;
+  margin: 0 0 var(--space-2);
+}
+.activity-day-page .muted {
+  margin: 0 0 var(--space-2);
+  font-size: 13px;
+}
+.activity-day-page .notice {
+  margin: var(--space-2) 0 0;
+  padding: var(--space-2) var(--space-3);
+}
+.activity-day-page .filters-inline p,
+.activity-day-page .activity-day-filter-form p {
+  margin: 0;
+}
+.activity-day-page .activity-day-filter-form label {
+  font-size: 13px;
+  margin-bottom: 2px;
+}
+.activity-day-page .activity-day-filter-form input,
+.activity-day-page .activity-day-filter-form select,
+.activity-day-page .activity-day-filter-form button {
+  min-height: 36px;
+  padding: 4px 8px;
+}
+.activity-day-page .activity-day-filter-form .form-actions {
+  margin: 0;
+  align-self: flex-end;
+}
+.activity-day-page table:not(.activity-board) th,
+.activity-day-page table:not(.activity-board) td {
+  padding: var(--space-1) var(--space-2);
+  font-size: 13px;
+}
+.map-city-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+.map-city-bar select {
+  max-width: 280px;
+  width: 100%;
+}
+.location-map-detail {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+}
+.location-map-detail h3 {
+  margin: 0 0 var(--space-3);
+  color: var(--primary);
+  font-size: 1.1rem;
+}
+.location-map-detail-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-3);
+  margin: 0 0 var(--space-3);
+}
+.location-map-detail-meta dt {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+.location-map-detail-meta dd {
+  margin: var(--space-1) 0 0;
+}
+.location-map-detail-desc {
+  margin: 0 0 var(--space-4);
+  white-space: pre-wrap;
+}
+tr.location-sub td:nth-child(2) {
+  padding-left: var(--space-6);
+  color: var(--text-secondary);
+}
+.location-color-swatch {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+/* Dialog Export plánu — jeden sloupec, pohodlná šířka */
+#activity-export-dialog {
+  max-width: min(560px, 94vw);
+}
+#activity-export-dialog .activity-export-modal {
+  padding: var(--space-6);
+  min-width: min(480px, 90vw);
+}
+.activity-export-modal h2 {
+  margin: 0 0 var(--space-1);
+  font-size: 20px;
+  color: var(--primary);
+}
+.activity-export-modal > .muted {
+  margin: 0 0 var(--space-2);
+  font-size: 14px;
+  line-height: 1.4;
+}
+.activity-export-modal .activity-export-help {
+  margin: 0 0 var(--space-4);
+  color: var(--text-secondary);
+}
+.activity-export-modal .activity-export-error {
+  margin: 0 0 var(--space-3);
+  padding: var(--space-2) var(--space-3);
+}
+.activity-export-group {
+  border: 0;
+  margin: 0 0 var(--space-4);
+  padding: 0;
+  min-width: 0;
+}
+.activity-export-group legend {
+  padding: 0;
+  margin: 0 0 var(--space-2);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.activity-export-radios {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-2);
+}
+.activity-export-radios > label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: auto;
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  min-height: 40px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.activity-export-radios > label:has(input:checked) {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+.activity-export-radios input[type="radio"] {
+  width: auto;
+  margin: 0;
+  flex-shrink: 0;
+}
+.activity-export-emp {
+  margin: calc(-1 * var(--space-2)) 0 var(--space-4);
+}
+.activity-export-emp select {
+  width: 100%;
+  min-height: 40px;
+  padding: 6px 10px;
+  font: inherit;
+}
+.activity-export-modal .form-actions {
+  margin: var(--space-4) 0 0;
+  gap: var(--space-2);
+  padding-bottom: var(--space-1);
+}
+@media (max-width: 520px) {
+  #activity-export-dialog .activity-export-modal {
+    min-width: 0;
+    padding: var(--space-4);
+  }
+}

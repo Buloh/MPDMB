@@ -1,0 +1,36 @@
+<div class="panel cell-dialog-content cell-modal-body activity-day-task-modal">
+  <h2>Denní úkol</h2>
+  <p class="muted">
+    {{ employee.last_name }} {{ employee.first_name }} · {{ day|date:"d.m.Y" }}
+    · mimo hodinovou mřížku
+  </p>
+  <p class="notice danger-soft activity-day-task-error" hidden role="alert"></p>
+  <form class="stack-form form-compact activity-day-task-form" method="post" action="{% url 'activity_day_task_save' %}">
+    {% csrf_token %}
+    <input type="hidden" name="employee" value="{{ employee.pk }}">
+    <input type="hidden" name="day" value="{{ day|date:'Y-m-d' }}">
+    {% if workplace_id %}<input type="hidden" name="workplace" value="{{ workplace_id }}">{% endif %}
+    <div class="form-row">
+      <div class="form-field">
+        <label for="{{ form.activity_type.id_for_label }}">{{ form.activity_type.label }}</label>
+        {{ form.activity_type }}
+      </div>
+      <div class="form-field">
+        <label for="{{ form.location.id_for_label }}">{{ form.location.label }}</label>
+        {{ form.location }}
+      </div>
+      <div class="form-field">
+        <label for="{{ form.vehicle.id_for_label }}">{{ form.vehicle.label }}</label>
+        {{ form.vehicle }}
+      </div>
+    </div>
+    <div class="form-field activity-day-task-note-field">
+      <label for="{{ form.note.id_for_label }}">{{ form.note.label }}</label>
+      {{ form.note }}
+    </div>
+    <div class="form-actions toolbar">
+      <button type="submit">Uložit</button>
+      <button type="button" class="secondary" data-activity-close-day-task>Zrušit</button>
+    </div>
+  </form>
+</div>

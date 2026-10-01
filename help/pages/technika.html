@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="/static/mpdmb/img/favicon.svg" type="image/svg+xml">
+  <title>Technika – nápověda SYNERA</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body data-help-base="/napoveda/">
+  <header class="help-header">
+    <a class="brand" href="/">SYNERA</a>
+    <div class="search-wrap">
+      <label for="help-search">Hledat v nápovědě</label>
+      <input id="help-search" type="search" placeholder="např. vozidlo, STK, SPZ" autocomplete="off">
+      <ul id="search-results" aria-live="polite"></ul>
+      <p id="search-empty">Nic nenalezeno. Zkuste jiné klíčové slovo.</p>
+    </div>
+  </header>
+  <div class="help-shell">
+    <nav class="help-nav" aria-label="Obsah nápovědy">
+      <a href="../index.html">Úvod</a>
+      <a href="spusteni.html">Spuštění</a>
+      <a href="prihlaseni.html">Přihlášení</a>
+      <a href="prehled.html">Přehled</a>
+      <a href="administrace.html">Administrace</a>
+      <a href="zamestnanci.html">Zaměstnanci</a>
+      <a href="pracoviste.html">Pracoviště</a>
+      <a href="smeny.html">Dlouhodobý plán</a>
+      <a href="dochazka.html">Docházka</a>
+      <a href="dovolena.html">Dovolená</a>
+      <a href="cinnost.html">Činnost</a>
+      <a href="technika.html" aria-current="page">Technika</a>
+      <a href="dokumenty.html">Dokumenty</a>
+    </nav>
+    <main class="help-main">
+      <h1>Technika (vozidla)</h1>
+      <p class="muted">
+        Evidence vozidel, dokladů s platností a volitelné přiřazení k činnosti.
+      </p>
+
+      <section class="panel">
+        <h2 id="prehled">Co spravujete</h2>
+        <p>
+          V sekci <strong>Technika</strong> evidujete vozidla: SPZ, volitelné označení,
+          odpovědnou osobu a doklady (STK, pojistka). Archivace vozidlo deaktivuje,
+          ale historie přiřazení v činnostech zůstane.
+        </p>
+        <p>
+          Typy dokladů spravuje administrátor (číselník). U typu nastavíte,
+          zda vyžaduje číslo a kolik dní před koncem platnosti zobrazit varování.
+        </p>
+      </section>
+
+      <section class="panel">
+        <h2 id="doklady">Doklady a upozornění</h2>
+        <p>
+          U vozidla evidujete platnost od / do. Prošlé a blížící se doklady se
+          zobrazí na <strong>Přehledu</strong> v dialogu, podobně jako kvalifikace
+          zaměstnanců. Vedoucí a administrátor vidí všechna vozidla; odpovědná
+          osoba vidí doklady vozidel, která má na starosti.
+        </p>
+      </section>
+
+      <section class="panel">
+        <h2 id="cinnost">Přiřazení k činnosti</h2>
+        <p>
+          V plánu činností můžete k položce volitelně přiřadit vozidlo
+          (na část hodiny nebo celý den podle intervalu činnosti).
+        </p>
+        <ul>
+          <li>
+            Bez platného <strong>řidičského průkazu</strong> (kvalifikace zaměstnance)
+            nelze vozidlo přiřadit.
+          </li>
+          <li>
+            Stejné vozidlo nesmí mít ve stejném čase dvě činnosti —
+            překryv systém zakáže.
+          </li>
+          <li>Neaktivní (archivované) vozidlo nelze přiřadit.</li>
+        </ul>
+      </section>
+
+      <p><a href="../index.html">Zpět na úvod nápovědy</a></p>
+    </main>
+  </div>
+  <script src="../search.js"></script>
+</body>
+</html>

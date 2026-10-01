@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>{{ title }}</h1>
+  <section class="panel">
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% if shift %}
+        <input type="hidden" name="version" value="{{ shift.version }}">
+      {% endif %}
+      {% if form.non_field_errors %}
+        <div class="notice danger-soft" role="alert">{{ form.non_field_errors }}</div>
+      {% endif %}
+      {% for field in form %}
+        <p>
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}<span class="field-error">{{ field.errors.0 }}</span>{% endif %}
+        </p>
+      {% endfor %}
+      <div class="toolbar">
+        <button type="submit">Uložit</button>
+        <a class="button secondary" href="{% if shift %}{% url 'shift_detail' shift.pk %}{% else %}{% url 'shift_week' %}{% endif %}">Zrušit</a>
+      </div>
+    </form>
+  </section>
+{% endblock %}
