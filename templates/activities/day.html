@@ -50,7 +50,7 @@
                           </a>
                         </td>
                         <td>{{ item.display_code }}</td>
-                        <td>{{ item.starts_at|date:"H:i" }}–{{ item.ends_at|date:"H:i" }}</td>
+                        <td>{{ item.starts_at|date:"H:i" }} – {{ item.ends_at|date:"H:i" }}</td>
                       </tr>
                     {% endfor %}
                   </tbody>
@@ -119,7 +119,7 @@
                     <div class="muted activity-board-shift-meta">
                       {% for s in row.shifts %}
                         {% if s.shift_type_id %}{{ s.shift_type.code }}{% else %}—{% endif %}
-                        {{ s.starts_at|date:"H:i" }}–{{ s.ends_at|date:"H:i" }}{% if not forloop.last %}; {% endif %}
+                        {{ s.starts_at|date:"H:i" }} – {{ s.ends_at|date:"H:i" }}{% if not forloop.last %}; {% endif %}
                       {% endfor %}
                     </div>
                   {% endif %}
@@ -136,7 +136,7 @@
                                 data-day="{{ day|date:'Y-m-d' }}"
                                 data-starts-at="{{ cell.slot_start|date:'Y-m-d' }}T{{ cell.slot_start|date:'H:i' }}"
                                 data-ends-at="{{ cell.slot_end|date:'Y-m-d' }}T{{ cell.slot_end|date:'H:i' }}"
-                                title="{% for it in items %}{{ it.starts_at|date:'H:i' }}–{{ it.ends_at|date:'H:i' }} {{ it.activity_type.name }}{% if it.location_id %} · {{ it.location.code }}{% endif %}{% if it.note %} — {{ it.note }}{% endif %}{% if not forloop.last %} | {% endif %}{% empty %}Přiřadit činnost{% endfor %}">
+                                title="{% for it in items %}{{ it.starts_at|date:'H:i' }} – {{ it.ends_at|date:'H:i' }} {{ it.activity_type.name }}{% if it.location_id %} · {{ it.location.code }}{% endif %}{% if it.note %} — {{ it.note }}{% endif %}{% if not forloop.last %} | {% endif %}{% empty %}Přiřadit činnost{% endfor %}">
                           {% include "activities/_slot_cell_content.html" with items=items %}
                         </button>
                       {% endwith %}
@@ -257,7 +257,7 @@
         <p class="muted">
           Směny:
           {% for s in shifts %}
-            {{ s.display_code }} {{ s.starts_at|date:"H:i" }}–{{ s.ends_at|date:"H:i" }}{% if not forloop.last %}; {% endif %}
+            {{ s.display_code }} {{ s.starts_at|date:"H:i" }} – {{ s.ends_at|date:"H:i" }}{% if not forloop.last %}; {% endif %}
           {% endfor %}
         </p>
         <div class="activity-emp-axis">
@@ -271,7 +271,7 @@
                       data-day="{{ day|date:'Y-m-d' }}"
                       data-starts-at="{{ cell.slot_start|date:'Y-m-d' }}T{{ cell.slot_start|date:'H:i' }}"
                       data-ends-at="{{ cell.slot_end|date:'Y-m-d' }}T{{ cell.slot_end|date:'H:i' }}"
-                      title="{% for it in items %}{{ it.starts_at|date:'H:i' }}–{{ it.ends_at|date:'H:i' }} {{ it.activity_type.name }}{% if it.location_id %} · {{ it.location.code }}{% endif %}{% if it.note %} — {{ it.note }}{% endif %}{% if not forloop.last %} | {% endif %}{% empty %}{{ cell.label }}{% endfor %}">
+                      title="{% for it in items %}{{ it.starts_at|date:'H:i' }} – {{ it.ends_at|date:'H:i' }} {{ it.activity_type.name }}{% if it.location_id %} · {{ it.location.code }}{% endif %}{% if it.note %} — {{ it.note }}{% endif %}{% if not forloop.last %} | {% endif %}{% empty %}{{ cell.label }}{% endfor %}">
                 <span class="activity-slot-time">{{ cell.label }}</span>
                 {% include "activities/_slot_cell_content.html" with items=items %}
               </button>

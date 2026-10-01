@@ -3,4 +3,4 @@
 APP_NAME = "SYNERA"
 APP_TITLE = "SYNERA"
 APP_TAGLINE = "Řízení provozu MPDMB"
-__version__ = "0.8.1"
+__version__ = "0.8.3"

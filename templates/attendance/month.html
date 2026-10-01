@@ -4,6 +4,7 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
+  <div class="page-compact att-month-page">
   <h1>Docházka</h1>
   <form class="csrf-holder" aria-hidden="true" tabindex="-1">{% csrf_token %}</form>
   <div class="list-toolbar">
@@ -45,22 +46,29 @@
     </div>
   </div>
 
-  <p class="muted">
+  <p class="muted att-month-legend">
     {{ month_label|date:"F Y" }} · skutečná docházka ≠ dlouhodobý plán ·
-    publikovaná směna bez potvrzení ani absence = nevyřešeno
-    {% if show_long_plan %}
-      · náhled dlouhodobého plánu je jen ke čtení (stejná data jako plán směn)
-    {% endif %}
+    publikovaná směna bez potvrzení/absence = nevyřešeno{% if show_long_plan %}
+    · náhled plánu jen ke čtení{% endif %}
   </p>
 
-  <section class="panel">
-    <h2>Shrnutí měsíce</h2>
-    <ul class="att-summary">
-      <li>Plánováno (publikované): <strong>{{ summary.planned_label }} h</strong></li>
-      <li>Potvrzená práce: <strong>{{ summary.worked_label }} h</strong></li>
-      <li>Absence (zameškané z plánu): <strong>{{ summary.missed_label }} h</strong></li>
-      <li>Nevyřešené dny: <strong>{{ summary.unresolved_count }}</strong></li>
-    </ul>
+  <section class="att-summary-strip" aria-label="Shrnutí měsíce">
+    <div class="att-summary-item">
+      <span class="att-summary-label">Plánováno</span>
+      <strong class="att-summary-value">{{ summary.planned_label }} h</strong>
+    </div>
+    <div class="att-summary-item">
+      <span class="att-summary-label">Potvrzená práce</span>
+      <strong class="att-summary-value">{{ summary.worked_label }} h</strong>
+    </div>
+    <div class="att-summary-item">
+      <span class="att-summary-label">Absence</span>
+      <strong class="att-summary-value">{{ summary.missed_label }} h</strong>
+    </div>
+    <div class="att-summary-item">
+      <span class="att-summary-label">Nevyřešené dny</span>
+      <strong class="att-summary-value">{{ summary.unresolved_count }}</strong>
+    </div>
   </section>
 
   <section class="panel">
@@ -148,14 +156,14 @@
                          data-day-url="{% url 'attendance_day' %}?employee={{ row.employee.pk }}&day={{ cell.day|date:'Y-m-d' }}&year={{ year }}&month={{ month }}"
                          data-missing-employment="{% if cell.missing_employment %}1{% else %}0{% endif %}"
                          data-employee-edit-url="{% url 'employee_edit' row.employee.pk %}"
-                         title="{% for s in cell.shifts %}{{ s.display_code }} {{ s.starts_at|date:'H:i' }}–{{ s.ends_at|date:'H:i' }}{% if not forloop.last %}; {% endif %}{% endfor %} · Nevyřešeno{% if cell.missing_employment %} · Chybí pracovní vztah{% endif %}"
+                         title="{% for s in cell.shifts %}{{ s.display_code }} {{ s.starts_at|date:'H:i' }} – {{ s.ends_at|date:'H:i' }}{% if not forloop.last %}; {% endif %}{% endfor %} · Nevyřešeno{% if cell.missing_employment %} · Chybí pracovní vztah{% endif %}"
                          aria-label="{% if cell.missing_employment %}Nevyřešeno, chybí pracovní vztah{% else %}Nevyřešeno{% endif %}">
                         <span class="badge info">?</span>
                       </a>
                     {% else %}
                       <a class="att-cell-link"
                          href="{% url 'attendance_day' %}?employee={{ row.employee.pk }}&day={{ cell.day|date:'Y-m-d' }}&year={{ year }}&month={{ month }}"
-                         title="{% for s in cell.shifts %}{{ s.display_code }} {{ s.starts_at|date:'H:i' }}–{{ s.ends_at|date:'H:i' }}{% if not forloop.last %}; {% endif %}{% endfor %} · {{ cell.status_label }}">
+                         title="{% for s in cell.shifts %}{{ s.display_code }} {{ s.starts_at|date:'H:i' }} – {{ s.ends_at|date:'H:i' }}{% if not forloop.last %}; {% endif %}{% endfor %} · {{ cell.status_label }}">
                         {% if cell.status == "work" %}
                           <span class="badge success">Práce</span>
                         {% elif cell.status == "absence" %}
@@ -235,7 +243,7 @@
               <button type="button"
                       class="button secondary att-adhoc-type"
                       data-shift-type="{{ t.pk }}">
-                {{ t.code }} · {{ t.start_time|time:"H:i" }}–{{ t.end_time|time:"H:i" }}
+                {{ t.code }} · {{ t.start_time|time:"H:i" }} – {{ t.end_time|time:"H:i" }}
               </button>
             {% endfor %}
           </div>
@@ -275,6 +283,7 @@
       </div>
     </dialog>
   {% endif %}
+  </div>
 {% endblock %}
 
 {% block extra_body %}

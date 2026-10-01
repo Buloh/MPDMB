@@ -46,15 +46,33 @@
 .shift-matrix .cell-empty { color: var(--text-secondary); text-decoration: none; margin-left: 2px; }
 .shift-matrix .cell-codes a { text-decoration: none; font-weight: 600; }
 .shift-matrix .cell-codes a.standby-code { font-weight: 500; color: var(--text-secondary); }
-.shift-legend-panel { padding-top: var(--space-4); padding-bottom: var(--space-4); }
+.shift-legend-panel { padding: var(--space-2) var(--space-3); margin-bottom: var(--space-3); }
 .shift-legend-panel summary {
   cursor: pointer;
   font-weight: 600;
   color: var(--primary);
   list-style: none;
+  font-size: 14px;
 }
 .shift-legend-panel summary::-webkit-details-marker { display: none; }
-.shift-legend { margin: var(--space-3) 0 0; padding-left: var(--space-6); }
+.shift-legend { margin: var(--space-2) 0 0; padding-left: var(--space-4); font-size: 13px; }
+
+.shift-month-page .shift-matrix th,
+.shift-month-page .shift-matrix td {
+  padding: 2px 3px;
+  min-width: 24px;
+}
+.shift-month-page .shift-matrix .sticky-col {
+  min-width: 120px;
+  padding: 4px 6px;
+}
+.shift-month-page .panel {
+  padding: var(--space-2) var(--space-3);
+}
+.shift-month-page > .muted {
+  margin: 0 0 var(--space-2);
+  font-size: 13px;
+}
 .att-day-modal-block {
   margin: var(--space-4) 0;
   padding-top: var(--space-3);
@@ -125,6 +143,65 @@
 }
 .att-summary { margin: 0; padding-left: var(--space-5); }
 .att-summary li { margin-bottom: var(--space-2); }
+
+.att-month-page .att-month-legend {
+  margin: 0 0 var(--space-2);
+  font-size: 13px;
+  line-height: 1.35;
+}
+.att-summary-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.att-summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding: var(--space-1) var(--space-2);
+  border-left: 3px solid var(--primary);
+  background: var(--primary-soft);
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+.att-summary-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  line-height: 1.2;
+}
+.att-summary-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1.2;
+}
+.att-month-page .panel {
+  padding: var(--space-2) var(--space-3);
+}
+.att-month-page .shift-matrix th,
+.att-month-page .shift-matrix td {
+  padding: 2px 3px;
+  min-width: 24px;
+}
+.att-month-page .shift-matrix .sticky-col {
+  min-width: 120px;
+  padding: 4px 6px;
+}
+.att-month-page .shift-matrix thead th .day-dow {
+  font-size: 9px;
+}
+@media (max-width: 900px) {
+  .att-summary-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 .att-legend { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-5); }
 .att-legend li { display: flex; align-items: center; gap: var(--space-2); }
 .att-matrix .att-cell { text-align: center; vertical-align: middle; }

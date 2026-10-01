@@ -3,6 +3,22 @@
 Evidence uživatelsky viditelných změn. Číslo verze musí souhlasit
 s `apps/core/version.py`.
 
+## 0.8.3 — 01.10.2026
+
+### Opravy
+
+- Časové rozsahy jednotně s mezerami (`06:00 – 14:00`) napříč Provozem,
+  docházkou a činností.
+- Kompaktnější formuláře typu směny a šablony (mřížka dnů cyklu).
+- Hustší dlouhodobý plán a seznamy šablon / fond / typy směn.
+
+## 0.8.2 — 01.10.2026
+
+### Opravy
+
+- Kompaktnější měsíční Docházka: shrnutí ve čtyřech metrikách vedle sebe,
+  hustší toolbar a matice.
+
 ## 0.8.1 — 01.10.2026
 
 ### Opravy

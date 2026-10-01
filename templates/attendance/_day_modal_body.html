@@ -14,7 +14,7 @@
     <section class="att-day-modal-block">
       <h3>
         {{ item.shift.display_code }}
-        · {{ item.shift.starts_at|date:"H:i" }}–{{ item.shift.ends_at|date:"H:i" }}
+        · {{ item.shift.starts_at|date:"H:i" }} – {{ item.shift.ends_at|date:"H:i" }}
         · {{ item.shift.workplace }}
       </h3>
       <p class="muted">
@@ -89,7 +89,7 @@
     <section class="att-day-modal-block">
       <h3>
         Práce mimo plán
-        · {{ wi.starts_at|date:"H:i" }}–{{ wi.ends_at|date:"H:i" }}
+        · {{ wi.starts_at|date:"H:i" }} – {{ wi.ends_at|date:"H:i" }}
         · {{ wi.workplace }}
       </h3>
       <p class="muted"><span class="badge success">Potvrzená práce</span></p>

@@ -1,6 +1,6 @@
 # SYNERA – řízení provozu MPDMB
 
-Verze **0.8.1** (zdroj: `apps/core/version.py`; historie v `CHANGELOG.md`).
+Verze **0.8.3** (zdroj: `apps/core/version.py`; historie v `CHANGELOG.md`).
 Webová aplikace SYNERA pro řízení zaměstnanců a provozu parkovacích
 domů v Mladé Boleslavi. Běží v prohlížeči (Django + SQLite).
 

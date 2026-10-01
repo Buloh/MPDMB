@@ -3,7 +3,7 @@
   {% for it in items %}
     {% if forloop.counter <= 3 %}
       <span class="activity-slot-item">
-        <span class="activity-slot-item-time">{{ it.starts_at|date:"H:i" }}–{{ it.ends_at|date:"H:i" }}</span>
+        <span class="activity-slot-item-time">{{ it.starts_at|date:"H:i" }} – {{ it.ends_at|date:"H:i" }}</span>
         <span class="activity-slot-item-type">{{ it.activity_type.name }}</span>
         {% if it.location_id %}
           <span class="activity-slot-item-loc">{{ it.location.code }}</span>

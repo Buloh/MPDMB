@@ -4,6 +4,7 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
+  <div class="page-compact shift-month-page">
   <h1>Dlouhodobý plán</h1>
   <form class="csrf-holder" aria-hidden="true" tabindex="-1">{% csrf_token %}</form>
   <div class="list-toolbar">
@@ -47,7 +48,7 @@
             <strong>{% if t.kind == "standby" %}({{ t.code }}){% else %}{{ t.code }}{% endif %}</strong>
             – {{ t.name }}
             · {{ t.get_kind_display }}
-            ({{ t.start_time|time:"H:i" }}–{{ t.end_time|time:"H:i" }},
+            ({{ t.start_time|time:"H:i" }} – {{ t.end_time|time:"H:i" }},
             čistě {{ t.net_hours_label }})
           </li>
         {% endfor %}
@@ -94,7 +95,7 @@
                         {% for s in cell.shifts %}
                           <a href="{% url 'shift_detail' s.pk %}"
                              class="{% if s.shift_type_id and s.shift_type.kind == 'standby' %}standby-code{% endif %}"
-                             title="{{ s.get_status_display }} {{ s.starts_at|date:'H:i' }}–{{ s.ends_at|date:'H:i' }}">{{ s.display_code }}</a>{% if not forloop.last %}+{% endif %}
+                             title="{{ s.get_status_display }} {{ s.starts_at|date:'H:i' }} – {{ s.ends_at|date:'H:i' }}">{{ s.display_code }}</a>{% if not forloop.last %}+{% endif %}
                         {% endfor %}
                       </span>
                       {% if can_edit and cell.can_add %}
@@ -170,6 +171,7 @@
       <p class="shift-cell-menu-error notice danger-soft" hidden></p>
     </div>
   {% endif %}
+  </div>
 {% endblock %}
 
 {% block extra_body %}

@@ -28,7 +28,7 @@
     <section class="panel">
       <h2>
         {{ item.shift.display_code }}
-        · {{ item.shift.starts_at|date:"H:i" }}–{{ item.shift.ends_at|date:"H:i" }}
+        · {{ item.shift.starts_at|date:"H:i" }} – {{ item.shift.ends_at|date:"H:i" }}
         · {{ item.shift.workplace }}
       </h2>
       <p class="muted">
@@ -100,7 +100,7 @@
     <section class="panel">
       <h2>
         Práce mimo plán
-        · {{ wi.starts_at|date:"H:i" }}–{{ wi.ends_at|date:"H:i" }}
+        · {{ wi.starts_at|date:"H:i" }} – {{ wi.ends_at|date:"H:i" }}
         · {{ wi.workplace }}
       </h2>
       <p class="muted">
